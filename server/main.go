@@ -1,25 +1,26 @@
 package main
 
 import (
+	"flag"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"golang.org/x/crypto/acme/autocert"
 )
 
 func main() {
+	portPtr := flag.Int("p", 8080, "Port Number")
+	flag.Parse()
+
 	e := echo.New()
-	e.AutoTLSManager.HostPolicy = autocert.HostWhitelist("quickdnd.com")
-	// Cache certificates
-	e.AutoTLSManager.Cache = autocert.DirCache("/var/www/.cache")
+
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
 	e.GET("/", func(c echo.Context) error {
 		return c.HTML(http.StatusOK, `
-			<h1>Welcome to Echo!</h1>
-			<h3>TLS certificates automatically installed from Let's Encrypt :)</h3>
+			<h1>Hello World!</h1>
 		`)
 	})
-	e.Logger.Fatal(e.StartAutoTLS(":443"))
+	e.Logger.Fatal(e.Start(":" + strconv.Itoa(*portPtr)))
 }
