@@ -17,3 +17,6 @@
 # npm
 node_modules/
 draco
+
+# Configuration files
+config.yml
