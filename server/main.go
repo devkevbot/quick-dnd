@@ -29,5 +29,13 @@ func main() {
 
 	e.GET("/test", TestHandler)
 
+	if cfg.IsProduction {
+		// For production builds, we will want to serve the minified
+		// application bundle for frontend codes. This is created using
+		// the `npm run build` command from the `/client/` directory of
+		// the project.
+		e.Static("/", "../client/dist")
+	}
+
 	e.Logger.Fatal(e.Start(":" + strconv.Itoa(*portPtr)))
 }
