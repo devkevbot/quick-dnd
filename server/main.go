@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-	portPtr := flag.Int("p", 3000, "Port Number")
 	configFile := flag.String("cfg", "config.yml", "Configuration YAML File")
 	flag.Parse()
 
@@ -37,5 +36,5 @@ func main() {
 		e.Static("/", "../client/dist")
 	}
 
-	e.Logger.Fatal(e.Start(":" + strconv.Itoa(*portPtr)))
+	e.Logger.Fatal(e.Start(":" + strconv.Itoa(cfg.HTTPServer.Port)))
 }

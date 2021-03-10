@@ -1,0 +1,11 @@
+database:
+  user: your_username
+  pass: your_password
+  dbname: your_database_name
+  host: localhost
+  port: 5432
+
+production: false
+
+http_server:
+  port: 3000
