@@ -19,6 +19,7 @@ type Config struct {
 		Host     string `yaml:"host"`
 		Port     string `yaml:"port"`
 	} `yaml:"database"`
+	IsProduction bool `yaml:"production"`
 }
 
 // CreatePostgreSQLDBConnString returns a formatted string used the
