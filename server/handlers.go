@@ -49,18 +49,31 @@ func (app *application) loginPlayer(c echo.Context) error {
 		return sendJSONResponse(c, http.StatusUnauthorized, "Player login", "Login failed", nil)
 	}
 
+	token, err := app.createJWT(username)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnauthorized, "Player login", "Login failed", nil)
+	}
+
 	return sendJSONResponse(c, http.StatusOK, "Player login", "Login successful",
 		struct {
 			Username string `json:"username"`
+			Token    string `json:"token"`
 		}{
 			username,
+			token,
 		},
 	)
 }
 
 func (app *application) retrievePlayer(c echo.Context) error {
-	username := c.Param("username")
-	player, err := app.players.Get(username)
+	requestedUsername := c.Param("username")
+	tokenUsername := getUsernameFromToken(c)
+	if tokenUsername != requestedUsername {
+		return sendJSONResponse(c, http.StatusUnauthorized, "Player retrieval", "Access denied", nil)
+	}
+
+	player, err := app.players.Get(requestedUsername)
 	if err != nil {
 		log.Error(err)
 		return sendJSONResponse(c, http.StatusNotFound, "Player retrieval", "Retrieval failed", nil)

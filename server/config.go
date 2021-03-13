@@ -23,6 +23,7 @@ type Config struct {
 	HTTPServer   struct {
 		Port int `yaml:"port"`
 	} `yaml:"http_server"`
+	JWTSigningKey string `yaml:"jwt_signing_key"`
 }
 
 // CreatePostgreSQLDBConnString returns a formatted string used the

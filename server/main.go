@@ -14,7 +14,8 @@ import (
 )
 
 type application struct {
-	players interface {
+	jwtSigningKey string
+	players       interface {
 		Insert(string, string, string, string) error
 		Authenticate(string, string) (string, error)
 		Get(string) (*models.Player, error)
@@ -45,7 +46,8 @@ func main() {
 	}
 
 	app := &application{
-		players: &postgresql.PlayerModel{DB: db},
+		jwtSigningKey: cfg.JWTSigningKey,
+		players:       &postgresql.PlayerModel{DB: db},
 	}
 
 	app.registerRoutes(e)
