@@ -1,6 +1,8 @@
 package main
 
 import (
+	"draco/models"
+	"draco/models/postgresql"
 	"flag"
 	"fmt"
 	"strconv"
@@ -10,6 +12,14 @@ import (
 
 	_ "github.com/lib/pq"
 )
+
+type application struct {
+	players interface {
+		Insert(string, string, string, string) error
+		Authenticate(string, string) (string, error)
+		Get(string) (*models.Player, error)
+	}
+}
 
 func main() {
 	configFile := flag.String("cfg", "config.yml", "Configuration YAML File")
@@ -26,8 +36,6 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS())
 
-	e.GET("/test", TestHandler)
-
 	if cfg.IsProduction {
 		// For production builds, we will want to serve the minified
 		// application bundle for frontend codes. This is created using
@@ -35,6 +43,12 @@ func main() {
 		// the project.
 		e.Static("/", "../client/dist")
 	}
+
+	app := &application{
+		players: &postgresql.PlayerModel{DB: db},
+	}
+
+	app.registerRoutes(e)
 
 	e.Logger.Fatal(e.Start(":" + strconv.Itoa(cfg.HTTPServer.Port)))
 }
