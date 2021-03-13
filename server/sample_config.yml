@@ -9,3 +9,5 @@ production: false
 
 http_server:
   port: 3000
+
+jwt_signing_key: your_key
