@@ -5,24 +5,77 @@ required for a player to authenticate.
 
 <template>
   <div class="login-form">
-    <v-card height="100" class="my-2 align-center">
-      <v-card-title>Campaign Milestones</v-card-title>
-      <v-btn @click.prevent="sendLoginRequest"></v-btn>
+    <v-card width="500" class="mx-auto my-10">
+      <v-card-title class="primary justify-center white--text">
+        QuickDND
+      </v-card-title>
+
+      <v-card-text class="mt-2 subtitle-1 text-center text--primary">
+        Log in to your account
+      </v-card-text>
+
+      <v-form @submit.prevent class="mx-4 pb-2">
+        <!-- Username field -->
+        <v-text-field
+          v-model.trim="credentials.username"
+          label="Enter username"
+          aria-autocomplete="off"
+          outlined
+          dense
+          type="text"
+        >
+        </v-text-field>
+
+        <!-- Password field -->
+        <v-text-field
+          v-model.trim="credentials.password"
+          label="Enter password"
+          aria-autocomplete="off"
+          outlined
+          dense
+          :type="displayPassword ? 'text' : 'password'"
+          :append-icon="displayPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="displayPassword = !displayPassword"
+        >
+        </v-text-field>
+
+        <v-btn
+          class="mb-4"
+          @click.prevent="sendLoginRequest"
+          color="primary"
+          block
+          type="submit"
+        >
+          Log in
+        </v-btn>
+
+        <FailedLoginAlert :errorText="errorAlertText" :show="showErrorAlert">
+        </FailedLoginAlert>
+      </v-form>
     </v-card>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex';
+import FailedLoginAlert from './FailedLoginAlert.vue';
 
 export default {
   name: 'LoginForm',
+  components: {
+    FailedLoginAlert,
+  },
   data() {
     return {
       credentials: {
         username: '',
         password: '',
       },
+
+      displayPassword: false,
+
+      errorAlertText: '',
+      showErrorAlert: false,
     };
   },
   methods: {
@@ -31,9 +84,13 @@ export default {
         username: this.credentials.username,
         password: this.credentials.password,
       })
-        .then(() => this.$router.push('/'))
-        .catch((err) => {
-          console.log(err.message);
+        .then(() => {
+          this.showErrorAlert = false;
+          this.$router.push('/');
+        })
+        .catch(() => {
+          this.errorAlertText = 'Login unsuccessful. Try again.';
+          this.showErrorAlert = true;
         });
     },
     ...mapActions({
