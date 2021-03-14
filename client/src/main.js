@@ -1,3 +1,5 @@
+import Axios from 'axios';
+import customAxios from '@/api/config';
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
@@ -7,6 +9,8 @@ import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@mdi/font/css/materialdesignicons.css';
 
 Vue.config.productionTip = false;
+Axios.defaults.baseURL = customAxios.defaults.baseURL;
+Vue.prototype.$http = Axios.create(customAxios);
 
 new Vue({
   router,

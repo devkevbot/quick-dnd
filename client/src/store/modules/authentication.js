@@ -1,4 +1,4 @@
-import sendRequest from '@/api/request';
+import axios from 'axios';
 
 const states = {
   token: '',
@@ -31,12 +31,12 @@ const actions = {
    * @param {String} password - The password used to log in.
    */
   async loginPlayer({ commit }, { username, password }) {
-    const requestURI = 'auth/login';
+    const requestURI = 'login';
     const data = { username, password };
     const method = 'POST';
-    const resp = await sendRequest(requestURI, data, method);
-
-    commit('onLoginSuccess', { token: resp.data.token, username: resp.data.username });
+    const resp = await axios({ url: requestURI, data, method });
+    axios.defaults.headers.common.Authorization = resp.data.data.token;
+    commit('onLoginSuccess', { token: resp.data.data.token, username: resp.data.data.username });
   },
 };
 
