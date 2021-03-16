@@ -20,7 +20,7 @@ const routes = [
     name: 'Login',
     component: () => import('../views/Login.vue'),
     meta: {
-      layout: 'Guest',
+      layout: 'Main',
     },
   },
   {
@@ -30,6 +30,14 @@ const routes = [
     meta: {
       layout: 'Main',
       protected: true,
+    },
+  },
+  {
+    path: '/characters',
+    name: 'Characters',
+    component: () => import('../views/Characters.vue'),
+    meta: {
+      layout: 'Main',
     },
   },
 ];
