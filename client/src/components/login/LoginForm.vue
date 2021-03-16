@@ -49,6 +49,21 @@ required for a player to authenticate.
           Log in
         </v-btn>
 
+        <v-card-text class="mb-n2 subtitle-1 text-center text--primary">
+          Need an account?
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer />
+
+          <v-btn class="mb-2" outlined to="/register">
+            <v-icon left>mdi-account</v-icon>
+            Register
+          </v-btn>
+
+          <v-spacer />
+        </v-card-actions>
+
         <FailedLoginAlert :errorText="errorAlertText" :show="showErrorAlert">
         </FailedLoginAlert>
       </v-form>
