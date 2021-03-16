@@ -20,7 +20,7 @@ const routes = [
     name: 'Login',
     component: () => import('../views/Login.vue'),
     meta: {
-      layout: 'Main',
+      layout: 'Guest',
     },
   },
   {
