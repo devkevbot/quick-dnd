@@ -8,7 +8,6 @@ CREATE DATABASE dnd_db;
 CREATE TABLE Player (
     username        text PRIMARY KEY,
     password        text NOT NULL,
-    email           text UNIQUE NOT NULL,
     name            text
 );
 
