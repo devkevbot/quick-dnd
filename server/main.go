@@ -16,7 +16,7 @@ import (
 type application struct {
 	jwtSigningKey string
 	players       interface {
-		Insert(string, string, string, string) error
+		Insert(string, string, string) error
 		Authenticate(string, string) (string, error)
 		Get(string) (*models.Player, error)
 	}
