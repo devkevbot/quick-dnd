@@ -15,25 +15,22 @@ type PlayerModel struct {
 	DB *sqlx.DB
 }
 
-func (m *PlayerModel) Insert(username, password, email, name string) error {
+func (m *PlayerModel) Insert(username, password, name string) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 
-	stmt := `INSERT INTO Player (username, password, email, name)
-	VALUES($1, $2, $3, $4)`
+	stmt := `INSERT INTO Player (username, password, name)
+	VALUES($1, $2, $3)`
 
-	_, err = m.DB.Exec(stmt, username, string(hashedPassword), email, name)
+	_, err = m.DB.Exec(stmt, username, string(hashedPassword), name)
 	if err != nil {
 		var postgresError *pq.Error
 		if errors.As(err, &postgresError) {
 			if postgresError.Code.Name() == "unique_violation" {
 				if strings.Contains(postgresError.Message, "player_pkey") {
 					return models.ErrDuplicateUsername
-				}
-				if strings.Contains(postgresError.Message, "email") {
-					return models.ErrDuplicateEmail
 				}
 			}
 		}
@@ -74,12 +71,11 @@ func (m *PlayerModel) Authenticate(username, password string) (string, error) {
 // username equal to `username`. Does not return the player's password.
 func (m *PlayerModel) Get(username string) (*models.Player, error) {
 	var storedUsername string
-	var storedEmail string
 	var storedName string
 
-	stmt := "SELECT username, email, name FROM Player WHERE username = $1"
+	stmt := "SELECT username, name FROM Player WHERE username = $1"
 	row := m.DB.QueryRow(stmt, username)
-	if err := row.Scan(&storedUsername, &storedEmail, &storedName); err != nil {
+	if err := row.Scan(&storedUsername, &storedName); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return &models.Player{}, models.ErrNoRecord
 		} else {
@@ -89,7 +85,6 @@ func (m *PlayerModel) Get(username string) (*models.Player, error) {
 
 	p := &models.Player{
 		Username: storedUsername,
-		Email:    storedEmail,
 		Name:     storedName,
 	}
 
