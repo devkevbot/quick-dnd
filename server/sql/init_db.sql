@@ -53,8 +53,8 @@ CREATE TYPE e_race AS ENUM (
 -- Letting a lot of attributes here be nullable as users may not wish to track some stuff
 CREATE TABLE Character (
     name                text PRIMARY KEY,
-    weight              int CHECK (weight > 0),
-    height              int CHECK (height > 0),
+    weight              int CHECK (weight > 0), -- Kilograms
+    height              int CHECK (height > 0), -- Centimetres
     alignment           e_alignment,
     sex                 text,
     background          text,
@@ -67,7 +67,7 @@ CREATE TABLE Character (
     charisma            int CHECK (charisma > 0),
     constitution        int CHECK (constitution > 0),
     hp_max              int CHECK (hp_max > 0),
-    ability_points      int CHECK (ability_points >= 0),
+    ability_points      int CHECK (ability_points >= 0), -- Unused ability points
     xp_points           int CHECK (xp_points >= 0),
     class               e_class,
     player_username     text NOT NULL,
@@ -111,8 +111,9 @@ CREATE TABLE Items (
     item_name           text,
     type                e_item_type,
     rarity              e_item_rarity,
-    weight              int CHECK (weight >= 0),
+    weight              int CHECK (weight >= 0), -- In pounds
     gold_value          int CHECK (gold_value >= 0),
+    quantity            int CHECK (quantity >= 0),
     description         text,
     PRIMARY KEY (character_name, item_name),
     FOREIGN KEY (character_name) REFERENCES Character(name)
@@ -140,8 +141,8 @@ CREATE TABLE Spells (
     school              e_school,
     concentration       bool,
     description         text,
-    casting_time        int CHECK (casting_time >= 0),
-    range               int CHECK (range >= 0),
+    casting_time        int CHECK (casting_time >= 0), -- # Actions
+    range               int CHECK (range >= 0), -- in ft
     duration            int CHECK (duration >= 0),
     PRIMARY KEY (character_name, spell_name),
     FOREIGN KEY (character_name) REFERENCES Character(name)
@@ -190,14 +191,14 @@ CREATE TABLE BelongsTo (
 -- Classes listed below
 
 CREATE TYPE e_barbarian_primal_path AS ENUM (
-    'Path of the Ancestral Guardian',
-    'Path of the Battlerager',
-    'Path of the Beast',
-    'Path of the Berserker',
-    'Path of the Storm Herald',
-    'Path of the Totem Warrior',
-    'Path of the Wild Magic',
-    'Path of the Zealot'
+    'Ancestral Guardian',
+    'Battlerager',
+    'Beast',
+    'Berserker',
+    'Storm Herald',
+    'Totem Warrior',
+    'Wild Magic',
+    'Zealot'
 );
 
 CREATE TABLE Barbarians (
@@ -210,13 +211,13 @@ CREATE TABLE Barbarians (
 );
 
 CREATE TYPE e_bard_college AS ENUM (
-    'College of Creation',
-    'College of Eloquence',
-    'College of Glamour',
-    'College of Lore',
-    'College of Swords',
-    'College of Valor',
-    'College of Whispers'
+    'Creation',
+    'Eloquence',
+    'Glamour',
+    'Lore',
+    'Swords',
+    'Valor',
+    'Whispers'
 );
 
 CREATE TABLE Bards (
@@ -229,20 +230,20 @@ CREATE TABLE Bards (
 );
 
 CREATE TYPE e_cleric_domain AS ENUM (
-    'Arcana Domain',
-    'Death Domain',
-    'Forge Domain',
-    'Grave Domain',
-    'Knowledge Domain',
-    'Life Domain',
-    'Light Domain',
-    'Nature Domain',
-    'Order Domain',
-    'Peace Domain',
-    'Tempest Domain',
-    'Trickery Domain',
-    'Twilight Domain',
-    'War Domain'
+    'Arcana',
+    'Death',
+    'Forge',
+    'Grave',
+    'Knowledge',
+    'Life',
+    'Light',
+    'Nature',
+    'Order',
+    'Peace',
+    'Tempest',
+    'Trickery',
+    'Twilight',
+    'War'
 );
 
 CREATE TABLE Clerics (
@@ -255,13 +256,13 @@ CREATE TABLE Clerics (
 );
 
 CREATE TYPE e_druid_circle AS ENUM (
-    'Circle of Dreams',
-    'Circle of the Land',
-    'Circle of the Moon',
-    'Circle of the Shepherd',
-    'Circle of the Spores',
-    'Circle of the Stars',
-    'Circle of Wildfire'
+    'Dreams',
+    'The Land',
+    'The Moon',
+    'The Shepherd',
+    'The Spores',
+    'The Stars',
+    'Wildfire'
 );
 
 CREATE TABLE Druids (
@@ -312,15 +313,15 @@ CREATE TABLE Fighters (
 );
 
 CREATE TYPE e_monk_tradition AS ENUM (
-    'Way of the Astral Self',
-    'Way of the Drunken Master',
-    'Way of the Four Elements',
-    'Way of the Kensei',
-    'Way of the Long Death',
-    'Way of the Mercy',
-    'Way of the Open Hand',
-    'Way of the Shadow',
-    'Way of the Sun Soul'
+    'Astral Self',
+    'Drunken Master',
+    'Four Elements',
+    'Kensei',
+    'Long Death',
+    'Mercy',
+    'Open Hand',
+    'Shadow',
+    'Sun Soul'
 );
 
 CREATE TABLE Monks (
@@ -333,14 +334,14 @@ CREATE TABLE Monks (
 );
 
 CREATE TYPE e_paladin_oath AS ENUM (
-    'Oath of the Ancients',
-    'Oath of Conquest',
-    'Oath of the Crown',
-    'Oath of Devotion',
-    'Oath of Glory',
-    'Oath of Redemption',
-    'Oath of Vengeance',
-    'Oath of the Watchers',
+    'The Ancients',
+    'Conquest',
+    'The Crown',
+    'Devotion',
+    'Glory',
+    'Redemption',
+    'Vengeance',
+    'The Watchers',
     'Oathbreaker'
 );
 
@@ -415,14 +416,14 @@ CREATE TABLE Sorcerers (
 );
 
 CREATE TYPE e_warlock_patron AS ENUM (
-    'The Archfey',
-    'The Celestial',
-    'The Fathomless',
-    'The Fiend',
-    'The Genie',
-    'The Great Old One',
-    'The Hexblade',
-    'The Undying'
+    'Archfey',
+    'Celestial',
+    'Fathomless',
+    'Fiend',
+    'Genie',
+    'Great Old One',
+    'Hexblade',
+    'Undying'
 );
 
 CREATE TABLE Warlocks (
@@ -435,19 +436,19 @@ CREATE TABLE Warlocks (
 );
 
 CREATE TYPE e_wizard_tradition AS ENUM (
-    'School of Abjuration',
+    'Abjuration',
     'Bladesinging',
     'Chronurgy',
-    'School of Conjuration',
-    'School of Divination',
-    'School of Enchantment',
-    'School of Evocation',
+    'Conjuration',
+    'Divination',
+    'Enchantment',
+    'Evocation',
     'Graviturgy',
-    'School of Illusion',
-    'School of Necromancy',
+    'Illusion',
+    'Necromancy',
     'Order of Scribes',
-    'School of Transmutation',
-    'School of War Magic'
+    'Transmutation',
+    'War Magic'
 );
 
 CREATE TABLE Wizards (
