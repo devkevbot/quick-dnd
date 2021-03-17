@@ -20,6 +20,7 @@ type Config struct {
 		Port     string `yaml:"port"`
 	} `yaml:"database"`
 	IsProduction bool `yaml:"production"`
+	IsTest       bool `yaml:"test_run"`
 	HTTPServer   struct {
 		Port int `yaml:"port"`
 	} `yaml:"http_server"`
