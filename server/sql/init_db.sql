@@ -1,14 +1,10 @@
--- Initialize DB
+-- Initialize DB schema
 -- Only needs to be run once per server
 
-CREATE DATABASE dnd_db;
-
-\connect dnd_db
-
 CREATE TABLE Player (
-    username        text PRIMARY KEY,
+    username        varchar(25) PRIMARY KEY,
     password        text NOT NULL,
-    name            text
+    name            varchar(50) NOT NULL
 );
 
 CREATE TYPE e_class AS ENUM (
@@ -23,7 +19,8 @@ CREATE TYPE e_class AS ENUM (
     'Rogue',
     'Sorcerer',
     'Warlock',
-    'Wizard'
+    'Wizard',
+    'None'
 );
 
 CREATE TYPE e_alignment AS ENUM (
@@ -50,37 +47,44 @@ CREATE TYPE e_race AS ENUM (
     'Tiefling'
 );
 
--- Letting a lot of attributes here be nullable as users may not wish to track some stuff
+CREATE TYPE e_sex AS ENUM (
+    'Male',
+    'Female',
+    'Other'
+);
+
 CREATE TABLE Character (
-    name                text PRIMARY KEY,
-    weight              int CHECK (weight > 0), -- Kilograms
-    height              int CHECK (height > 0), -- Centimetres
-    alignment           e_alignment,
-    sex                 text,
+    id                  serial PRIMARY KEY,
+    name                text NOT NULL,
+    weight              int NOT NULL CHECK (weight > 0 AND weight <= 1000), -- Kilograms
+    height              int NOT NULL CHECK (height > 0 AND height <= 1000), -- Centimetres
+    alignment           e_alignment NOT NULL,
+    sex                 e_sex NOT NULL,
     background          text,
-    race                e_race,
-    speed               int CHECK (speed > 0),
-    strength            int CHECK (strength > 0),
-    dexterity           int CHECK (dexterity > 0),
-    intelligence        int CHECK (intelligence > 0),
-    wisdom              int CHECK (wisdom > 0),
-    charisma            int CHECK (charisma > 0),
-    constitution        int CHECK (constitution > 0),
-    hp_max              int CHECK (hp_max > 0),
-    ability_points      int CHECK (ability_points >= 0), -- Unused ability points
-    xp_points           int CHECK (xp_points >= 0),
-    class               e_class,
+    race                e_race NOT NULL,
+    speed               int NOT NULL CHECK (speed > 0 AND speed <= 1280),
+    strength            int NOT NULL CHECK (strength > 0 AND strength <= 30),
+    dexterity           int NOT NULL CHECK (dexterity > 0 AND dexterity <= 30),
+    intelligence        int NOT NULL CHECK (intelligence > 0 AND intelligence <= 30),
+    wisdom              int NOT NULL CHECK (wisdom > 0 AND wisdom <= 30),
+    charisma            int NOT NULL CHECK (charisma > 0 AND charisma <= 30),
+    constitution        int NOT NULL CHECK (constitution > 0 AND constitution <= 30),
+    hp_max              int NOT NULL CHECK (hp_max > 0 AND hp_max <= 440),
+    ability_points      int NOT NULL CHECK (ability_points >= 0 AND ability_points <= 180), -- Unused ability points
+    xp_points           int NOT NULL CHECK (xp_points >= 0 AND xp_points <= 355000),
+    class               e_class NOT NULL,
     player_username     text NOT NULL,
+    UNIQUE (name, player_username), -- No player should have multiple characters of the same name
     FOREIGN KEY (player_username) REFERENCES Player(username)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
 CREATE TABLE CharacterAbilities (
-    character_name      text,
+    character_id        int,
     ability             text,
-    PRIMARY KEY (character_name, ability),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id, ability),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -107,16 +111,16 @@ CREATE TYPE e_item_rarity AS ENUM (
 );
 
 CREATE TABLE Items (
-    character_name      text,
+    character_id        int,
     item_name           text,
-    type                e_item_type,
-    rarity              e_item_rarity,
-    weight              int CHECK (weight >= 0), -- In pounds
-    gold_value          int CHECK (gold_value >= 0),
-    quantity            int CHECK (quantity >= 0),
+    type                e_item_type NOT NULL,
+    rarity              e_item_rarity NOT NULL,
+    weight              int CHECK (weight >= 0) NOT NULL, -- In pounds
+    gold_value          int CHECK (gold_value >= 0) NOT NULL,
+    quantity            int CHECK (quantity >= 0) NOT NULL,
     description         text,
-    PRIMARY KEY (character_name, item_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id, item_name),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -133,56 +137,55 @@ CREATE TYPE e_school AS ENUM (
 );
 
 CREATE TABLE Spells (
-    character_name      text,
+    character_id        int,
     spell_name          text,
-    level               int,
-        CHECK (level >= 0),
-        CHECK (level <= 9),
-    school              e_school,
-    concentration       bool,
+    level               int NOT NULL CHECK (level >= 0 AND level <= 9),
+    school              e_school NOT NULL,
+    concentration       bool NOT NULL,
     description         text,
-    casting_time        int CHECK (casting_time >= 0), -- # Actions
-    range               int CHECK (range >= 0), -- in ft
-    duration            int CHECK (duration >= 0),
-    PRIMARY KEY (character_name, spell_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    casting_time        int NOT NULL CHECK (casting_time >= 0), -- # Actions
+    range               int NOT NULL CHECK (range >= 0), -- in feett
+    duration            int NOT NULL CHECK (duration >= 0),
+    PRIMARY KEY (character_id, spell_name),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
 CREATE TABLE SpellComponents (
-    character_name      text,
+    character_id        int,
     spell_name          text,
     component           text,
-    PRIMARY KEY (character_name, spell_name, component),
-    FOREIGN KEY (character_name, spell_name) REFERENCES Spells(character_name, spell_name)
+    PRIMARY KEY (character_id, spell_name, component),
+    FOREIGN KEY (character_id, spell_name) REFERENCES Spells(character_id  , spell_name)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
 CREATE TABLE Campaign (
-    name                text PRIMARY KEY,
-    current_location    text,
+    id                  serial PRIMARY KEY,
+    name                text NOT NULL,
+    current_location    text NOT NULL,
     state               text
 );
 
 CREATE TABLE CampaignMilestones (
-    campaign_name       text,
+    campaign_id         int,
     milestone           text,
-    PRIMARY KEY (campaign_name, milestone),
-    FOREIGN KEY (campaign_name) REFERENCES Campaign(name)
+    PRIMARY KEY (campaign_id, milestone),
+    FOREIGN KEY (campaign_id) REFERENCES Campaign(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
 CREATE TABLE BelongsTo (
-    character_name      text,
-    campaign_name       text,
-    PRIMARY KEY (character_name, campaign_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    character_id        int,
+    campaign_id         int,
+    PRIMARY KEY (character_id, campaign_id),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (campaign_name) REFERENCES Campaign(name)
+    FOREIGN KEY (campaign_id) REFERENCES Campaign(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -202,10 +205,10 @@ CREATE TYPE e_barbarian_primal_path AS ENUM (
 );
 
 CREATE TABLE Barbarians (
-    character_name      text,
+    character_id        int,
     primal_path         e_barbarian_primal_path,
-    PRIMARY KEY (character_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -221,10 +224,10 @@ CREATE TYPE e_bard_college AS ENUM (
 );
 
 CREATE TABLE Bards (
-    character_name      text,
+    character_id        int,
     college             e_bard_college,
-    PRIMARY KEY (character_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -247,10 +250,10 @@ CREATE TYPE e_cleric_domain AS ENUM (
 );
 
 CREATE TABLE Clerics (
-    character_name      text,
+    character_id        int,
     divine_domain       e_cleric_domain,
-    PRIMARY KEY (character_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -266,10 +269,10 @@ CREATE TYPE e_druid_circle AS ENUM (
 );
 
 CREATE TABLE Druids (
-    character_name      text,
+    character_id        int,
     druid_circle        e_druid_circle,
-    PRIMARY KEY (character_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -303,11 +306,11 @@ CREATE TYPE e_fighting_style AS ENUM (
 );
 
 CREATE TABLE Fighters (
-    character_name      text,
+    character_id        int,
     archetype           e_fighter_archetype,
     fighting_style      e_fighting_style,
-    PRIMARY KEY (character_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -325,10 +328,10 @@ CREATE TYPE e_monk_tradition AS ENUM (
 );
 
 CREATE TABLE Monks (
-    character_name      text,
+    character_id        int,
     monastic_tradition  e_monk_tradition,
-    PRIMARY KEY (character_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -346,11 +349,11 @@ CREATE TYPE e_paladin_oath AS ENUM (
 );
 
 CREATE TABLE Paladins (
-    character_name      text,
+    character_id        int,
     oath                e_paladin_oath,
     fighting_style      e_fighting_style,
-    PRIMARY KEY (character_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -366,11 +369,11 @@ CREATE TYPE e_ranger_conclave AS ENUM (
 );
 
 CREATE TABLE Rangers (
-    character_name      text,
+    character_id        int,
     conclave            e_ranger_conclave,
     favoured_enemy      text,
-    PRIMARY KEY (character_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -388,10 +391,10 @@ CREATE TYPE e_rogue_archetype AS ENUM (
 );
 
 CREATE TABLE Rogues (
-    character_name      text,
+    character_id        int,
     archetype           e_rogue_archetype,
-    PRIMARY KEY (character_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -407,10 +410,10 @@ CREATE TYPE e_sorcerer_origin AS ENUM (
 );
 
 CREATE TABLE Sorcerers (
-    character_name      text,
+    character_id        int,
     sorcerous_origin    e_sorcerer_origin,
-    PRIMARY KEY (character_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -427,10 +430,10 @@ CREATE TYPE e_warlock_patron AS ENUM (
 );
 
 CREATE TABLE Warlocks (
-    character_name      text,
+    character_id        int,
     patron              e_warlock_patron,
-    PRIMARY KEY (character_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -452,10 +455,10 @@ CREATE TYPE e_wizard_tradition AS ENUM (
 );
 
 CREATE TABLE Wizards (
-    character_name      text,
+    character_id        int,
     arcane_tradition    e_wizard_tradition,
-    PRIMARY KEY (character_name),
-    FOREIGN KEY (character_name) REFERENCES Character(name)
+    PRIMARY KEY (character_id),
+    FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );

@@ -50,6 +50,10 @@ func main() {
 		players:       &postgresql.PlayerModel{DB: db},
 	}
 
+	if cfg.IsTest {
+		app.runTests(db)
+	}
+
 	app.registerRoutes(e)
 
 	e.Logger.Fatal(e.Start(":" + strconv.Itoa(cfg.HTTPServer.Port)))

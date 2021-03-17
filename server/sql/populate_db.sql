@@ -1,15 +1,11 @@
 -- Populate DB with some preset values for testing
 -- Since this is just used for testing, don't expect many of these numbers to make sense in a real game
 
-INSERT INTO Player VALUES
-('ae1', 'password1', 'Albert Einstein'),
-('mc1', 'password2', 'Marie Curie'),
-('alove', 'password3', 'Ada Lovelace'),
-('inew', 'password4', 'Isaac Newton'),
-('at1', 'password5', 'Alan Turing');
+-- This won't work if run directly, it must be run through the go test script (for proper password hashing)
 
 INSERT INTO Character VALUES
 (
+    DEFAULT,
     'Korgoth',
     135,
     215,
@@ -31,6 +27,7 @@ INSERT INTO Character VALUES
     'mc1'
 ),
 (
+    DEFAULT,
     'Vlad',
     60,
     170,
@@ -52,6 +49,7 @@ INSERT INTO Character VALUES
     'alove'
 ),
 (
+    DEFAULT,
     'Jane',
     50,
     160,
@@ -73,6 +71,7 @@ INSERT INTO Character VALUES
     'inew'
 ),
 (
+    DEFAULT,
     'Nilys',
     30,
     90,
@@ -94,40 +93,40 @@ INSERT INTO Character VALUES
     'at1'
 );
 
-INSERT INTO Barbarians VALUES ('Korgoth', 'Berserker');
-INSERT INTO Wizards VALUES ('Vlad', 'Evocation');
-INSERT INTO Fighters VALUES ('Jane', 'Battle Master', 'Great Weapon Fighting');
-INSERT INTO Rogues VALUES ('Nilys', 'Thief');
+INSERT INTO Barbarians VALUES (1, 'Berserker');
+INSERT INTO Wizards VALUES (2, 'Evocation');
+INSERT INTO Fighters VALUES (3, 'Battle Master', 'Great Weapon Fighting');
+INSERT INTO Rogues VALUES (4, 'Thief');
 
 INSERT INTO CharacterAbilities VALUES
 (
-    'Korgoth',
+    1,
     'Rage'
 ),
 (
-    'Jane',
+    3,
     'Second Wind'
 ),
 (
-    'Jane',
+    3,
     'Action Surge'
 ),
 (
-    'Nilys',
+    3,
     'Sneak Attack'
 ),
 (
-    'Nilys',
+    3,
     'Thieves'' Cant'
 ),
 (
-    'Nilys',
+    4,
     'Cunning Action'
 );
 
 INSERT INTO Items VALUES
 (
-    'Korgoth',
+    1,
     'Warhammer',
     'Weapon',
     'Common',
@@ -137,7 +136,7 @@ INSERT INTO Items VALUES
     'Martial Melee Weapon'
 ),
 (
-    'Korgoth',
+    1,
     'Chainmail',
     'Armor',
     'Common',
@@ -147,7 +146,7 @@ INSERT INTO Items VALUES
     'Heavy Armor'
 ),
 (
-    'Vlad',
+    2,
     'Wand',
     'Wand',
     'Common',
@@ -157,7 +156,7 @@ INSERT INTO Items VALUES
     'Arcane Focus'
 ),
 (
-    'Vlad',
+    2,
     'Pride Silk Outfit',
     'Armor',
     'Common',
@@ -167,7 +166,7 @@ INSERT INTO Items VALUES
     'Light Armor'
 ),
 (
-    'Vlad',
+    2,
     'Blight Ichor',
     'Potion',
     'Common',
@@ -177,7 +176,7 @@ INSERT INTO Items VALUES
     'Vulnerability to Psychic Damage for 1 hour'
 ),
 (
-    'Jane',
+    3,
     'Greatsword',
     'Weapon',
     'Common',
@@ -187,7 +186,7 @@ INSERT INTO Items VALUES
     'Martial Melee Weapon'
 ),
 (
-    'Jane',
+    3,
     'Breastplate',
     'Armor',
     'Common',
@@ -197,7 +196,7 @@ INSERT INTO Items VALUES
     'Medium Armor'
 ),
 (
-    'Nilys',
+    4,
     'Dagger',
     'Weapon',
     'Common',
@@ -207,7 +206,7 @@ INSERT INTO Items VALUES
     'Simple Melee Weapon'
 ),
 (
-    'Nilys',
+    4,
     'Leather',
     'Armor',
     'Common',
@@ -219,7 +218,7 @@ INSERT INTO Items VALUES
 
 INSERT INTO Spells VALUES
 (
-    'Vlad',
+    2,
     'Fire Bolt',
     0,
     'Evocation',
@@ -230,7 +229,7 @@ INSERT INTO Spells VALUES
     0
 ),
 (
-    'Vlad',
+    2,
     'Frostbite',
     0,
     'Evocation',
@@ -241,7 +240,7 @@ INSERT INTO Spells VALUES
     0
 ),
 (
-    'Vlad',
+    2,
     'Burning Hands',
     1,
     'Evocation',
@@ -254,92 +253,92 @@ INSERT INTO Spells VALUES
 
 INSERT INTO SpellComponents VALUES
 (
-    'Vlad',
+    2,
     'Fire Bolt',
     'Verbal'
 ),
 (
-    'Vlad',
+    2,
     'Fire Bolt',
     'Somatic'
 ),
 (
-    'Vlad',
+    2,
     'Frostbite',
     'Verbal'
 ),
 (
-    'Vlad',
+    2,
     'Frostbite',
     'Somatic'
 ),
 (
-    'Vlad',
+    2,
     'Burning Hands',
     'Verbal'
 ),
 (
-    'Vlad',
+    2,
     'Burning Hands',
     'Somatic'
 );
 
 INSERT INTO Campaign VALUES
 (
-    'Campaign 1',
+    1,
     'Baldur''s Gate',
     'Doing nothing of substance'
 ),
 (
-    'Campaign 2',
+    2,
     'Icewind Dale',
     'Fighting a troll'
 );
 
 INSERT INTO CampaignMilestones VALUES
 (
-    'Campaign 1',
+    1,
     'Started your wonderful journey'
 ),
 (
-    'Campaign 1',
+    1,
     'Defeated the big bad Dragon'
 ),
 (
-    'Campaign 2',
+    2,
     'Started your wonderful journey'
 );
 
 INSERT INTO BelongsTo VALUES
 (
-    'Korgoth',
-    'Campaign 1'
+    1,
+    1
 ),
 (
-    'Vlad',
-    'Campaign 1'
+    2,
+    1
 ),
 (
-    'Jane',
-    'Campaign 1'
+    3,
+    1
 ),
 (
-    'Nilys',
-    'Campaign 1'
+    4,
+    1
 ),
 (
-    'Korgoth',
-    'Campaign 2'
+    1,
+    2
 ),
 (
-    'Vlad',
-    'Campaign 2'
+    2,
+    2
 ),
 (
-    'Jane',
-    'Campaign 2'
+    3,
+    2
 ),
 (
-    'Nilys',
-    'Campaign 2'
+    4,
+    2
 );
