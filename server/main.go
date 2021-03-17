@@ -26,8 +26,8 @@ type application struct {
 			string, string, string, string,
 			int, int, int, int, int, int, int, int, int, int,
 			string, string,
-		) error
-		Get(string) (*models.Character, error)
+		) (int, error)
+		Get(int) (*models.Character, error)
 	}
 }
 

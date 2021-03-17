@@ -10,7 +10,7 @@ func (app *application) registerRoutes(e *echo.Echo) {
 	e.POST("/register", app.createPlayer)
 
 	// Unprotected character endpoints
-	e.GET("/character/:name", app.retrieveCharacter)
+	e.GET("/character/:id", app.retrieveCharacter)
 
 	// All routes which require JWT-based authentication
 	r := e.Group("/auth")

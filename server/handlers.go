@@ -1,7 +1,11 @@
 package main
 
 import (
+	"draco/models"
+	"errors"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
@@ -110,8 +114,11 @@ func (app *application) createCharacter(c echo.Context) error {
 	}
 
 	creatorUsername := getUsernameFromToken(c)
+	if strings.TrimSpace(creatorUsername) == "" {
+		return sendJSONResponse(c, http.StatusUnauthorized, "Character creation", "Creation failed", nil)
+	}
 
-	err := app.characters.Insert(
+	id, err := app.characters.Insert(
 		req.Name, req.Weight, req.Height,
 		req.Alignment, req.Sex, req.Background,
 		req.Race, req.Speed, req.Strength,
@@ -125,15 +132,30 @@ func (app *application) createCharacter(c echo.Context) error {
 		return sendJSONResponse(c, http.StatusInternalServerError, "Character creation", "Creation failed", nil)
 	}
 
-	return sendJSONResponse(c, http.StatusCreated, "Character creation", "Creation successful", nil)
+	return sendJSONResponse(c, http.StatusCreated, "Character creation", "Creation successful",
+		struct {
+			ResourceURI string `json:"resource_uri"`
+		}{
+			"/characters/" + strconv.Itoa(id),
+		},
+	)
 }
 
 func (app *application) retrieveCharacter(c echo.Context) error {
-	requestedName := c.Param("name")
-	character, err := app.characters.Get(requestedName)
+	requestCharID := c.Param("id")
+	charID, err := strconv.Atoi(requestCharID)
 	if err != nil {
 		log.Error(err)
-		return sendJSONResponse(c, http.StatusNotFound, "Character retrieval", "Retrieval failed", nil)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Character retrieval", "Retrieval failed", nil)
+	}
+
+	character, err := app.characters.Get(charID)
+	if err != nil {
+		log.Error(err)
+		if errors.Is(err, models.ErrNoRecord) {
+			return sendJSONResponse(c, http.StatusNotFound, "Character retrieval", "Retrieval failed", nil)
+		}
+		return sendJSONResponse(c, http.StatusInternalServerError, "Character retrieval", "Retrieval failed", nil)
 	}
 
 	return sendJSONResponse(c, http.StatusOK, "Character retrieval", "Retrieval successful", character)

@@ -5,7 +5,7 @@ import "errors"
 var (
 	ErrNoRecord           = errors.New("models: no record was found")
 	ErrDuplicateUsername  = errors.New("models: duplicate player username")
-	ErrDuplicateCharacter = errors.New("models: duplicate character name")
+	ErrDuplicateCharacter = errors.New("models: player cannot have two characters with the same name")
 )
 
 // Player is the code representation of the "Player" relation in the
@@ -19,6 +19,7 @@ type Player struct {
 // Character is the code representation of the "Character" relation in
 // the database schema.
 type Character struct {
+	ID             int    `json:"id" db:"id"`
 	Name           string `json:"name" db:"name"`
 	Weight         int    `json:"weight" db:"weight"`
 	Height         int    `json:"height" db:"height"`
