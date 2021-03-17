@@ -10,7 +10,6 @@ import (
 type playerCreationRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
-	Email    string `json:"email"`
 	Name     string `json:"name"`
 }
 
@@ -21,7 +20,7 @@ func (app *application) createPlayer(c echo.Context) error {
 		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Player creation", "Could not process request", nil)
 	}
 
-	if err := app.players.Insert(req.Username, req.Password, req.Email, req.Name); err != nil {
+	if err := app.players.Insert(req.Username, req.Password, req.Name); err != nil {
 		log.Error(err)
 		return sendJSONResponse(c, http.StatusInternalServerError, "Player creation", "Creation failed", nil)
 	}
