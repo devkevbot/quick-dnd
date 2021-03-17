@@ -6,8 +6,8 @@ activities from.
 
 <template>
   <div class="home">
-  <h1>Home</h1>
-  <v-btn>Button</v-btn>
+    <h1>Home</h1>
+    <v-btn>Button</v-btn>
   </div>
 </template>
 

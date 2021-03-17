@@ -128,8 +128,8 @@ Currently a work in progress.
               {{row.attribute}}
             </v-card-title>
               <v-card-actions>
-                  <v-text-field label="Temp" solo disabled>
-                  </v-text-field>
+                <v-text-field label="Temp" solo disabled>
+                </v-text-field>
               </v-card-actions>
             </v-card>
         </v-col>
@@ -166,7 +166,7 @@ Currently a work in progress.
                 <v-card-actions>
                   <v-slider v-model="statSliderValue" :max="100" class="align-center">
                     <template v-slot:append>
-                      <v-text-field v-model="statSliderValue" class="mt-0 pt-0" type="number">
+                      <v-text-field v-model="statSliderValue" class="mt-0 pt-0" type="text">
                       </v-text-field>
                     </template>
                   </v-slider>
@@ -184,8 +184,8 @@ Currently a work in progress.
               {{row.modifier}}
             </v-card-title>
               <v-card-actions>
-                  <v-text-field label="Temp" solo disabled>
-                  </v-text-field>
+                <v-text-field label="Temp" solo disabled>
+                </v-text-field>
               </v-card-actions>
             </v-card>
         </v-col>
