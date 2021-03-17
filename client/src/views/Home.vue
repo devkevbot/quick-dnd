@@ -5,7 +5,10 @@ activities from.
 -->
 
 <template>
-  <div class="home"></div>
+  <div class="home">
+    <h1>Home</h1>
+    <v-btn>Button</v-btn>
+  </div>
 </template>
 
 <script>

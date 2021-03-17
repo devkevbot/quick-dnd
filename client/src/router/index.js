@@ -40,6 +40,14 @@ const routes = [
       protected: true,
     },
   },
+  {
+    path: '/characters',
+    name: 'Characters',
+    component: () => import('../views/Characters.vue'),
+    meta: {
+      layout: 'Main',
+    },
+  },
 ];
 
 const router = new VueRouter({
