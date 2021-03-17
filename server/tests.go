@@ -1,15 +1,15 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
-	"os"
 
 	"github.com/jmoiron/sqlx"
 )
 
 func (app *application) initTestDB(db *sqlx.DB) error {
 
-	data, err := os.ReadFile("sql/init_db.sql")
+	data, err := ioutil.ReadFile("sql/init_db.sql")
 	if err != nil {
 		return err
 	}
@@ -25,7 +25,7 @@ func (app *application) initTestDB(db *sqlx.DB) error {
 	app.players.Insert("inew", "password4", "Isaac Newton")
 	app.players.Insert("at1", "password5", "Alan Turing")
 
-	data, err = os.ReadFile("sql/populate_db.sql")
+	data, err = ioutil.ReadFile("sql/populate_db.sql")
 	if err != nil {
 		return err
 	}
