@@ -22,29 +22,29 @@ Currently a work in progress.
                   <v-select :items="items" filled label="Filled style">
                   </v-select>
                 </v-card-actions>
-              </v-card>
+            </v-card>
           </v-col>
           <v-col cols="12" lg="3">
             <v-card flat class="text-xs-center" elevation="8" outlined tile>
               <v-card-title>
                 {{statSelect[1].attribute}}
               </v-card-title>
-                <v-card-actions>
-                  <v-select :items="items" filled label="Filled style">
-                  </v-select>
-                </v-card-actions>
-              </v-card>
+              <v-card-actions>
+                <v-select :items="items" filled label="Filled style">
+                </v-select>
+              </v-card-actions>
+            </v-card>
           </v-col>
           <v-col cols="12" lg="3">
             <v-card flat class="text-xs-center" elevation="8" outlined tile>
               <v-card-title>
                 {{statUniqueElements[0].attribute}}
               </v-card-title>
-                <v-card-actions>
-                  <v-text-field label="Temp" solo >
-                  </v-text-field>
-                </v-card-actions>
-              </v-card>
+              <v-card-actions>
+                <v-text-field label="Temp" solo >
+                </v-text-field>
+              </v-card-actions>
+            </v-card>
           </v-col>
       </v-row>
   </v-container>
@@ -56,66 +56,66 @@ Currently a work in progress.
               <v-card-title>
                 {{statSelect[2].attribute}}
               </v-card-title>
-                <v-card-actions>
-                  <v-select :items="items" filled label="Filled style">
-                  </v-select>
-                </v-card-actions>
-              </v-card>
+              <v-card-actions>
+                <v-select :items="items" filled label="Filled style">
+                </v-select>
+              </v-card-actions>
+            </v-card>
           </v-col>
           <v-col cols="12" lg="2">
             <v-card flat class="text-xs-center" elevation="8" outlined tile>
               <v-card-title>
                 {{statUniqueElements[1].attribute}}
               </v-card-title>
-                <v-card-actions>
-                  <v-text-field label="Level 24" solo disabled>
-                  </v-text-field>
-                </v-card-actions>
-              </v-card>
+              <v-card-actions>
+                <v-text-field label="Level 24" solo disabled>
+                </v-text-field>
+              </v-card-actions>
+            </v-card>
           </v-col>
           <v-col cols="12" lg="1">
             <v-card flat class="text-xs-center" elevation="8" outlined tile>
               <v-card-title>
                 {{statUniqueElements[3].attribute}}
               </v-card-title>
-                <v-card-actions>
-                  <v-text-field label="5000" filled>
-                  </v-text-field>
-                </v-card-actions>
-              </v-card>
+              <v-card-actions>
+                <v-text-field label="5000" filled>
+                </v-text-field>
+              </v-card-actions>
+            </v-card>
           </v-col>
           <v-col cols="12" lg="2">
             <v-card flat class="text-xs-center" elevation="8" outlined tile >
               <v-card-title>
                 {{statSelect[3].attribute}}
               </v-card-title>
-                <v-card-actions>
-                  <v-select :items="items" filled label="Filled style">
-                  </v-select>
-                </v-card-actions>
-              </v-card>
+              <v-card-actions>
+                <v-select :items="items" filled label="Filled style">
+                </v-select>
+              </v-card-actions>
+            </v-card>
           </v-col>
           <v-col cols="12" lg="2">
             <v-card flat class="text-xs-center" elevation="8" outlined tile>
               <v-card-title>
                 {{statSelect[4].attribute}}
               </v-card-title>
-                <v-card-actions>
-                  <v-select :items="items" filled label="Filled style">
-                  </v-select>
-                </v-card-actions>
-              </v-card>
+              <v-card-actions>
+                <v-select :items="items" filled label="Filled style">
+                </v-select>
+              </v-card-actions>
+            </v-card>
           </v-col>
           <v-col cols="12" lg="2">
             <v-card flat class="text-xs-center" elevation="8" outlined tile>
               <v-card-title>
                 {{statSelect[5].attribute}}
               </v-card-title>
-                <v-card-actions>
-                  <v-select :items="items" filled label="Filled style">
-                  </v-select>
-                </v-card-actions>
-              </v-card>
+              <v-card-actions>
+                <v-select :items="items" filled label="Filled style">
+                </v-select>
+              </v-card-actions>
+            </v-card>
           </v-col>
       </v-row>
   </v-container>
@@ -127,11 +127,11 @@ Currently a work in progress.
             <v-card-title>
               {{row.attribute}}
             </v-card-title>
-              <v-card-actions>
-                <v-text-field label="Temp" solo disabled>
-                </v-text-field>
-              </v-card-actions>
-            </v-card>
+            <v-card-actions>
+              <v-text-field label="Temp" solo disabled>
+              </v-text-field>
+            </v-card-actions>
+          </v-card>
         </v-col>
     </v-row>
   </v-container>
@@ -143,15 +143,15 @@ Currently a work in progress.
               <v-card-title>
                 {{statUniqueElements[2].attribute}}
               </v-card-title>
-                <v-card-actions>
-                  <v-textarea
-                    filled
-                    name="input-7-4"
-                    label="Filled textarea"
-                    value="Filled text."
-                  ></v-textarea>
-                </v-card-actions>
-              </v-card>
+              <v-card-actions>
+                <v-textarea
+                  filled
+                  name="input-7-4"
+                  label="Filled textarea"
+                  value="Filled text."
+                ></v-textarea>
+              </v-card-actions>
+            </v-card>
           </v-col>
       </v-row>
   </v-container>
@@ -163,15 +163,15 @@ Currently a work in progress.
               <v-card-title>
                 {{row.attribute}}
               </v-card-title>
-                <v-card-actions>
-                  <v-slider v-model="statSliderValue" :max="100" class="align-center">
-                    <template v-slot:append>
-                      <v-text-field v-model="statSliderValue" class="mt-0 pt-0" type="text">
-                      </v-text-field>
-                    </template>
-                  </v-slider>
-                </v-card-actions>
-              </v-card>
+              <v-card-actions>
+                <v-slider v-model="statSliderValue" :max="100" class="align-center">
+                  <template v-slot:append>
+                    <v-text-field v-model="statSliderValue" class="mt-0 pt-0" type="text">
+                    </v-text-field>
+                  </template>
+                </v-slider>
+              </v-card-actions>
+            </v-card>
           </v-col>
       </v-row>
   </v-container>
@@ -183,11 +183,11 @@ Currently a work in progress.
             <v-card-title>
               {{row.modifier}}
             </v-card-title>
-              <v-card-actions>
-                <v-text-field label="Temp" solo disabled>
-                </v-text-field>
-              </v-card-actions>
-            </v-card>
+            <v-card-actions>
+              <v-text-field label="Temp" solo disabled>
+              </v-text-field>
+            </v-card-actions>
+          </v-card>
         </v-col>
     </v-row>
   </v-container>
