@@ -20,6 +20,15 @@ type application struct {
 		Authenticate(string, string) (string, error)
 		Get(string) (*models.Player, error)
 	}
+	characters interface {
+		Insert(
+			string, int, int,
+			string, string, string, string,
+			int, int, int, int, int, int, int, int, int, int,
+			string, string,
+		) error
+		Get(string) (*models.Character, error)
+	}
 }
 
 func main() {
@@ -48,6 +57,7 @@ func main() {
 	app := &application{
 		jwtSigningKey: cfg.JWTSigningKey,
 		players:       &postgresql.PlayerModel{DB: db},
+		characters:    &postgresql.CharacterModel{DB: db},
 	}
 
 	if cfg.IsTest {
