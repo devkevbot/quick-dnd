@@ -166,7 +166,11 @@ CREATE TABLE Campaign (
     id                  serial PRIMARY KEY,
     name                text NOT NULL,
     current_location    text NOT NULL,
-    state               text
+    state               text,
+    dungeon_master      varchar(25),
+    FOREIGN KEY (dungeon_master) REFERENCES Player(username)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE CampaignMilestones (

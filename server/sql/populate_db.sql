@@ -286,13 +286,17 @@ INSERT INTO SpellComponents VALUES
 INSERT INTO Campaign VALUES
 (
     1,
+    'Campaign 1',
     'Baldur''s Gate',
-    'Doing nothing of substance'
+    'Doing nothing of substance',
+    'ae1'
 ),
 (
     2,
+    'Campaign 2',
     'Icewind Dale',
-    'Fighting a troll'
+    'Fighting a troll',
+    'ae1'
 );
 
 INSERT INTO CampaignMilestones VALUES
