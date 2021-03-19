@@ -1,12 +1,6 @@
 -- Populate DB with some preset values for testing
 -- Since this is just used for testing, don't expect many of these numbers to make sense in a real game
 
-INSERT INTO Player VALUES
-('ae1', 'password1', 'Albert Einstein'),
-('mc1', 'password2', 'Marie Curie'),
-('alove', 'password3', 'Ada Lovelace'),
-('inew', 'password4', 'Isaac Newton'),
-('at1', 'password5', 'Alan Turing');
 
 
 INSERT INTO Character VALUES
