@@ -1624,6 +1624,31 @@ INSERT INTO SpellComponents VALUES
     2,
     'Burning Hands',
     'Somatic'
+),
+(
+    2,
+    'Shield',
+    'Verbal'
+),
+(
+    2,
+    'Shield',
+    'Somatic'
+),
+(
+    2,
+    'False Life',
+    'Verbal'
+),
+(
+    2,
+    'False Life',
+    'Somantic'
+),
+(
+    2,
+    'False Life',
+    'Material'
 );
 
 INSERT INTO Campaign VALUES
@@ -1675,7 +1700,7 @@ INSERT INTO CampaignMilestones VALUES
 (
     2,
     'Started your wonderful journey'
-)
+),
 (
     4,
     'Started your wonderful journey'
