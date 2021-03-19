@@ -1643,7 +1643,7 @@ INSERT INTO SpellComponents VALUES
 (
     2,
     'False Life',
-    'Somantic'
+    'Somatic'
 ),
 (
     2,
