@@ -1,7 +1,13 @@
 -- Populate DB with some preset values for testing
 -- Since this is just used for testing, don't expect many of these numbers to make sense in a real game
 
--- This won't work if run directly, it must be run through the go test script (for proper password hashing)
+INSERT INTO Player VALUES
+('ae1', 'password1', 'Albert Einstein'),
+('mc1', 'password2', 'Marie Curie'),
+('alove', 'password3', 'Ada Lovelace'),
+('inew', 'password4', 'Isaac Newton'),
+('at1', 'password5', 'Alan Turing');
+
 
 INSERT INTO Character VALUES
 (
@@ -252,7 +258,7 @@ INSERT INTO Character VALUES
     180,
     180,
     'Lawful Evil',
-    'Human',
+    'Male',
     'Wants to be sultan',
     'Human',
     30,
@@ -519,7 +525,7 @@ INSERT INTO Character VALUES
     180,
     180,
     'Lawful Evil',
-    'Human',
+    'Male',
     'Wants to be sultan',
     'Human',
     30,
@@ -785,7 +791,7 @@ INSERT INTO Character VALUES
     180,
     180,
     'Lawful Evil',
-    'Human',
+    'Male',
     'Wants to be sultan',
     'Human',
     30,
@@ -1051,7 +1057,7 @@ INSERT INTO Character VALUES
     180,
     180,
     'Lawful Evil',
-    'Human',
+    'Male',
     'Wants to be sultan',
     'Human',
     30,
@@ -1242,7 +1248,7 @@ INSERT INTO Character VALUES
     7,
     0,
     400,
-    'Druid',
+   'Druid',
     'alove'
 ),
 (
@@ -1317,7 +1323,7 @@ INSERT INTO Character VALUES
     180,
     180,
     'Lawful Evil',
-    'Human',
+    'Male',
     'Wants to be sultan',
     'Human',
     30,
@@ -1331,8 +1337,7 @@ INSERT INTO Character VALUES
     0,
     400,
     'Warlock',
-    'at1'
-);
+    'at1');
 
 INSERT INTO Barbarians VALUES 
 (1, 'Berserker'),
@@ -1405,7 +1410,7 @@ INSERT INTO Rangers VALUES
 (58, 'Fey Wanderer', 'Humanoids');
 
 
-INSERT INTO Sorcerer VALUES 
+INSERT INTO Sorcerers VALUES 
 (11, 'Draconic Bloodline'),
 (23, 'Storm'),
 (35, 'Shadow'),
