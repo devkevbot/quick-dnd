@@ -1389,7 +1389,7 @@ INSERT INTO Clerics VALUES
 (55, 'Nature');
 
 INSERT INTO Druids VALUES 
-(8, 'Spores'),
+(8, 'The Spores'),
 (20, 'The Stars'),
 (32, 'Wildfire'),
 (44, 'The Land'),
@@ -1399,7 +1399,7 @@ INSERT INTO Paladins VALUES
 (9, 'Redemption', 'Defense'),
 (21, 'Conquest', 'Defense'),
 (33, 'The Watchers', 'Great Weapon Fighting'),
-(45, 'The Ancients', 'Dueling'),
+(45, 'The Ancients', 'Unarmed Fighting'),
 (57, 'Glory', 'Protection');
 
 INSERT INTO Rangers VALUES 
