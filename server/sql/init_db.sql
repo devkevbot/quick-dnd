@@ -298,7 +298,7 @@ CREATE TYPE e_fighting_style AS ENUM (
     'Archery',
     'Blind Fighting',
     'Defense',
-    'Druidic Warrior'
+    'Druidic Warrior',
     'Dueling',
     'Great Weapon Fighting',
     'Interception',
