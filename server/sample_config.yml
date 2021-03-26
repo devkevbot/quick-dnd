@@ -6,7 +6,7 @@ database:
   port: 5432
 
 production: false
-test_run: false
+test_run: true
 
 http_server:
   port: 3000
