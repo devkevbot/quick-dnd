@@ -273,25 +273,68 @@ export default {
       return [
         { modifier: 'Initiative', value: 'TEMP' },
         { modifier: 'Number of Dies', value: 'TEMP' },
-        { modifier: 'Strength', value: 'TEMP' },
-        { modifier: 'Constitution', value: 'TEMP' },
-        { modifier: 'Wisdom', value: 'TEMP' },
+        { modifier: 'Strength', value: Math.floor((this.characterData.strength - 10) / 2) },
+        { modifier: 'Constitution', value: Math.floor((this.characterData.constitution - 10) / 2) },
+        { modifier: 'Wisdom', value: Math.floor((this.characterData.wisdom - 10) / 2) },
         { modifier: 'Hit Points', value: 'TEMP' },
-        { modifier: 'Dexterity', value: 'TEMP' },
+        { modifier: 'Dexterity', value: Math.floor((this.characterData.dexterity - 10) / 2) },
         { modifier: 'Ability Points', value: 'TEMP' },
-        { modifier: 'Charisma', value: 'TEMP' },
-        { modifier: 'Intellect', value: 'TEMP' },
-        { modifier: 'Proficency', value: 'TEMP' },
-        { modifier: 'Speed', value: 'TEMP' },
+        { modifier: 'Charisma', value: Math.floor((this.characterData.charisma - 10) / 2) },
+        { modifier: 'Intellect', value: Math.floor((this.characterData.intelligence - 10) / 2) },
+        { modifier: 'Proficency', value: (Math.ceil((this.level) / 4) + 1) },
+        { modifier: 'Speed', value: this.characterData.speed },
       ];
     },
     statUniqueElements() {
       return [
         { attribute: 'Location', value: 'TEMP' },
-        { attribute: 'Level', value: 'TEMP' },
+        { attribute: 'Level', value: this.level },
         { attribute: 'Character Background', value: this.characterData.background },
         { attribute: 'XP', value: this.characterData.xp_points },
       ];
+    },
+    level() {
+      let tempLevel = 1;
+      if (this.characterData.xp_points < 300) {
+        tempLevel = 1;
+      } else if (this.characterData.xp_points < 900) {
+        tempLevel = 2;
+      } else if (this.characterData.xp_points < 2700) {
+        tempLevel = 3;
+      } else if (this.characterData.xp_points < 6500) {
+        tempLevel = 4;
+      } else if (this.characterData.xp_points < 14000) {
+        tempLevel = 5;
+      } else if (this.characterData.xp_points < 23000) {
+        tempLevel = 6;
+      } else if (this.characterData.xp_points < 34000) {
+        tempLevel = 7;
+      } else if (this.characterData.xp_points < 48000) {
+        tempLevel = 8;
+      } else if (this.characterData.xp_points < 64000) {
+        tempLevel = 9;
+      } else if (this.characterData.xp_points < 85000) {
+        tempLevel = 10;
+      } else if (this.characterData.xp_points < 100000) {
+        tempLevel = 11;
+      } else if (this.characterData.xp_points < 120000) {
+        tempLevel = 12;
+      } else if (this.characterData.xp_points < 140000) {
+        tempLevel = 13;
+      } else if (this.characterData.xp_points < 165000) {
+        tempLevel = 14;
+      } else if (this.characterData.xp_points < 195000) {
+        tempLevel = 15;
+      } else if (this.characterData.xp_points < 225000) {
+        tempLevel = 16;
+      } else if (this.characterData.xp_points < 265000) {
+        tempLevel = 17;
+      } else if (this.characterData.xp_points < 305000) {
+        tempLevel = 18;
+      } else if (this.characterData.xp_points < 355000) {
+        tempLevel = 19;
+      } else { tempLevel = 20; }
+      return tempLevel;
     },
   },
   methods: {
