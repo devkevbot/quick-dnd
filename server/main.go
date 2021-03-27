@@ -22,10 +22,11 @@ type application struct {
 	}
 	characters interface {
 		Insert(
-			string, int, int,
-			string, string, string, string,
-			int, int, int, int, int, int, int, int, int, int,
-			string, string,
+			name string, weight, height int,
+			alignment models.AlignmentType, sex models.SexType, background string, race models.RaceType,
+			speed, strength, dexterity, intelligence, wisdom, charisma, constitution,
+			hpMax, abilityPoints, xpPoints int,
+			class models.ClassType, playerUsername string,
 		) (int, error)
 		Get(int) (*models.Character, error)
 	}

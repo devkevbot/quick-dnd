@@ -86,24 +86,24 @@ func (app *application) retrievePlayer(c echo.Context) error {
 }
 
 type characterCreationRequest struct {
-	Name          string `json:"name"`
-	Weight        int    `json:"weight"`
-	Height        int    `json:"height"`
-	Alignment     string `json:"alignment"`
-	Sex           string `json:"sex"`
-	Background    string `json:"background"`
-	Race          string `json:"race"`
-	Speed         int    `json:"speed"`
-	Strength      int    `json:"strength"`
-	Dexterity     int    `json:"dexterity"`
-	Intelligence  int    `json:"intelligence"`
-	Wisdom        int    `json:"wisdom"`
-	Charisma      int    `json:"charisma" `
-	Constitution  int    `json:"constitution"`
-	HPMax         int    `json:"hp_max"`
-	AbilityPoints int    `json:"ability_points"`
-	XPPoints      int    `json:"xp_points"`
-	Class         string `json:"class"`
+	Name          string               `json:"name"`
+	Weight        int                  `json:"weight"`
+	Height        int                  `json:"height"`
+	Alignment     models.AlignmentType `json:"alignment"`
+	Sex           models.SexType       `json:"sex"`
+	Background    string               `json:"background"`
+	Race          models.RaceType      `json:"race"`
+	Speed         int                  `json:"speed"`
+	Strength      int                  `json:"strength"`
+	Dexterity     int                  `json:"dexterity"`
+	Intelligence  int                  `json:"intelligence"`
+	Wisdom        int                  `json:"wisdom"`
+	Charisma      int                  `json:"charisma" `
+	Constitution  int                  `json:"constitution"`
+	HPMax         int                  `json:"hp_max"`
+	AbilityPoints int                  `json:"ability_points"`
+	XPPoints      int                  `json:"xp_points"`
+	Class         models.ClassType     `json:"class"`
 }
 
 func (app *application) createCharacter(c echo.Context) error {

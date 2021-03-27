@@ -16,10 +16,10 @@ type CharacterModel struct {
 
 func (m *CharacterModel) Insert(
 	name string, weight, height int,
-	alignment, sex, background, race string,
+	alignment models.AlignmentType, sex models.SexType, background string, race models.RaceType,
 	speed, strength, dexterity, intelligence, wisdom, charisma, constitution,
 	hpMax, abilityPoints, xpPoints int,
-	class, playerUsername string,
+	class models.ClassType, playerUsername string,
 ) (int, error) {
 	stmt := `INSERT INTO Character (name, weight, height,
 		alignment, sex, background, race,
