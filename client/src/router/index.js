@@ -41,9 +41,19 @@ const routes = [
     },
   },
   {
+    /* TODO: make protected route */
     path: '/characters',
     name: 'Characters',
     component: () => import('../views/Characters.vue'),
+    meta: {
+      layout: 'Main',
+    },
+  },
+  {
+    /* TODO: make protected route */
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: () => import('../views/Dashboard.vue'),
     meta: {
       layout: 'Main',
     },
