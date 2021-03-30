@@ -14,13 +14,7 @@ type CharacterModel struct {
 	DB *sqlx.DB
 }
 
-func (m *CharacterModel) Insert(
-	name string, weight, height int,
-	alignment models.AlignmentType, sex models.SexType, background string, race models.RaceType,
-	speed, strength, dexterity, intelligence, wisdom, charisma, constitution,
-	hpMax, abilityPoints, xpPoints int,
-	class models.ClassType, playerUsername string,
-) (int, error) {
+func (m *CharacterModel) Insert(c models.Character) (int, error) {
 	stmt := `INSERT INTO Character (name, weight, height,
 		alignment, sex, background, race,
 		speed, strength, dexterity, intelligence, wisdom, charisma, constitution,
@@ -31,11 +25,11 @@ func (m *CharacterModel) Insert(
 
 	var createdCharacterID int
 	err := m.DB.QueryRowx(
-		stmt, name, weight, height,
-		alignment, sex, background, race,
-		speed, strength, dexterity, intelligence, wisdom, charisma, constitution,
-		hpMax, abilityPoints, xpPoints,
-		class, playerUsername,
+		stmt, c.Name, c.Weight, c.Height,
+		c.Alignment, c.Sex, c.Background, c.Race,
+		c.Speed, c.Strength, c.Dexterity, c.Intelligence, c.Wisdom, c.Charisma, c.Constitution,
+		c.HPMax, c.AbilityPoints, c.XPPoints,
+		c.Class, c.PlayerUsername,
 	).Scan(&createdCharacterID)
 
 	if err != nil {

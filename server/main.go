@@ -16,19 +16,13 @@ import (
 type application struct {
 	jwtSigningKey string
 	players       interface {
-		Insert(string, string, string) error
-		Authenticate(string, string) (string, error)
-		Get(string) (*models.Player, error)
+		Insert(username string, password string, name string) error
+		Authenticate(username string, password string) (string, error)
+		Get(username string) (*models.Player, error)
 	}
 	characters interface {
-		Insert(
-			name string, weight, height int,
-			alignment models.AlignmentType, sex models.SexType, background string, race models.RaceType,
-			speed, strength, dexterity, intelligence, wisdom, charisma, constitution,
-			hpMax, abilityPoints, xpPoints int,
-			class models.ClassType, playerUsername string,
-		) (int, error)
-		Get(int) (*models.Character, error)
+		Insert(c models.Character) (int, error)
+		Get(id int) (*models.Character, error)
 		GetAllUserCharacters(username string) (*[]models.Character, error)
 	}
 }
