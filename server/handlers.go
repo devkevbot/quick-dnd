@@ -85,29 +85,8 @@ func (app *application) retrievePlayer(c echo.Context) error {
 	return sendJSONResponse(c, http.StatusOK, "Player retrieval", "Retrieval successful", player)
 }
 
-type characterCreationRequest struct {
-	Name          string               `json:"name"`
-	Weight        int                  `json:"weight"`
-	Height        int                  `json:"height"`
-	Alignment     models.AlignmentType `json:"alignment"`
-	Sex           models.SexType       `json:"sex"`
-	Background    string               `json:"background"`
-	Race          models.RaceType      `json:"race"`
-	Speed         int                  `json:"speed"`
-	Strength      int                  `json:"strength"`
-	Dexterity     int                  `json:"dexterity"`
-	Intelligence  int                  `json:"intelligence"`
-	Wisdom        int                  `json:"wisdom"`
-	Charisma      int                  `json:"charisma" `
-	Constitution  int                  `json:"constitution"`
-	HPMax         int                  `json:"hp_max"`
-	AbilityPoints int                  `json:"ability_points"`
-	XPPoints      int                  `json:"xp_points"`
-	Class         models.ClassType     `json:"class"`
-}
-
 func (app *application) createCharacter(c echo.Context) error {
-	var req characterCreationRequest
+	var req models.Character
 	if err := c.Bind(&req); err != nil {
 		log.Error(err)
 		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Character creation", "Could not process request", nil)
@@ -118,15 +97,9 @@ func (app *application) createCharacter(c echo.Context) error {
 		return sendJSONResponse(c, http.StatusUnauthorized, "Character creation", "Creation failed", nil)
 	}
 
-	id, err := app.characters.Insert(
-		req.Name, req.Weight, req.Height,
-		req.Alignment, req.Sex, req.Background,
-		req.Race, req.Speed, req.Strength,
-		req.Dexterity, req.Intelligence,
-		req.Wisdom, req.Charisma, req.Constitution,
-		req.HPMax, req.AbilityPoints, req.XPPoints,
-		req.Class, creatorUsername,
-	)
+	req.PlayerUsername = creatorUsername
+
+	id, err := app.characters.Insert(req)
 	if err != nil {
 		log.Error(err)
 		return sendJSONResponse(c, http.StatusInternalServerError, "Character creation", "Creation failed", nil)
