@@ -1,5 +1,5 @@
-import Axios from 'axios';
-import customAxios from '@/api/config';
+import axios from 'axios';
+import defaultAPIPath from '@/api/config';
 import Vue from 'vue';
 import Vuelidate from 'vuelidate';
 import App from './App.vue';
@@ -10,8 +10,19 @@ import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@mdi/font/css/materialdesignicons.css';
 
 Vue.config.productionTip = false;
-Axios.defaults.baseURL = customAxios.defaults.baseURL;
-Vue.prototype.$http = Axios.create(customAxios);
+axios.defaults.baseURL = defaultAPIPath;
+axios.interceptors.request.use(
+  (config) => {
+    const authConfig = config;
+    authConfig.headers.Authorization = `Bearer ${store.getters['authentication/getToken']}`;
+    return authConfig;
+  },
+  (error) => {
+    Promise.reject(error);
+  },
+);
+
+Vue.prototype.$http = axios;
 Vue.use(Vuelidate);
 
 new Vue({

@@ -29,6 +29,7 @@ type application struct {
 			class models.ClassType, playerUsername string,
 		) (int, error)
 		Get(int) (*models.Character, error)
+		GetAllUserCharacters(username string) (*[]models.Character, error)
 	}
 }
 
@@ -45,7 +46,9 @@ func main() {
 
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
-	e.Use(middleware.CORS())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:8080"},
+	}))
 
 	if cfg.IsProduction {
 		// For production builds, we will want to serve the minified

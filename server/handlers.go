@@ -160,3 +160,27 @@ func (app *application) retrieveCharacter(c echo.Context) error {
 
 	return sendJSONResponse(c, http.StatusOK, "Character retrieval", "Retrieval successful", character)
 }
+
+// Retrieve all characters belonging to the requesting user.
+func (app *application) retrieveUserCharacters(c echo.Context) error {
+	username := getUsernameFromToken(c)
+	if strings.TrimSpace(username) == "" {
+		return sendJSONResponse(c, http.StatusUnauthorized, "Retrieve all user characters", "Retrieval failed", nil)
+	}
+
+	characters, err := app.characters.GetAllUserCharacters(username)
+	if err != nil {
+		log.Error(err)
+		if errors.Is(err, models.ErrNoRecord) {
+			return sendJSONResponse(c, http.StatusNotFound, "Retrieve all user characters", "Retrieval failed", nil)
+		}
+		return sendJSONResponse(c, http.StatusInternalServerError, "Retrieve all user characters", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Retrieve all user characters", "Retrieval successful",
+		struct {
+			Characters *[]models.Character `json:"characters"`
+		}{
+			characters,
+		})
+}

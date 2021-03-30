@@ -71,3 +71,25 @@ func (m *CharacterModel) Get(id int) (*models.Character, error) {
 
 	return &storedCharacter, nil
 }
+
+// GetAllUserCharacters retrieves all characters that belong to `username`.
+func (m *CharacterModel) GetAllUserCharacters(username string) (*[]models.Character, error) {
+	var storedCharacters []models.Character
+
+	stmt := "SELECT * FROM Character WHERE player_username = $1"
+	rows, err := m.DB.Queryx(stmt, username)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var c models.Character
+		err = rows.StructScan(&c)
+		if err != nil {
+			return nil, err
+		}
+		storedCharacters = append(storedCharacters, c)
+	}
+
+	return &storedCharacters, nil
+}
