@@ -4,6 +4,7 @@ import (
 	"draco/models"
 	"errors"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 
@@ -156,4 +157,75 @@ func (app *application) retrieveUserCharacters(c echo.Context) error {
 		}{
 			characters,
 		})
+}
+
+func (app *application) createSpell(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Spell creation", "Could not process request", nil)
+	}
+
+	var req models.Spell
+	if err := c.Bind(&req); err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Spell creation", "Could not process request", nil)
+	}
+
+	req.CharacterID = charID
+	// TODO: Check if the character actually belongs to the user.
+	err = app.spells.Insert(req)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Spell creation", "Creation failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusCreated, "Spell creation", "Creation successful", nil)
+}
+
+func (app *application) retrieveSpell(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Spell retrieval", "Retrieval failed", nil)
+	}
+
+	rawSpellName := c.Param("name")
+	decodedSpellName, err := url.QueryUnescape(rawSpellName)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Spell retrieval", "Retrieval failed", nil)
+	}
+
+	spell, err := app.spells.Get(charID, decodedSpellName)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusNotFound, "Spell retrieval", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Spell retrieval", "Retrieval successful", spell)
+}
+
+// Get all spells belonging to a character.
+func (app *application) retrieveAllCharacterSpells(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Retrieve all character spells", "Retrieval failed", nil)
+	}
+
+	spells, err := app.spells.GetAllCharacterSpells(charID)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusNotFound, "Retrieve all character spells", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Retrieve all character spells", "Retrieval successful", struct {
+		Spells *[]models.Spell `json:"spells"`
+	}{
+		spells,
+	})
 }

@@ -25,6 +25,11 @@ type application struct {
 		Get(id int) (*models.Character, error)
 		GetAllUserCharacters(username string) (*[]models.Character, error)
 	}
+	spells interface {
+		Insert(s models.Spell) error
+		Get(characterID int, spellName string) (*models.Spell, error)
+		GetAllCharacterSpells(characterID int) (*[]models.Spell, error)
+	}
 }
 
 func main() {
@@ -56,6 +61,7 @@ func main() {
 		jwtSigningKey: cfg.JWTSigningKey,
 		players:       &postgresql.PlayerModel{DB: db},
 		characters:    &postgresql.CharacterModel{DB: db},
+		spells:        &postgresql.SpellModel{DB: db},
 	}
 
 	if cfg.IsTest {
