@@ -35,7 +35,6 @@ const actions = {
     const data = { username, password };
     const method = 'POST';
     const resp = await axios({ url: requestURI, data, method });
-    axios.defaults.headers.common.Authorization = resp.data.data.token;
     commit('onLoginSuccess', { token: resp.data.data.token, username: resp.data.data.username });
   },
 };

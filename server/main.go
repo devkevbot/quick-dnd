@@ -16,18 +16,19 @@ import (
 type application struct {
 	jwtSigningKey string
 	players       interface {
-		Insert(string, string, string) error
-		Authenticate(string, string) (string, error)
-		Get(string) (*models.Player, error)
+		Insert(username string, password string, name string) error
+		Authenticate(username string, password string) (string, error)
+		Get(username string) (*models.Player, error)
 	}
 	characters interface {
-		Insert(
-			string, int, int,
-			string, string, string, string,
-			int, int, int, int, int, int, int, int, int, int,
-			string, string,
-		) (int, error)
-		Get(int) (*models.Character, error)
+		Insert(c models.Character) (int, error)
+		Get(id int) (*models.Character, error)
+		GetAllUserCharacters(username string) (*[]models.Character, error)
+	}
+	spells interface {
+		Insert(s models.Spell) error
+		Get(characterID int, spellName string) (*models.Spell, error)
+		GetAllCharacterSpells(characterID int) (*[]models.Spell, error)
 	}
 }
 
@@ -44,7 +45,9 @@ func main() {
 
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
-	e.Use(middleware.CORS())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:8080"},
+	}))
 
 	if cfg.IsProduction {
 		// For production builds, we will want to serve the minified
@@ -58,6 +61,7 @@ func main() {
 		jwtSigningKey: cfg.JWTSigningKey,
 		players:       &postgresql.PlayerModel{DB: db},
 		characters:    &postgresql.CharacterModel{DB: db},
+		spells:        &postgresql.SpellModel{DB: db},
 	}
 
 	if cfg.IsTest {

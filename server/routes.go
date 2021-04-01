@@ -19,5 +19,10 @@ func (app *application) registerRoutes(e *echo.Echo) {
 
 	// Protected character endpoints
 	r.POST("/character", app.createCharacter)
+	r.GET("/character/me", app.retrieveUserCharacters)
 
+	// Protected spell endpoints
+	r.POST("/character/:id/spell", app.createSpell)
+	r.GET("/character/:id/spell/:name", app.retrieveSpell)
+	r.GET("/character/:id/spell", app.retrieveAllCharacterSpells)
 }

@@ -91,7 +91,7 @@
         <v-card-actions>
           <v-spacer />
 
-          <v-btn class="mb-2" outlined to="/login">
+          <v-btn class="mb-2" color="primary" outlined to="/login">
             <v-icon left>mdi-arrow-left</v-icon>
             Back to login
           </v-btn>
