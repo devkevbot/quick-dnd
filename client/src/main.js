@@ -9,7 +9,6 @@ import vuetify from './plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@mdi/font/css/materialdesignicons.css';
 
-Vue.config.productionTip = false;
 axios.defaults.baseURL = defaultAPIPath;
 axios.interceptors.request.use(
   (config) => {
@@ -21,9 +20,11 @@ axios.interceptors.request.use(
     Promise.reject(error);
   },
 );
-
 Vue.prototype.$http = axios;
+
 Vue.use(Vuelidate);
+
+Vue.config.productionTip = false;
 
 new Vue({
   router,
