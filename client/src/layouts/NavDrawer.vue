@@ -5,7 +5,7 @@ website.
 
 <template>
   <v-card>
-    <v-navigation-drawer app permanent clipped>
+    <v-navigation-drawer app permanent clipped class="accent">
       <v-list>
         <v-list-item v-for="item in items" :key="item.title" link :to="item.to">
           <v-list-item-icon>
