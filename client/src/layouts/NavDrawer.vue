@@ -35,7 +35,10 @@ export default {
       items: [
         { title: 'Home', icon: 'mdi-view-dashboard' },
         { title: 'My profile', icon: 'mdi-account-box' },
-        { title: 'Create a character', icon: 'mdi-gavel' },
+        { title: 'Create a Character', icon: 'mdi-gavel' },
+        { title: 'Character Managment', icon: 'mdi-gavel' },
+        { title: 'Start a Campaign', icon: 'mdi-gavel' },
+        { title: 'Campaign Managment', icon: 'mdi-gavel' },
       ],
     };
   },
