@@ -12,7 +12,7 @@ type CampaignModel struct {
 	DB *sqlx.DB
 }
 
-func (m *CampaignModel) Insert(c models.Campaign) error {
+func (m *CampaignModel) Insert(c models.Campaign) (int, error) {
 	stmt := `INSERT INTO Campaign (name, current_location, state, dungeon_master)
 		VALUES($1, $2, $3, $4)
 		RETURNING id`
@@ -22,7 +22,7 @@ func (m *CampaignModel) Insert(c models.Campaign) error {
 		stmt, c.Name, c.CurrentLocation, c.State, c.DungeonMaster,
 	).Scan(&createdCampaignID)
 
-	return err
+	return createdCampaignID, err
 }
 
 // Get attempts to retrieve a campaign entity from the database with an

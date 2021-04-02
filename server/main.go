@@ -39,7 +39,7 @@ type application struct {
 		Delete(characterID int, itemName string) error
 	}
 	campaigns interface {
-		Insert(c models.Campaign) error
+		Insert(c models.Campaign) (int, error)
 		Get(id int) (*models.Campaign, error)
 		GetAllCharacterCampaigns(characterID int)
 	}
