@@ -86,6 +86,70 @@ func (app *application) retrievePlayer(c echo.Context) error {
 	return sendJSONResponse(c, http.StatusOK, "Player retrieval", "Retrieval successful", player)
 }
 
+func (app *application) changePlayerPassword(c echo.Context) error {
+	// The player username should not be derived from the request body
+	// or resource URI. Instead, we directly read the player username
+	// from the authentication token. This implies that this HTTP route
+	// must be protected by JWT authentication.
+	playerUsername := getUsernameFromToken(c)
+	if strings.TrimSpace(playerUsername) == "" {
+		return sendJSONResponse(c, http.StatusUnauthorized, "Change player password", "Access denied", nil)
+	}
+
+	req := struct {
+		NewPassword  string `json:"new_password"`
+		Confirmation string `json:"confirmation"`
+	}{}
+
+	if err := c.Bind(&req); err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Change player password", "Could not process request", nil)
+	}
+
+	// Passwords should not store leading or trailing whitespace.
+	req.NewPassword = strings.TrimSpace(req.NewPassword)
+	req.Confirmation = strings.TrimSpace(req.Confirmation)
+
+	// Technically string comparisons should use the a constant-time
+	// comparison algorithm for security reasons, but we can get away
+	// with this for our project. For more secure applications, using
+	// the `subtle` package provided by Go is generally a good idea.
+
+	if req.NewPassword == "" || req.Confirmation == "" {
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Change player password", "New password must be specified", nil)
+	}
+
+	if req.NewPassword != req.Confirmation {
+		return sendJSONResponse(c, http.StatusBadRequest, "Change player password", "New password and confirmation do not match", nil)
+	}
+
+	if err := app.players.UpdatePassword(playerUsername, req.NewPassword); err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Change player password", "Password failed to update", nil)
+	}
+
+	return nil
+}
+
+// Allows a player to delete their own account.
+func (app *application) deletePlayerSelf(c echo.Context) error {
+	// The player username should not be derived from the request body
+	// or resource URI. Instead, we directly read the player username
+	// from the authentication token. This implies that this HTTP route
+	// must be protected by JWT authentication.
+	playerUsername := getUsernameFromToken(c)
+	if strings.TrimSpace(playerUsername) == "" {
+		return sendJSONResponse(c, http.StatusUnauthorized, "Delete player account", "Access denied", nil)
+	}
+
+	if err := app.players.Delete(playerUsername); err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Delete player account", "Deletion failed", nil)
+	}
+
+	return nil
+}
+
 func (app *application) createCharacter(c echo.Context) error {
 	var req models.Character
 	if err := c.Bind(&req); err != nil {

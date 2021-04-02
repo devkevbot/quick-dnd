@@ -19,6 +19,8 @@ type application struct {
 		Insert(username string, password string, name string) error
 		Authenticate(username string, password string) (string, error)
 		Get(username string) (*models.Player, error)
+		UpdatePassword(username string, newPassword string) error
+		Delete(username string) error
 	}
 	characters interface {
 		Insert(c models.Character) (int, error)
