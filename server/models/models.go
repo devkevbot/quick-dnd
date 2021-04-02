@@ -7,6 +7,8 @@ import (
 
 var (
 	ErrNoRecord           = errors.New("models: no record was found")
+	ErrUpdateSingleRecord = errors.New("models: number of records updated was not one")
+	ErrDeleteSingleRecord = errors.New("models: number of records deleted was not one")
 	ErrDuplicateUsername  = errors.New("models: duplicate player username")
 	ErrDuplicateCharacter = errors.New("models: player cannot have two characters with the same name")
 	ErrDuplicateSpell     = errors.New("models: spell names must be unique for a given character")
