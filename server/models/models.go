@@ -943,3 +943,12 @@ type WizardClass struct {
 	CharacterID     int                 `json:"character_id" db:"character_id"`
 	ArcaneTradition WizardTraditionType `json:"arcane_tradition" db:"arcane_tradition"`
 }
+
+/* Model for global statistics. */
+type Stats struct {
+	NumPlayersCreated    int `json:"num_player_account" db:"num_player_account"`
+	NumCharactersCreated int `json:"num_character_created" db:"num_character_created"`
+	NumCampaignsCreated  int `json:"num_campaign_created" db:"num_campaign_created"`
+	NumSpellsCreated     int `json:"num_spells_created" db:"num_spells_created"`
+	NumItemsCreated      int `json:"num_items_created" db:"num_items_created"`
+}
