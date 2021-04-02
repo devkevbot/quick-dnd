@@ -38,6 +38,11 @@ type application struct {
 		GetAllCharacterItems(characterID int) (*[]models.Item, error)
 		Delete(characterID int, itemName string) error
 	}
+	campaigns interface {
+		Insert(c models.Campaign) error
+		Get(id int) (*models.Campaign, error)
+		GetAllCharacterCampaigns(characterID int)
+	}
 	stats interface {
 		GetAll() (*models.Stats, error)
 	}
