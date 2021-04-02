@@ -58,6 +58,15 @@ const routes = [
       layout: 'Main',
     },
   },
+  {
+    /* TODO: make protected route */
+    path: '/account',
+    name: 'Account',
+    component: () => import('../views/Account.vue'),
+    meta: {
+      layout: 'Main',
+    },
+  },
 ];
 
 const router = new VueRouter({
