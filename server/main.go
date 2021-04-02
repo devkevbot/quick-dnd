@@ -43,6 +43,11 @@ type application struct {
 		Get(id int) (*models.Campaign, error)
 		GetAllCharacterCampaigns(characterID int)
 	}
+	belongsTo interface {
+		Insert(c models.BelongsTo) error
+		GetAllCharacterCampaigns(characterID int) (*[]models.Campaign, error)
+		GetAllCampaignCharacters(campaignID int) (*[]models.Character, error)
+	}
 	stats interface {
 		GetAll() (*models.Stats, error)
 	}

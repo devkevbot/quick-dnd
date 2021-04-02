@@ -45,31 +45,3 @@ func (m *CampaignModel) Get(id int) (*models.Campaign, error) {
 
 	return &storedCampaign, nil
 }
-
-// GetAllCharacterCampaigns retrieves all campaigns that `character` is a part of.
-func (m *CampaignModel) GetAllCharacterCampaigns(characterID int) (*[]models.Campaign, error) {
-	var storedCampaigns []models.Campaign
-
-	stmt := `SELECT *
-			FROM Campaign
-			WHERE id IN (
-				SELECT campaign_id
-				FROM BelongsTo
-				WHERE character_id = $1
-		)`
-	rows, err := m.DB.Queryx(stmt, characterID)
-	if err != nil {
-		return nil, err
-	}
-
-	for rows.Next() {
-		var c models.Campaign
-		err = rows.StructScan(&c)
-		if err != nil {
-			return nil, err
-		}
-		storedCampaigns = append(storedCampaigns, c)
-	}
-
-	return &storedCampaigns, nil
-}
