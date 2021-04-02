@@ -229,3 +229,14 @@ func (app *application) retrieveAllCharacterSpells(c echo.Context) error {
 		spells,
 	})
 }
+
+// Get all global stats.
+func (app *application) retrieveAllStats(c echo.Context) error {
+	stats, err := app.stats.GetAll()
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Retrieve all stats", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Retrieve all stats", "Retrieval successful", stats)
+}

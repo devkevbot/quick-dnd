@@ -12,6 +12,9 @@ func (app *application) registerRoutes(e *echo.Echo) {
 	// Unprotected character endpoints
 	e.GET("/character/:id", app.retrieveCharacter)
 
+	// Unprotected stat endpoints
+	e.GET("/stat", app.retrieveAllStats)
+
 	// All routes which require JWT-based authentication
 	r := e.Group("/auth")
 	r.Use(middleware.JWTWithConfig(app.getJWTConfig()))

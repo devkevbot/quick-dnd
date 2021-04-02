@@ -30,6 +30,9 @@ type application struct {
 		Get(characterID int, spellName string) (*models.Spell, error)
 		GetAllCharacterSpells(characterID int) (*[]models.Spell, error)
 	}
+	stats interface {
+		GetAll() (*models.Stats, error)
+	}
 }
 
 func main() {
@@ -62,6 +65,7 @@ func main() {
 		players:       &postgresql.PlayerModel{DB: db},
 		characters:    &postgresql.CharacterModel{DB: db},
 		spells:        &postgresql.SpellModel{DB: db},
+		stats:         &postgresql.StatsModel{DB: db},
 	}
 
 	if cfg.IsTest {
