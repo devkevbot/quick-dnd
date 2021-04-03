@@ -19,7 +19,7 @@ const mutations = {
     state.player.username = username;
   },
   onLogout(state) {
-    state.token = '';
+    state.token = null;
     state.player = null;
   },
 };
@@ -36,6 +36,13 @@ const actions = {
     const method = 'POST';
     const resp = await axios({ url: requestURI, data, method });
     commit('onLoginSuccess', { token: resp.data.data.token, username: resp.data.data.username });
+  },
+  /**
+   * Deletes stored authentication data for the current player.
+   * @param {Object} commit - Used to commit changes to the state.
+   */
+  logoutPlayer({ commit }) {
+    commit('onLogout');
   },
 };
 

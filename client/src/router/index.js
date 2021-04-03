@@ -26,12 +26,12 @@ const routes = [
     },
   },
   {
+    /* TODO: make protected route */
     path: '/campaign',
     name: 'Campaign',
     component: () => import('../views/Campaign.vue'),
     meta: {
       layout: 'Main',
-      protected: true,
     },
   },
   {
