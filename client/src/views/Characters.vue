@@ -47,7 +47,8 @@ Currently a work in progress.
           <v-tab-item v-for="item in items" :key="item.tab">
             <v-card flat class="secondary">
               <v-card-text>
-                <component v-bind:is="item.content" :data="data"></component>
+                <component v-bind:is="item.content" :characterData="characterData">
+                </component>
               </v-card-text>
             </v-card>
           </v-tab-item>
@@ -88,10 +89,6 @@ Currently a work in progress.
     </div>
   </template>
 
-  <v-btn>
-    <h3> TEMP SAVE BUTTON</h3>
-  </v-btn>
-
 </div>
 </template>
 
@@ -103,12 +100,13 @@ import background from '../components/characters/background.vue';
 export default {
   components: {
     primaryStats,
+    modifiers,
+    background,
   },
   data() {
     return {
       characterID: undefined,
       characterDataJSON: {},
-      characterData: {},
       characters: [],
       selectedCharName: null,
       tab: null,
@@ -130,109 +128,10 @@ export default {
           icon: 'mdi-castle',
         },
       ],
+      characterData: [],
     };
   },
   computed: {
-    characterTraits() {
-      return [
-        { attribute: 'Race', value: this.characterData.race },
-        { attribute: 'Class', value: this.characterData.class },
-        { attribute: 'Weight', value: this.characterData.weight },
-        { attribute: 'Height', value: this.characterData.height },
-        { attribute: 'Sex', value: this.characterData.sex },
-        { attribute: 'Armour Class', value: 'TEMP' },
-      ];
-    },
-    statSlider() {
-      return [
-        { attribute: 'Strength', value: this.characterData.strength },
-        { attribute: 'Constitution', value: this.characterData.constitution },
-        { attribute: 'Wisdom', value: this.characterData.wisdom },
-        { attribute: 'Hit Points', value: this.characterData.hp_max },
-        { attribute: 'Dexterity', value: this.characterData.dexterity },
-        { attribute: 'Ability Points', value: this.characterData.ability_points },
-        { attribute: 'Charisma', value: this.characterData.charisma },
-        { attribute: 'Intellect', value: this.characterData.intelligence },
-      ];
-    },
-    statSelect() {
-      return [
-        { attribute: 'Campaign', value: 'TEMP' },
-        { attribute: 'State', value: 'TEMP' },
-        { attribute: 'Character Name', value: this.characterData.name },
-        { attribute: 'Abilities', value: 'TEMP' },
-        { attribute: 'Items', value: 'TEMP' },
-        { attribute: 'Spells', value: 'TEMP' },
-        { attribute: 'Alignment', value: this.characterData.alignment },
-      ];
-    },
-    statModifiers() {
-      return [
-        { modifier: 'Initiative', value: 'TEMP' },
-        { modifier: 'Number of Dies', value: 'TEMP' },
-        { modifier: 'Strength', value: Math.floor((this.characterData.strength - 10) / 2) },
-        { modifier: 'Constitution', value: Math.floor((this.characterData.constitution - 10) / 2) },
-        { modifier: 'Wisdom', value: Math.floor((this.characterData.wisdom - 10) / 2) },
-        { modifier: 'Hit Points', value: 'TEMP' },
-        { modifier: 'Dexterity', value: Math.floor((this.characterData.dexterity - 10) / 2) },
-        { modifier: 'Ability Points', value: 'TEMP' },
-        { modifier: 'Charisma', value: Math.floor((this.characterData.charisma - 10) / 2) },
-        { modifier: 'Intellect', value: Math.floor((this.characterData.intelligence - 10) / 2) },
-        { modifier: 'Proficency', value: (Math.ceil((this.level) / 4) + 1) },
-        { modifier: 'Speed', value: this.characterData.speed },
-      ];
-    },
-    statUniqueElements() {
-      return [
-        { attribute: 'Location', value: 'TEMP' },
-        { attribute: 'Level', value: this.level },
-        { attribute: 'Character Background', value: this.characterData.background },
-        { attribute: 'XP', value: this.characterData.xp_points },
-      ];
-    },
-    level() {
-      let tempLevel = 1;
-      if (this.characterData.xp_points < 300) {
-        tempLevel = 1;
-      } else if (this.characterData.xp_points < 900) {
-        tempLevel = 2;
-      } else if (this.characterData.xp_points < 2700) {
-        tempLevel = 3;
-      } else if (this.characterData.xp_points < 6500) {
-        tempLevel = 4;
-      } else if (this.characterData.xp_points < 14000) {
-        tempLevel = 5;
-      } else if (this.characterData.xp_points < 23000) {
-        tempLevel = 6;
-      } else if (this.characterData.xp_points < 34000) {
-        tempLevel = 7;
-      } else if (this.characterData.xp_points < 48000) {
-        tempLevel = 8;
-      } else if (this.characterData.xp_points < 64000) {
-        tempLevel = 9;
-      } else if (this.characterData.xp_points < 85000) {
-        tempLevel = 10;
-      } else if (this.characterData.xp_points < 100000) {
-        tempLevel = 11;
-      } else if (this.characterData.xp_points < 120000) {
-        tempLevel = 12;
-      } else if (this.characterData.xp_points < 140000) {
-        tempLevel = 13;
-      } else if (this.characterData.xp_points < 165000) {
-        tempLevel = 14;
-      } else if (this.characterData.xp_points < 195000) {
-        tempLevel = 15;
-      } else if (this.characterData.xp_points < 225000) {
-        tempLevel = 16;
-      } else if (this.characterData.xp_points < 265000) {
-        tempLevel = 17;
-      } else if (this.characterData.xp_points < 305000) {
-        tempLevel = 18;
-      } else if (this.characterData.xp_points < 355000) {
-        tempLevel = 19;
-      } else { tempLevel = 20; }
-      return tempLevel;
-    },
     /**
      * @returns {Array<String>} - A list of character names that the
      * in user has created.
@@ -262,6 +161,7 @@ export default {
           this.characterDataJSON = JSON.stringify(resp.data.data, null, '\t');
           // this.characterData = JSON.parse(this.characterDataJSON);
           this.characterData = resp.data.data;
+          this.characterDataTemp = this.characterData;
         })
         .catch(() => {
           const msg = { error: 'character not found' };
