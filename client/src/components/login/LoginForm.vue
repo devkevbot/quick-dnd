@@ -56,7 +56,7 @@ required for a player to authenticate.
         <v-card-actions>
           <v-spacer />
 
-          <v-btn class="mb-2" outlined to="/register">
+          <v-btn class="mb-2" color="primary" outlined to="/register">
             <v-icon left>mdi-account</v-icon>
             Register
           </v-btn>

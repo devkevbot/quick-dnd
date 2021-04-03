@@ -298,7 +298,7 @@ CREATE TYPE e_fighting_style AS ENUM (
     'Archery',
     'Blind Fighting',
     'Defense',
-    'Druidic Warrior'
+    'Druidic Warrior',
     'Dueling',
     'Great Weapon Fighting',
     'Interception',
@@ -466,3 +466,73 @@ CREATE TABLE Wizards (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
+
+CREATE TABLE Stats (
+    num_player_account int DEFAULT 0,
+    num_character_created int DEFAULT 0,
+    num_campaign_created int DEFAULT 0,
+    num_spells_created int DEFAULT 0,
+    num_items_created int DEFAULT 0
+);
+
+INSERT INTO Stats VALUES (0, 0, 0, 0, 0);
+
+-- Update Stats.num_player_account
+CREATE FUNCTION increment_player_account() RETURNS trigger AS $_$
+BEGIN
+UPDATE Stats SET num_player_account = num_player_account + 1;
+RETURN NEW;
+END $_$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER player_registration
+AFTER INSERT ON Player
+FOR EACH ROW
+EXECUTE PROCEDURE increment_player_account();
+
+-- Update Stats.num_character_created
+CREATE FUNCTION increment_character_count() RETURNS trigger AS $_$
+BEGIN
+UPDATE Stats SET num_character_created = num_character_created + 1;
+RETURN NEW;
+END $_$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER character_creation
+AFTER INSERT ON Character
+FOR EACH ROW
+EXECUTE PROCEDURE increment_character_count();
+
+-- Update Stats.num_campaign_created
+CREATE FUNCTION increment_campaign_count() RETURNS trigger AS $_$
+BEGIN
+UPDATE Stats SET num_campaign_created = num_campaign_created + 1;
+RETURN NEW;
+END $_$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER campaign_creation
+AFTER INSERT ON Campaign
+FOR EACH ROW
+EXECUTE PROCEDURE increment_campaign_count();
+
+-- Update Stats.num_spells_created
+CREATE FUNCTION increment_spell_count() RETURNS trigger AS $_$
+BEGIN
+UPDATE Stats SET num_spells_created = num_spells_created + 1;
+RETURN NEW;
+END $_$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER spell_creation
+AFTER INSERT ON Spells
+FOR EACH ROW
+EXECUTE PROCEDURE increment_spell_count();
+
+-- Update Stats.num_items_created
+CREATE FUNCTION increment_item_count() RETURNS trigger AS $_$
+BEGIN
+UPDATE Stats SET num_items_created = num_items_created + 1;
+RETURN NEW;
+END $_$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER item_creation
+AFTER INSERT ON Items
+FOR EACH ROW
+EXECUTE PROCEDURE increment_item_count();
