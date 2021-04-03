@@ -19,6 +19,8 @@ func (app *application) registerRoutes(e *echo.Echo) {
 	r := e.Group("/auth")
 	r.Use(middleware.JWTWithConfig(app.getJWTConfig()))
 	r.GET("/player/:username", app.retrievePlayer)
+	r.PUT("/player/me/password", app.changePlayerPassword)
+	r.DELETE("/player/me", app.deletePlayerSelf)
 
 	// Protected character endpoints
 	r.POST("/character", app.createCharacter)
