@@ -12,6 +12,7 @@ var (
 	ErrDuplicateUsername  = errors.New("models: duplicate player username")
 	ErrDuplicateCharacter = errors.New("models: player cannot have two characters with the same name")
 	ErrDuplicateSpell     = errors.New("models: spell names must be unique for a given character")
+	ErrDuplicateItem      = errors.New("models: item names must be unique for a given character")
 )
 
 // JSON unmarshal errors for custom character data types.
