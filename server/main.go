@@ -32,6 +32,12 @@ type application struct {
 		Get(characterID int, spellName string) (*models.Spell, error)
 		GetAllCharacterSpells(characterID int) (*[]models.Spell, error)
 	}
+	items interface {
+		Insert(i models.Item) error
+		Get(characterID int, itemName string) (*models.Item, error)
+		GetAllCharacterItems(characterID int) (*[]models.Item, error)
+		Delete(characterID int, itemName string) error
+	}
 	stats interface {
 		GetAll() (*models.Stats, error)
 	}
@@ -67,6 +73,7 @@ func main() {
 		players:       &postgresql.PlayerModel{DB: db},
 		characters:    &postgresql.CharacterModel{DB: db},
 		spells:        &postgresql.SpellModel{DB: db},
+		items:         &postgresql.ItemModel{DB: db},
 		stats:         &postgresql.StatsModel{DB: db},
 	}
 
