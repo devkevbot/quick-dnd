@@ -86,6 +86,70 @@ func (app *application) retrievePlayer(c echo.Context) error {
 	return sendJSONResponse(c, http.StatusOK, "Player retrieval", "Retrieval successful", player)
 }
 
+func (app *application) changePlayerPassword(c echo.Context) error {
+	// The player username should not be derived from the request body
+	// or resource URI. Instead, we directly read the player username
+	// from the authentication token. This implies that this HTTP route
+	// must be protected by JWT authentication.
+	playerUsername := getUsernameFromToken(c)
+	if strings.TrimSpace(playerUsername) == "" {
+		return sendJSONResponse(c, http.StatusUnauthorized, "Change player password", "Access denied", nil)
+	}
+
+	req := struct {
+		NewPassword  string `json:"new_password"`
+		Confirmation string `json:"confirmation"`
+	}{}
+
+	if err := c.Bind(&req); err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Change player password", "Could not process request", nil)
+	}
+
+	// Passwords should not store leading or trailing whitespace.
+	req.NewPassword = strings.TrimSpace(req.NewPassword)
+	req.Confirmation = strings.TrimSpace(req.Confirmation)
+
+	// Technically string comparisons should use the a constant-time
+	// comparison algorithm for security reasons, but we can get away
+	// with this for our project. For more secure applications, using
+	// the `subtle` package provided by Go is generally a good idea.
+
+	if req.NewPassword == "" || req.Confirmation == "" {
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Change player password", "New password must be specified", nil)
+	}
+
+	if req.NewPassword != req.Confirmation {
+		return sendJSONResponse(c, http.StatusBadRequest, "Change player password", "New password and confirmation do not match", nil)
+	}
+
+	if err := app.players.UpdatePassword(playerUsername, req.NewPassword); err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Change player password", "Password failed to update", nil)
+	}
+
+	return nil
+}
+
+// Allows a player to delete their own account.
+func (app *application) deletePlayerSelf(c echo.Context) error {
+	// The player username should not be derived from the request body
+	// or resource URI. Instead, we directly read the player username
+	// from the authentication token. This implies that this HTTP route
+	// must be protected by JWT authentication.
+	playerUsername := getUsernameFromToken(c)
+	if strings.TrimSpace(playerUsername) == "" {
+		return sendJSONResponse(c, http.StatusUnauthorized, "Delete player account", "Access denied", nil)
+	}
+
+	if err := app.players.Delete(playerUsername); err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Delete player account", "Deletion failed", nil)
+	}
+
+	return nil
+}
+
 func (app *application) createCharacter(c echo.Context) error {
 	var req models.Character
 	if err := c.Bind(&req); err != nil {
@@ -159,6 +223,7 @@ func (app *application) retrieveUserCharacters(c echo.Context) error {
 		})
 }
 
+// Create a spell which belongs to a character.
 func (app *application) createSpell(c echo.Context) error {
 	charIDString := c.Param("id")
 	charID, err := strconv.Atoi(charIDString)
@@ -184,6 +249,7 @@ func (app *application) createSpell(c echo.Context) error {
 	return sendJSONResponse(c, http.StatusCreated, "Spell creation", "Creation successful", nil)
 }
 
+// Retrieve a spell belonging to a character.
 func (app *application) retrieveSpell(c echo.Context) error {
 	charIDString := c.Param("id")
 	charID, err := strconv.Atoi(charIDString)
@@ -228,4 +294,119 @@ func (app *application) retrieveAllCharacterSpells(c echo.Context) error {
 	}{
 		spells,
 	})
+}
+
+// Create an item which belongs to a character.
+func (app *application) createItem(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Item creation", "Could not process request", nil)
+	}
+
+	var req models.Item
+	if err := c.Bind(&req); err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Item creation", "Could not process request", nil)
+	}
+
+	req.CharacterID = charID
+	// TODO: Check if the character actually belongs to the user.
+	err = app.items.Insert(req)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Item creation", "Creation failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusCreated, "Item creation", "Creation successful", nil)
+}
+
+// Retrieve an item belonging to a character.
+func (app *application) retrieveItem(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Item retrieval", "Retrieval failed", nil)
+	}
+
+	rawItemName := c.Param("name")
+	decodedItemName, err := url.QueryUnescape(rawItemName)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Item retrieval", "Retrieval failed", nil)
+	}
+
+	item, err := app.items.Get(charID, decodedItemName)
+	if err != nil {
+		log.Error(err)
+		if errors.Is(err, models.ErrNoRecord) {
+			return sendJSONResponse(c, http.StatusNotFound, "Item retrieval", "Retrieval failed", nil)
+		}
+		return sendJSONResponse(c, http.StatusInternalServerError, "Item retrieval", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Item retrieval", "Retrieval successful", item)
+}
+
+// Get all items belonging to a character.
+func (app *application) retrieveAllCharacterItems(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Retrieve all character items", "Retrieval failed", nil)
+	}
+
+	items, err := app.items.GetAllCharacterItems(charID)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusNotFound, "Retrieve all character items", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Retrieve all character items", "Retrieval successful", struct {
+		Items *[]models.Item `json:"items"`
+	}{
+		items,
+	})
+}
+
+// Delete an item belonging to a character.
+func (app *application) deleteItem(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Item deletion", "Deletion failed", nil)
+	}
+
+	rawItemName := c.Param("name")
+	decodedItemName, err := url.QueryUnescape(rawItemName)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Item deletion", "Deletion failed", nil)
+	}
+
+	err = app.items.Delete(charID, decodedItemName)
+	if err != nil {
+		log.Error(err)
+		if errors.Is(err, models.ErrNoRecord) {
+			return sendJSONResponse(c, http.StatusNotFound, "Item deletion", "Deletion failed", nil)
+		}
+		return sendJSONResponse(c, http.StatusInternalServerError, "Item deletion", "Deletion failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Item deletion", "Deletion successful", nil)
+}
+
+// Get all global stats.
+func (app *application) retrieveAllStats(c echo.Context) error {
+	stats, err := app.stats.GetAll()
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Retrieve all stats", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Retrieve all stats", "Retrieval successful", stats)
 }

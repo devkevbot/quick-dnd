@@ -112,9 +112,9 @@ import {
   required,
   minLength,
   maxLength,
-  alpha,
   alphaNum,
   sameAs,
+  helpers,
 } from 'vuelidate/lib/validators';
 
 export default {
@@ -146,7 +146,9 @@ export default {
     name: {
       required,
       maxLength: maxLength(50),
-      alpha,
+      /* This regex obviously does not cover all cases, but is
+      sufficient for our project. */
+      isNameValid: helpers.regex('nameValidation', /^[a-zA-Z '.-]*$/),
     },
     username: {
       required,
@@ -171,8 +173,8 @@ export default {
       if (!this.$v.name.maxLength) {
         errors.push('Name must not exceed 50 characters.');
       }
-      if (!this.$v.name.alpha) {
-        errors.push('Name must contain only letters a-z');
+      if (!this.$v.name.isNameValid) {
+        errors.push('Name contains disallowed characters.');
       }
       if (!this.$v.name.required) {
         errors.push('Name is required.');

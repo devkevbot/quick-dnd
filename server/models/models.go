@@ -7,9 +7,12 @@ import (
 
 var (
 	ErrNoRecord           = errors.New("models: no record was found")
+	ErrUpdateSingleRecord = errors.New("models: number of records updated was not one")
+	ErrDeleteSingleRecord = errors.New("models: number of records deleted was not one")
 	ErrDuplicateUsername  = errors.New("models: duplicate player username")
 	ErrDuplicateCharacter = errors.New("models: player cannot have two characters with the same name")
 	ErrDuplicateSpell     = errors.New("models: spell names must be unique for a given character")
+	ErrDuplicateItem      = errors.New("models: item names must be unique for a given character")
 )
 
 // JSON unmarshal errors for custom character data types.
@@ -942,4 +945,13 @@ func (t *WizardTraditionType) UnmarshalJSON(b []byte) error {
 type WizardClass struct {
 	CharacterID     int                 `json:"character_id" db:"character_id"`
 	ArcaneTradition WizardTraditionType `json:"arcane_tradition" db:"arcane_tradition"`
+}
+
+/* Model for global statistics. */
+type Stats struct {
+	NumPlayersCreated    int `json:"num_player_account" db:"num_player_account"`
+	NumCharactersCreated int `json:"num_character_created" db:"num_character_created"`
+	NumCampaignsCreated  int `json:"num_campaign_created" db:"num_campaign_created"`
+	NumSpellsCreated     int `json:"num_spells_created" db:"num_spells_created"`
+	NumItemsCreated      int `json:"num_items_created" db:"num_items_created"`
 }

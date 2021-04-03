@@ -90,3 +90,48 @@ func (m *PlayerModel) Get(username string) (*models.Player, error) {
 
 	return p, nil
 }
+
+// UpdatePassword attempts to update the password belonging to the
+// Player identified by `username`.
+func (m *PlayerModel) UpdatePassword(username, newPassword string) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	stmt := "UPDATE Player SET password = $2 WHERE username = $1"
+	res, err := m.DB.Exec(stmt, username, hashedPassword)
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if count != 1 {
+		return models.ErrUpdateSingleRecord
+	}
+
+	return nil
+}
+
+// Delete attempts to delete a player identified by `username`.
+func (m *PlayerModel) Delete(username string) error {
+	stmt := "DELETE FROM Player WHERE username = $1"
+
+	res, err := m.DB.Exec(stmt, username)
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if count != 1 {
+		return models.ErrDeleteSingleRecord
+	}
+
+	return nil
+}

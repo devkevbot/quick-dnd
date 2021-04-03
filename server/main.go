@@ -19,6 +19,8 @@ type application struct {
 		Insert(username string, password string, name string) error
 		Authenticate(username string, password string) (string, error)
 		Get(username string) (*models.Player, error)
+		UpdatePassword(username string, newPassword string) error
+		Delete(username string) error
 	}
 	characters interface {
 		Insert(c models.Character) (int, error)
@@ -29,6 +31,15 @@ type application struct {
 		Insert(s models.Spell) error
 		Get(characterID int, spellName string) (*models.Spell, error)
 		GetAllCharacterSpells(characterID int) (*[]models.Spell, error)
+	}
+	items interface {
+		Insert(i models.Item) error
+		Get(characterID int, itemName string) (*models.Item, error)
+		GetAllCharacterItems(characterID int) (*[]models.Item, error)
+		Delete(characterID int, itemName string) error
+	}
+	stats interface {
+		GetAll() (*models.Stats, error)
 	}
 }
 
@@ -62,6 +73,8 @@ func main() {
 		players:       &postgresql.PlayerModel{DB: db},
 		characters:    &postgresql.CharacterModel{DB: db},
 		spells:        &postgresql.SpellModel{DB: db},
+		items:         &postgresql.ItemModel{DB: db},
+		stats:         &postgresql.StatsModel{DB: db},
 	}
 
 	if cfg.IsTest {

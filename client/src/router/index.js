@@ -1,19 +1,13 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from '@/store/index';
-import Home from '../views/Home.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
-    meta: {
-      layout: 'Main',
-      protected: true,
-    },
+    redirect: '/dashboard',
   },
   {
     path: '/register',
@@ -54,6 +48,15 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue'),
+    meta: {
+      layout: 'Main',
+    },
+  },
+  {
+    /* TODO: make protected route */
+    path: '/account',
+    name: 'Account',
+    component: () => import('../views/Account.vue'),
     meta: {
       layout: 'Main',
     },
