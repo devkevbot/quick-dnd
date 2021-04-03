@@ -96,12 +96,14 @@ Currently a work in progress.
 import primaryStats from '../components/characters/primaryStats.vue';
 import modifiers from '../components/characters/modifiers.vue';
 import background from '../components/characters/background.vue';
+import create from '../components/characters/create.vue';
 
 export default {
   components: {
     primaryStats,
     modifiers,
     background,
+    create,
   },
   data() {
     return {
@@ -110,8 +112,8 @@ export default {
       characters: [],
       selectedCharName: null,
       tab: null,
+      e1: 1,
       items: [
-        /* TODO: import and add components when they are created */
         {
           tab: 'Main Stats',
           content: primaryStats,
@@ -126,6 +128,11 @@ export default {
           tab: 'Character Background',
           content: background,
           icon: 'mdi-castle',
+        },
+        {
+          tab: 'New Character',
+          content: create,
+          icon: 'mdi-fire',
         },
       ],
       characterData: [],
