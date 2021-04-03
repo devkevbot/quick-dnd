@@ -30,4 +30,10 @@ func (app *application) registerRoutes(e *echo.Echo) {
 	r.POST("/character/:id/spell", app.createSpell)
 	r.GET("/character/:id/spell/:name", app.retrieveSpell)
 	r.GET("/character/:id/spell", app.retrieveAllCharacterSpells)
+
+	// Protected item endpoints
+	r.POST("/character/:id/item", app.createItem)
+	r.GET("/character/:id/item/:name", app.retrieveItem)
+	r.GET("/character/:id/item", app.retrieveAllCharacterItems)
+	r.DELETE("/character/:id/item/:name", app.deleteItem)
 }

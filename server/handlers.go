@@ -223,6 +223,7 @@ func (app *application) retrieveUserCharacters(c echo.Context) error {
 		})
 }
 
+// Create a spell which belongs to a character.
 func (app *application) createSpell(c echo.Context) error {
 	charIDString := c.Param("id")
 	charID, err := strconv.Atoi(charIDString)
@@ -248,6 +249,7 @@ func (app *application) createSpell(c echo.Context) error {
 	return sendJSONResponse(c, http.StatusCreated, "Spell creation", "Creation successful", nil)
 }
 
+// Retrieve a spell belonging to a character.
 func (app *application) retrieveSpell(c echo.Context) error {
 	charIDString := c.Param("id")
 	charID, err := strconv.Atoi(charIDString)
@@ -292,6 +294,110 @@ func (app *application) retrieveAllCharacterSpells(c echo.Context) error {
 	}{
 		spells,
 	})
+}
+
+// Create an item which belongs to a character.
+func (app *application) createItem(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Item creation", "Could not process request", nil)
+	}
+
+	var req models.Item
+	if err := c.Bind(&req); err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Item creation", "Could not process request", nil)
+	}
+
+	req.CharacterID = charID
+	// TODO: Check if the character actually belongs to the user.
+	err = app.items.Insert(req)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Item creation", "Creation failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusCreated, "Item creation", "Creation successful", nil)
+}
+
+// Retrieve an item belonging to a character.
+func (app *application) retrieveItem(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Item retrieval", "Retrieval failed", nil)
+	}
+
+	rawItemName := c.Param("name")
+	decodedItemName, err := url.QueryUnescape(rawItemName)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Item retrieval", "Retrieval failed", nil)
+	}
+
+	item, err := app.items.Get(charID, decodedItemName)
+	if err != nil {
+		log.Error(err)
+		if errors.Is(err, models.ErrNoRecord) {
+			return sendJSONResponse(c, http.StatusNotFound, "Item retrieval", "Retrieval failed", nil)
+		}
+		return sendJSONResponse(c, http.StatusInternalServerError, "Item retrieval", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Item retrieval", "Retrieval successful", item)
+}
+
+// Get all items belonging to a character.
+func (app *application) retrieveAllCharacterItems(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Retrieve all character items", "Retrieval failed", nil)
+	}
+
+	items, err := app.items.GetAllCharacterItems(charID)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusNotFound, "Retrieve all character items", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Retrieve all character items", "Retrieval successful", struct {
+		Items *[]models.Item `json:"items"`
+	}{
+		items,
+	})
+}
+
+// Delete an item belonging to a character.
+func (app *application) deleteItem(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Item deletion", "Deletion failed", nil)
+	}
+
+	rawItemName := c.Param("name")
+	decodedItemName, err := url.QueryUnescape(rawItemName)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Item deletion", "Deletion failed", nil)
+	}
+
+	err = app.items.Delete(charID, decodedItemName)
+	if err != nil {
+		log.Error(err)
+		if errors.Is(err, models.ErrNoRecord) {
+			return sendJSONResponse(c, http.StatusNotFound, "Item deletion", "Deletion failed", nil)
+		}
+		return sendJSONResponse(c, http.StatusInternalServerError, "Item deletion", "Deletion failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Item deletion", "Deletion successful", nil)
 }
 
 // Get all global stats.
