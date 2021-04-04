@@ -36,8 +36,7 @@ export default {
         /* TODO: update links when they are created */
         { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/dashboard' },
         { title: 'My account', icon: 'mdi-account-box', to: '/account' },
-        { title: 'Create a character', icon: 'mdi-gavel', to: '/characters' },
-        { title: 'Character Managment', icon: 'mdi-gavel', to: '/characters' },
+        { title: 'My Characters', icon: 'mdi-gavel', to: '/characters' },
         { title: 'Start a campaign', icon: 'mdi-castle', to: '/campaign' },
       ],
     };
