@@ -48,11 +48,13 @@
 
 <script>
 import Spells from './Spells.vue';
+import Items from './Items.vue';
 
 export default {
   name: 'InfoPane',
   components: {
     Spells,
+    Items,
   },
   data() {
     return {
@@ -66,7 +68,7 @@ export default {
         },
         {
           tab: 'Items',
-          content: '',
+          content: Items,
           icon: 'mdi-sword',
         },
         {
@@ -80,7 +82,8 @@ export default {
       selectedCharName: null,
 
       data: [],
-      spells: [],
+      characterSpells: [],
+      characterItems: [],
     };
   },
   /**
@@ -141,8 +144,8 @@ export default {
         case 'Spells':
           await this.fetchCharacterSpells(this.selectedCharacterID);
           break;
-        /* TODO: create item fetching API */
         case 'Items':
+          await this.fetchCharacterItems(this.selectedCharacterID);
           break;
         /* TODO: create campaign fetching API */
         case 'Campaigns':
@@ -167,8 +170,31 @@ export default {
         method,
       })
         .then((resp) => {
-          this.spells = resp.data.data.spells;
-          this.data = this.spells;
+          this.characterSpells = resp.data.data.spells;
+          this.data = this.characterSpells;
+        })
+        .catch(() => {
+          /* TODO: Add error handling. */
+        });
+    },
+    /**
+     * @param {String} charID - The character ID which can help to identify the items
+     * to fetch.
+     */
+    async fetchCharacterItems(charID) {
+      const integerID = parseInt(charID, 10);
+
+      const requestURI = `auth/character/${integerID}/item`;
+      const method = 'GET';
+
+      await this.$http({
+        url: requestURI,
+        data: null,
+        method,
+      })
+        .then((resp) => {
+          this.characterItems = resp.data.data.items;
+          this.data = this.characterItems;
         })
         .catch(() => {
           /* TODO: Add error handling. */
