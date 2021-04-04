@@ -422,7 +422,7 @@ func (app *application) createCampaign(c echo.Context) error {
 		struct {
 			ResourceURI string `json:"resource_uri"`
 		}{
-			"/newcampaign/" + strconv.Itoa(id),
+			"/campaign/" + strconv.Itoa(id),
 		},
 	)
 }

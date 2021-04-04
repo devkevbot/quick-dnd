@@ -38,5 +38,5 @@ func (app *application) registerRoutes(e *echo.Echo) {
 	r.DELETE("/character/:id/item/:name", app.deleteItem)
 
 	// Protected campaign endpoints
-	r.POST("/newcampaign", app.createCampaign)
+	r.POST("/campaign", app.createCampaign)
 }
