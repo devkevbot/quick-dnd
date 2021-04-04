@@ -1,7 +1,5 @@
 <!-- Characters.vue
 This component hold the temporary UI layout for character selection.
-There are currently 4 types of cards: Sliders, Selects, TextBoxes, and TextBoxesDisabled.
-Currently a work in progress.
 -->
 
 <template>
@@ -57,6 +55,7 @@ Currently a work in progress.
     </v-container>
   </template>
 
+  <!-- Temp in until character dropdown is compeletly implemented -->
   <template>
     <div class="stat-card">
       <v-container class="mx-2">
