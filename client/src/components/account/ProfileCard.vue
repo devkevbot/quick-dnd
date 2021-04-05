@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import ChangePasswordForm from './ChangePasswordForm.vue';
 import ConfirmDialog from '../ConfirmDialog.vue';
 
@@ -133,6 +134,9 @@ export default {
         await this.requestAccountDeletion();
       }
     },
+    ...mapActions({
+      logout: 'authentication/logoutPlayer',
+    }),
     /**
      * Sends an HTTP request to delete the user's account.
      */
@@ -146,6 +150,7 @@ export default {
         method,
       })
         .then(() => {
+          this.logout();
           this.$router.push('/login');
           /* TODO: Add code to log the user out and clean up their
           authentication data. */
