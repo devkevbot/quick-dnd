@@ -20,7 +20,9 @@ website.
 
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn block color="primary"> Logout </v-btn>
+          <v-btn block color="primary" @click="logoutAndRedirect">
+            Logout
+          </v-btn>
         </div>
       </template>
     </v-navigation-drawer>
@@ -28,6 +30,8 @@ website.
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'NavDrawer',
   data() {
@@ -40,6 +44,19 @@ export default {
         { title: 'Start a campaign', icon: 'mdi-castle', to: '/campaign' },
       ],
     };
+  },
+  methods: {
+    ...mapActions({
+      logout: 'authentication/logoutPlayer',
+    }),
+    /**
+     * Destroys user authentication session data and redirects the user
+     * back to the login page.
+     */
+    logoutAndRedirect() {
+      this.logout();
+      this.$router.push('/login');
+    },
   },
 };
 </script>
