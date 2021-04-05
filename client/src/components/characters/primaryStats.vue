@@ -104,7 +104,7 @@ export default {
         { attribute: 'Weight', value: this.characterData.weight, max: 1000 },
         { attribute: 'Height', value: this.characterData.height, max: 1000 },
         { attribute: 'Sex', value: this.characterData.sex },
-        { attribute: 'Armour Class', value: 'TEMP' },
+        { attribute: 'Armour Class', value: 'DERIVED' },
       ];
     },
     statSelect() {

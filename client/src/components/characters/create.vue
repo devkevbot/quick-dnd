@@ -165,15 +165,113 @@ This is based on what class was selected in step 1. -->
         <v-card>
           <v-row>
         <v-col cols="12" lg="6">
+          <!-- Loads different forms based on the selected class -->
           <v-card>
-            <v-form class="px-3">
+            <!-- Barbarian -->
+            <v-form class="px-3" v-if="selectedClass == 'Barbarian'">
               <v-card-actions>
-                <v-select :items="playerClass" filled label="Conditional Load"
+                <v-select :items="barbarianPrimalPath" filled label="Primal Path"
+                v-model="selectedBarbarianPrimalPath">
+                </v-select>
+              </v-card-actions>
+            </v-form>
+            <!-- Bard -->
+            <v-form class="px-3" v-if="selectedClass == 'Bard'">
+              <v-card-actions>
+                <v-select :items="bardCollege" filled label="College"
+                v-model="selectedBardCollege">
+                </v-select>
+              </v-card-actions>
+            </v-form>
+            <!-- Cleric -->
+            <v-form class="px-3" v-if="selectedClass == 'Cleric'">
+              <v-card-actions>
+                <v-select :items="clericDomain" filled label="Divine Domain"
+                v-model="selectedClericDomain">
+                </v-select>
+              </v-card-actions>
+            </v-form>
+            <!-- Driud -->
+            <v-form class="px-3" v-if="selectedClass == 'Druid'">
+              <v-card-actions>
+                <v-select :items="druidCircle" filled label="Druid Circle"
+                v-model="selectedDruidCircle">
+                </v-select>
+              </v-card-actions>
+            </v-form>
+            <!-- Fighter -->
+            <v-form class="px-3" v-if="selectedClass == 'Fighter'">
+              <v-card-actions>
+                <v-select :items="fighterArchetype" filled label="Fighting Archetype"
+                v-model="selectedFighterArchetype">
+                </v-select>
+              </v-card-actions>
+              <v-card-actions>
+                <v-select :items="fightingStyle" filled label="Fighting Style"
+                v-model="selectedFightingStyle">
+                </v-select>
+              </v-card-actions>
+            </v-form>
+            <!-- Monk -->
+            <v-form class="px-3" v-if="selectedClass == 'Monk'">
+              <v-card-actions>
+                <v-select :items="monkTradition" filled label="Tradition"
+                v-model="selectedMonkTradition">
+                </v-select>
+              </v-card-actions>
+            </v-form>
+            <!-- Palidin -->
+            <v-form class="px-3" v-if="selectedClass == 'Paladin'">
+              <v-card-actions>
+                <v-select :items="paladinOath" filled label="Oath"
                 v-model="selectedClass">
                 </v-select>
               </v-card-actions>
               <v-card-actions>
-                <v-select :items="race" filled label="Conditional Load" v-model="selectedRace">
+                <v-select :items="fightingStyle" filled label="Fighting Style"
+                v-model="selectedFightingStyle">
+                </v-select>
+              </v-card-actions>
+            </v-form>
+            <!-- Ranger -->
+            <v-form class="px-3" v-if="selectedClass == 'Ranger'">
+              <v-card-actions>
+                <v-select :items="rangerConclave" filled label="Conclave"
+                v-model="selectedClass">
+                </v-select>
+              </v-card-actions>
+              <v-text-field label="Favoured Enemy"
+              v-model="slectedRangerFavouredEnemy"></v-text-field>
+            </v-form>
+            <!-- Rogue -->
+            <v-form class="px-3" v-if="selectedClass == 'Rogue'">
+              <v-card-actions>
+                <v-select :items="rogueArchetype" filled label="Archetype"
+                v-model="rogueArchetype">
+                </v-select>
+              </v-card-actions>
+            </v-form>
+            <!-- Sorcerer -->
+            <v-form class="px-3" v-if="selectedClass == 'Sorcerer'">
+              <v-card-actions>
+                <v-select :items="sorcererOrigin" filled label="Origin"
+                v-model="selectedSorcererOrigin">
+                </v-select>
+              </v-card-actions>
+            </v-form>
+            <!-- Warlock -->
+            <v-form class="px-3" v-if="selectedClass == 'Warlock'">
+              <v-card-actions>
+                <v-select :items="warlockPatron" filled label="Patron"
+                v-model="selectedWarlockPatron">
+                </v-select>
+              </v-card-actions>
+            </v-form>
+            <!-- Wizzard -->
+            <v-form class="px-3" v-if="selectedClass == 'Wizard'">
+              <v-card-actions>
+                <v-select :items="wizzardTradition" filled label="Tradition"
+                v-model="selectedWizzardTradition">
                 </v-select>
               </v-card-actions>
             </v-form>
@@ -221,6 +319,20 @@ export default {
       selectedAlignment: '',
       slecetedSex: '',
       slecetedBackground: '',
+      selectedBarbarianPrimalPath: '',
+      selectedBardCollege: '',
+      selectedClericDomain: '',
+      selectedDruidCircle: '',
+      selectedFighterArchetype: '',
+      selectedFightingStyle: '',
+      selectedMonkTradition: '',
+      slecetedPaladinOath: '',
+      slectedRangerConclave: '',
+      slectedRangerFavouredEnemy: '',
+      slectedRogueArchetype: '',
+      selectedSorcererOrigin: '',
+      selectedWarlockPatron: '',
+      selectedWizzardTradition: '',
       playerClass: [
         'Barbarian',
         'Bard',
@@ -354,7 +466,7 @@ export default {
         'Shadow',
         'Sun Soul',
       ],
-      palidinOath: [
+      paladinOath: [
         'The Ancients',
         'Conquest',
         'The Crown',
