@@ -126,6 +126,49 @@ export default {
         { attribute: 'XP', value: this.characterData.xp_points },
       ];
     },
+    level() {
+      let tempLevel = 1;
+      if (this.characterData.xp_points < 300) {
+        tempLevel = 1;
+      } else if (this.characterData.xp_points < 900) {
+        tempLevel = 2;
+      } else if (this.characterData.xp_points < 2700) {
+        tempLevel = 3;
+      } else if (this.characterData.xp_points < 6500) {
+        tempLevel = 4;
+      } else if (this.characterData.xp_points < 14000) {
+        tempLevel = 5;
+      } else if (this.characterData.xp_points < 23000) {
+        tempLevel = 6;
+      } else if (this.characterData.xp_points < 34000) {
+        tempLevel = 7;
+      } else if (this.characterData.xp_points < 48000) {
+        tempLevel = 8;
+      } else if (this.characterData.xp_points < 64000) {
+        tempLevel = 9;
+      } else if (this.characterData.xp_points < 85000) {
+        tempLevel = 10;
+      } else if (this.characterData.xp_points < 100000) {
+        tempLevel = 11;
+      } else if (this.characterData.xp_points < 120000) {
+        tempLevel = 12;
+      } else if (this.characterData.xp_points < 140000) {
+        tempLevel = 13;
+      } else if (this.characterData.xp_points < 165000) {
+        tempLevel = 14;
+      } else if (this.characterData.xp_points < 195000) {
+        tempLevel = 15;
+      } else if (this.characterData.xp_points < 225000) {
+        tempLevel = 16;
+      } else if (this.characterData.xp_points < 265000) {
+        tempLevel = 17;
+      } else if (this.characterData.xp_points < 305000) {
+        tempLevel = 18;
+      } else if (this.characterData.xp_points < 355000) {
+        tempLevel = 19;
+      } else { tempLevel = 20; }
+      return tempLevel;
+    },
   },
 };
 </script>
