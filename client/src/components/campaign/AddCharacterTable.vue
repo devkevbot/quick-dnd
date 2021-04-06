@@ -18,7 +18,7 @@ are currently added to a campaign.
           <tr v-if="items.length === 0">
             <td>No data</td>
           </tr>
-          <tr v-else v-for="item in getItems" :key="item.id">
+          <tr v-else v-for="item in items" :key="item.id">
             <td>{{item.id}}</td>
             <td>{{item.name}}</td>
             <td>{{item.owner}}</td>
@@ -40,13 +40,7 @@ export default {
   },
   methods: {
     addItem(iId, iName, iOwner) {
-      const item = { id: iId, name: iName, owner: iOwner };
-      this.items.push(item);
-    },
-  },
-  computed: {
-    getItems() {
-      return this.items;
+      this.items.push({ id: iId, name: iName, owner: iOwner });
     },
   },
 };
