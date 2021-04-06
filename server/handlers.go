@@ -400,6 +400,33 @@ func (app *application) deleteItem(c echo.Context) error {
 	return sendJSONResponse(c, http.StatusOK, "Item deletion", "Deletion successful", nil)
 }
 
+func (app *application) createCampaign(c echo.Context) error {
+	var req models.Campaign
+	if err := c.Bind(&req); err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Campaign creation", "Could not process request", nil)
+	}
+
+	creatorUsername := getUsernameFromToken(c)
+	if strings.TrimSpace(creatorUsername) == "" {
+		return sendJSONResponse(c, http.StatusUnauthorized, "Campaign creation", "Creation failed", nil)
+	}
+
+	id, err := app.campaigns.Insert(req)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Campaign creation", "Creation failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusCreated, "Campaign creation", "Creation successful",
+		struct {
+			ResourceURI string `json:"resource_uri"`
+		}{
+			"/campaign/" + strconv.Itoa(id),
+		},
+	)
+}
+
 // Get all global stats.
 func (app *application) retrieveAllStats(c echo.Context) error {
 	stats, err := app.stats.GetAll()
@@ -410,3 +437,4 @@ func (app *application) retrieveAllStats(c echo.Context) error {
 
 	return sendJSONResponse(c, http.StatusOK, "Retrieve all stats", "Retrieval successful", stats)
 }
+

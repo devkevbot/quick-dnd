@@ -20,3 +20,5 @@ draco
 
 # Configuration files
 config.yml
+*.yml~
+*.yml.un~
