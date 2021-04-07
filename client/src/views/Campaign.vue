@@ -1,21 +1,20 @@
 <!-- Campaign.vue
-This component is the view that shows campaign data, state, and
-management options. Assumes the user is authenticated.
+This component is the view shown when a user is on the Campaign creation page.
 -->
 
 <template>
   <div class="campaign">
-    <Timeline />
+    <CampaignForm />
   </div>
 </template>
 
 <script>
-import Timeline from '../components/campaign/Timeline.vue';
+import CampaignForm from '../components/campaign/CampaignForm.vue';
 
 export default {
   name: 'Campaign',
   components: {
-    Timeline,
+    CampaignForm,
   },
 };
 </script>
