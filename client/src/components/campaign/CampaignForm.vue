@@ -16,10 +16,7 @@ campaign. Assumes the user is authenticated.
         </v-row>
 
         <v-row class="mb-3">
-          <v-col
-            cols="12"
-            md="6"
-          >
+          <v-col cols="12" md="6">
             <v-text-field
               :counter="50"
               label="Campaign Name"
@@ -27,10 +24,7 @@ campaign. Assumes the user is authenticated.
             ></v-text-field>
           </v-col>
 
-          <v-col
-            cols="12"
-            md="6"
-          >
+          <v-col cols="12" md="6">
             <v-text-field
               :counter="50"
               label="Location"
@@ -40,10 +34,7 @@ campaign. Assumes the user is authenticated.
         </v-row>
 
         <v-row>
-          <v-textarea
-            filled
-            label="Current State"
-          ></v-textarea>
+          <v-textarea filled label="Current State"></v-textarea>
         </v-row>
 
         <v-row class="ml-n2 mb-1">

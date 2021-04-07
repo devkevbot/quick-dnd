@@ -7,7 +7,7 @@ add a new character to their campaign.
   <div class="add-character-dialog">
     <v-dialog
       v-model="showPrompt"
-      :max-width=400
+      :max-width="400"
       :style="{ zIndex: 200 }"
       @keydown.esc="decline"
     >
@@ -15,13 +15,16 @@ add a new character to their campaign.
         <v-toolbar dark color="primary" dense flat>
           <v-toolbar-title>Add New Character to Campaign</v-toolbar-title>
         </v-toolbar>
-        <v-card-text class="pa-4">Enter character ID to add to this campaign:</v-card-text>
+        <v-card-text class="pa-4"
+          >Enter character ID to add to this campaign:</v-card-text
+        >
 
-        <v-text-field class="ml-4 mr-4"
-                v-model="id"
-                :counter="50"
-                label="ID"
-                required
+        <v-text-field
+          class="ml-4 mr-4"
+          v-model="id"
+          :counter="50"
+          label="ID"
+          required
         ></v-text-field>
 
         <v-card-actions class="pt-4">

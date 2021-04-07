@@ -19,9 +19,9 @@ are currently added to a campaign.
             <td>No data</td>
           </tr>
           <tr v-else v-for="item in items" :key="item.id">
-            <td>{{item.id}}</td>
-            <td>{{item.name}}</td>
-            <td>{{item.owner}}</td>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.owner }}</td>
           </tr>
         </tbody>
       </template>
@@ -30,7 +30,6 @@ are currently added to a campaign.
 </template>
 
 <script>
-
 export default {
   name: 'AddCharacterTable',
   data() {
