@@ -12,16 +12,23 @@ are currently added to a campaign.
             <th class="text-left">ID</th>
             <th class="text-left">Name</th>
             <th class="text-left">Owner</th>
+            <th class="text-left">Remove</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="items.length === 0">
             <td>No data</td>
           </tr>
+
           <tr v-else v-for="item in items" :key="item.id">
             <td>{{ item.id }}</td>
             <td>{{ item.name }}</td>
             <td>{{ item.owner }}</td>
+            <td>
+              <v-icon class="pl-2" @click="removeItem(item.id)">
+                mdi-delete
+              </v-icon>
+            </td>
           </tr>
         </tbody>
       </template>
@@ -40,6 +47,9 @@ export default {
   methods: {
     addItem(iId, iName, iOwner) {
       this.items.push({ id: iId, name: iName, owner: iOwner });
+    },
+    removeItem(id) {
+      this.items = this.items.filter((x) => x.id !== id);
     },
   },
 };
