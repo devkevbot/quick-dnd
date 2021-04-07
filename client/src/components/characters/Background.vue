@@ -95,6 +95,8 @@
           </v-textarea>
         </v-col>
       </v-row>
+
+      <v-btn class="primary" @click="onComplete">Next Step</v-btn>
     </v-container>
   </v-form>
 </template>
@@ -140,6 +142,15 @@ export default {
         'Chaotic Evil',
       ],
     };
+  },
+  methods: {
+    /**
+     * Emits the up-to-date background data entered by the user.
+     * Should be used a click handler for the "next step" button.
+     */
+    onComplete() {
+      this.$emit('complete', this.character);
+    },
   },
 };
 </script>
