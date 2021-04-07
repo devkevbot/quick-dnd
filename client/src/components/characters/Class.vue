@@ -19,13 +19,17 @@
           >
             <!-- Values for each attribute. -->
             <v-select
+              v-model="attribute.selected"
               :label="attribute.name"
-              :items="attribute.value"
+              :items="attribute.values"
               required
             ></v-select>
           </div>
         </span>
       </v-col>
+
+      <v-btn text @click="$emit('cancel')">Back</v-btn>
+      <v-btn class="primary" @click="onComplete">Create</v-btn>
     </v-container>
   </v-form>
 </template>
@@ -44,7 +48,8 @@ export default {
           attributes: [
             {
               name: 'Primal Path',
-              value: [
+              dataName: 'primal_path',
+              values: [
                 'Ancestral Guardian',
                 'Battlerager',
                 'Beast',
@@ -54,6 +59,7 @@ export default {
                 'Wild Magic',
                 'Zealot',
               ],
+              selected: null,
             },
           ],
         },
@@ -62,7 +68,8 @@ export default {
           attributes: [
             {
               name: 'College',
-              value: [
+              dataName: 'college',
+              values: [
                 'Creation',
                 'Eloquence',
                 'Glamour',
@@ -71,6 +78,7 @@ export default {
                 'Valor',
                 'Whispers',
               ],
+              selected: null,
             },
           ],
         },
@@ -79,7 +87,8 @@ export default {
           attributes: [
             {
               name: 'Domain',
-              value: [
+              dataName: 'divine_domain',
+              values: [
                 'Arcana',
                 'Death',
                 'Forge',
@@ -95,6 +104,7 @@ export default {
                 'Twilight',
                 'War',
               ],
+              selected: null,
             },
           ],
         },
@@ -103,7 +113,8 @@ export default {
           attributes: [
             {
               name: 'Circle',
-              value: [
+              dataName: 'druid_circle',
+              values: [
                 'Dreams',
                 'The Land',
                 'The Moon',
@@ -112,6 +123,7 @@ export default {
                 'The Stars',
                 'Wildfire',
               ],
+              selected: null,
             },
           ],
         },
@@ -120,7 +132,8 @@ export default {
           attributes: [
             {
               name: 'Archetype',
-              value: [
+              dataName: 'archetype',
+              values: [
                 'Arcane Archer',
                 'Banneret',
                 'Battle Master',
@@ -132,10 +145,12 @@ export default {
                 'Rune Knight',
                 'Samurai',
               ],
+              selected: null,
             },
             {
               name: 'Fighting Style',
-              value: [
+              dataName: 'fighting_style',
+              values: [
                 'Archery',
                 'Blind Fighting',
                 'Defense',
@@ -149,6 +164,7 @@ export default {
                 'Two-Weapon Fighting',
                 'Unarmed Fighting',
               ],
+              selected: null,
             },
           ],
         },
@@ -157,7 +173,8 @@ export default {
           attributes: [
             {
               name: 'Tradition',
-              value: [
+              dataName: 'monastic_tradition',
+              values: [
                 'Astral Self',
                 'Drunken Master',
                 'Four Elements',
@@ -168,6 +185,7 @@ export default {
                 'Shadow',
                 'Sun Soul',
               ],
+              selected: null,
             },
           ],
         },
@@ -176,7 +194,8 @@ export default {
           attributes: [
             {
               name: 'Oath',
-              value: [
+              dataName: 'oath',
+              values: [
                 'The Ancients',
                 'Conquest',
                 'The Crown',
@@ -187,10 +206,12 @@ export default {
                 'The Watchers',
                 'Oathbreaker',
               ],
+              selected: null,
             },
             {
               name: 'Fighting Style',
-              value: [
+              dataName: 'fighting_style',
+              values: [
                 'Archery',
                 'Blind Fighting',
                 'Defense',
@@ -204,6 +225,7 @@ export default {
                 'Two-Weapon Fighting',
                 'Unarmed Fighting',
               ],
+              selected: null,
             },
           ],
         },
@@ -213,7 +235,8 @@ export default {
           attributes: [
             {
               name: 'Conclave',
-              value: [
+              dataName: 'conclave',
+              values: [
                 'Beast Master',
                 'Fey Wanderer',
                 'Gloom Stalker',
@@ -222,6 +245,7 @@ export default {
                 'Monster Slayer',
                 'Swarmkeeper',
               ],
+              selected: null,
             },
           ],
         },
@@ -230,7 +254,8 @@ export default {
           attributes: [
             {
               name: 'Archetype',
-              value: [
+              dataName: 'archetype',
+              values: [
                 'Arcane Trickster',
                 'Assassin',
                 'Inquisitive',
@@ -241,6 +266,7 @@ export default {
                 'Swashbuckler',
                 'Thief',
               ],
+              selected: null,
             },
           ],
         },
@@ -249,7 +275,8 @@ export default {
           attributes: [
             {
               name: 'Origin',
-              value: [
+              dataName: 'sorcerous_origin',
+              values: [
                 'Aberrant Mind',
                 'Clockwork Soul',
                 'Draconic Bloodline',
@@ -258,6 +285,7 @@ export default {
                 'Storm',
                 'Wild Magic',
               ],
+              selected: null,
             },
           ],
         },
@@ -266,7 +294,8 @@ export default {
           attributes: [
             {
               name: 'Patron',
-              value: [
+              dataName: 'patron',
+              values: [
                 'Archfey',
                 'Celestial',
                 'Fathomless',
@@ -276,6 +305,7 @@ export default {
                 'Hexblade',
                 'Undying',
               ],
+              selected: null,
             },
           ],
         },
@@ -284,7 +314,8 @@ export default {
           attributes: [
             {
               name: 'Arcane Tradition',
-              value: [
+              dataName: 'arcane_tradition',
+              values: [
                 'Abjuration',
                 'Bladesinging',
                 'Chronurgy',
@@ -299,11 +330,39 @@ export default {
                 'Transmutation',
                 'War Magic',
               ],
+              selected: null,
             },
           ],
         },
       ],
     };
+  },
+  methods: {
+    /**
+     * Emits the up-to-date class data entered by the user.
+     * Should be used a click handler for the "next step" button.
+     */
+    onComplete() {
+      const data = this.prepareDataForEmit();
+      this.$emit('complete', data);
+    },
+    /**
+     * @returns {Object} - Formatted class data that is ready to emit.
+     */
+    prepareDataForEmit() {
+      /* Create an object which maps curr.DataName to curr.selected */
+      const callback = (acc, curr) => ({
+        ...acc,
+        [curr.dataName]: curr.selected,
+      });
+      const classAttributes = this.selectedClassAttributes.reduce(callback, {});
+
+      const data = {
+        className: this.selectedClass,
+        classAttributes,
+      };
+      return data;
+    },
   },
   computed: {
     /**
