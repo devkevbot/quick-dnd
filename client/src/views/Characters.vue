@@ -1,16 +1,16 @@
 <template>
   <div class="characters">
-    <CreationStepper />
+    <EditExisting />
   </div>
 </template>
 
 <script>
-import CreationStepper from '../components/characters/CreationStepper.vue';
+import EditExisting from '../components/characters/EditExisting.vue';
 
 export default {
   name: 'Characters',
   components: {
-    CreationStepper,
+    EditExisting,
   },
 };
 </script>
