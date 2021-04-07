@@ -23,22 +23,37 @@
     <v-stepper-items>
       <!-- Step 1 -->
       <v-stepper-content step="1">
-        <Background />
-        <v-btn class="primary" @click="incrementStepNumber">Next Step</v-btn>
+        <Background
+          @complete="
+            updateCharacterBackgroundData($event);
+            incrementStepNumber();
+          "
+        >
+        </Background>
       </v-stepper-content>
 
       <!-- Step 2 -->
       <v-stepper-content step="2">
-        <Stats />
-        <v-btn text @click="decrementStepNumber">Back</v-btn>
-        <v-btn class="primary" @click="incrementStepNumber">Next Step</v-btn>
+        <Stats
+          @cancel="decrementStepNumber"
+          @complete="
+            updateCharacterStatData($event);
+            incrementStepNumber();
+          "
+        >
+        </Stats>
       </v-stepper-content>
 
       <!-- Step 3 -->
       <v-stepper-content step="3">
-        <Class />
-        <v-btn text @click="decrementStepNumber">Back</v-btn>
-        <v-btn class="primary">Create</v-btn>
+        <Class
+          @cancel="decrementStepNumber"
+          @complete="
+            updateCharacterClassData($event);
+            sendCharacterCreationRequest();
+          "
+        >
+        </Class>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
@@ -61,6 +76,7 @@ export default {
       /* Tracks which step the user is at in the character creation
       process. */
       stepNumber: 1,
+      character: {},
     };
   },
   methods: {
@@ -79,18 +95,107 @@ export default {
       this.stepNumber -= 1;
     },
     /**
-     * Executes when the player has confirmed their intent to create a
-     * character. Used as a click event on the "create" button at the
-     * end of the `<v-stepper>` steps.
+     * Updates the current character background data. Triggered when the
+     * 'Background' step of the character creation process has been completed.
+     * @param {{
+     *  name: String
+     *  sex: String
+     *  race: String
+     *  weight: String
+     *  height: String
+     *  alignment: String
+     *  background: String
+     *  }} character - The event data emitted after the
+     *  background step has been completed.
      */
-    onSubmit() {
-      /* TODO: fill this function. */
+    updateCharacterBackgroundData({
+      name,
+      sex,
+      race,
+      weight,
+      height,
+      alignment,
+      background,
+    }) {
+      this.character.name = name;
+      this.character.sex = sex;
+      this.character.race = race;
+      this.character.weight = parseInt(weight, 10);
+      this.character.height = parseInt(height, 10);
+      this.character.alignment = alignment;
+      this.character.background = background;
+    },
+    /**
+     * Updates the current character stats data. Triggered when the
+     * 'Stats' step of the character creation process has been completed.
+     * @param {{
+     *  speed: Number
+     *  strength: Number
+     *  dexterity: Number
+     *  intelligence: Number
+     *  wisdom: Number
+     *  charisma: Number
+     *  constitution: Number
+     *  hpMax: Number
+     *  abilityPoints: Number
+     *  xpPoints: Number
+     *  }} character - The event data emitted after the
+     *  stats step has been completed.
+     */
+    updateCharacterStatData({
+      speed,
+      strength,
+      dexterity,
+      intelligence,
+      wisdom,
+      charisma,
+      constitution,
+      hpMax,
+      abilityPoints,
+      xpPoints,
+    }) {
+      this.character.speed = speed;
+      this.character.strength = strength;
+      this.character.dexterity = dexterity;
+      this.character.intelligence = intelligence;
+      this.character.wisdom = wisdom;
+      this.character.charisma = charisma;
+      this.character.constitution = constitution;
+      this.character.hp_max = hpMax;
+      this.character.ability_points = abilityPoints;
+      this.character.xp_points = xpPoints;
+    },
+    /**
+     * Updates the current character class data. Triggered when the
+     * 'Class' step of the character creation process has been completed.
+     * @param {{
+     *  className: String
+     *  classAttributes: Object
+     *  }} character - The event data emitted after the
+     *  class step has been completed.
+     */
+    updateCharacterClassData({ className, classAttributes }) {
+      this.character.class = className;
+      this.character.class_attributes = classAttributes;
     },
     /**
      * Send a request to the backend server's character creation API endpoint.
      */
-    sendCharacterCreationRequest() {
-      /* TODO: fill this function. */
+    async sendCharacterCreationRequest() {
+      const requestURI = 'auth/character';
+      const method = 'POST';
+
+      await this.$http({
+        url: requestURI,
+        data: this.character,
+        method,
+      })
+        .then(() => {
+          /* TODO: Add success message. */
+        })
+        .catch(() => {
+          /* TODO: Add error handling. */
+        });
     },
   },
 };

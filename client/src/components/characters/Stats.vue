@@ -27,6 +27,9 @@
           </v-slider>
         </v-col>
       </v-row>
+
+      <v-btn text @click="$emit('cancel')">Back</v-btn>
+      <v-btn class="primary" @click="onComplete">Next Step</v-btn>
     </v-container>
   </v-form>
 </template>
@@ -40,6 +43,7 @@ export default {
       stats: [
         {
           name: 'Speed',
+          dataName: 'speed',
           initValue: 640,
           value: 640,
           min: 0,
@@ -47,6 +51,7 @@ export default {
         },
         {
           name: 'Strength',
+          dataName: 'strength',
           initValue: 15,
           value: 15,
           min: 0,
@@ -54,6 +59,7 @@ export default {
         },
         {
           name: 'Dexterity',
+          dataName: 'dexterity',
           initValue: 15,
           value: 15,
           min: 0,
@@ -61,6 +67,7 @@ export default {
         },
         {
           name: 'Intelligence',
+          dataName: 'intelligence',
           initValue: 15,
           value: 15,
           min: 0,
@@ -68,6 +75,7 @@ export default {
         },
         {
           name: 'Wisdom',
+          dataName: 'wisdom',
           initValue: 15,
           value: 15,
           min: 0,
@@ -75,6 +83,7 @@ export default {
         },
         {
           name: 'Charisma',
+          dataName: 'charisma',
           initValue: 15,
           value: 15,
           min: 0,
@@ -82,6 +91,7 @@ export default {
         },
         {
           name: 'Constitution',
+          dataName: 'constitution',
           initValue: 15,
           value: 15,
           min: 0,
@@ -89,6 +99,7 @@ export default {
         },
         {
           name: 'Max HP',
+          dataName: 'hpMax',
           initValue: 220,
           value: 220,
           min: 1,
@@ -96,6 +107,7 @@ export default {
         },
         {
           name: 'Ability Points',
+          dataName: 'abilityPoints',
           initValue: 10,
           value: 10,
           min: 0,
@@ -104,6 +116,7 @@ export default {
         {
           /* TODO: Calculate level based on XP points. */
           name: 'XP Points',
+          dataName: 'xpPoints',
           initValue: 0,
           value: 0,
           min: 0,
@@ -111,6 +124,28 @@ export default {
         },
       ],
     };
+  },
+  methods: {
+    /**
+     * Emits the up-to-date stats data entered by the user.
+     * Should be used a click handler for the "next step" button.
+     */
+    onComplete() {
+      const data = this.prepareDataForEmit();
+      this.$emit('complete', data);
+    },
+    /**
+     * @returns {Object} - Formatted stat data that is ready to emit.
+     */
+    prepareDataForEmit() {
+      /* Create an object which maps curr.DataName to curr.value */
+      const callback = (acc, curr) => ({
+        ...acc,
+        [curr.dataName]: curr.value,
+      });
+      const data = this.stats.reduce(callback, {});
+      return data;
+    },
   },
 };
 </script>
