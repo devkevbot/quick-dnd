@@ -94,14 +94,14 @@ This component hold the temporary UI layout for character selection.
 
 <script>
 import PrimaryStats from './MainDetails.vue';
-import Modifiers from './Modifiers.vue';
+import StatModifiers from './StatModifiers.vue';
 import ModifyBackground from './ModifyBackground.vue';
 import CreationStepper from './CreationStepper.vue';
 
 export default {
   components: {
     PrimaryStats,
-    Modifiers,
+    StatModifiers,
     ModifyBackground,
     CreationStepper,
   },
@@ -121,7 +121,7 @@ export default {
         },
         {
           tab: 'Modifiers',
-          content: Modifiers,
+          content: StatModifiers,
           icon: 'mdi-sword',
         },
         {
@@ -130,7 +130,7 @@ export default {
           icon: 'mdi-castle',
         },
         {
-          tab: 'New Character',
+          tab: 'New Character Temporary in Tab',
           content: CreationStepper,
           icon: 'mdi-fire',
         },
