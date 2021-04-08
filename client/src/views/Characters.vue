@@ -1,16 +1,16 @@
 <template>
   <div class="characters">
-    <EditExisting />
+    <CharacterManagement />
   </div>
 </template>
 
 <script>
-import EditExisting from '../components/characters/EditExisting.vue';
+import CharacterManagement from '../components/characters/CharacterManagement.vue';
 
 export default {
   name: 'Characters',
   components: {
-    EditExisting,
+    CharacterManagement,
   },
 };
 </script>

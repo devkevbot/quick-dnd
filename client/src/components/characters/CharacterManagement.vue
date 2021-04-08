@@ -1,5 +1,6 @@
-<!-- Characters.vue
-This component hold the temporary UI layout for character selection.
+<!-- CharacterManagement.vue
+This is the page which houses the components for character managment.
+Here you are able to create, update, and delete character data.
 -->
 
 <template>
@@ -11,15 +12,6 @@ This component hold the temporary UI layout for character selection.
           <v-row class="ml-n3 mb-1">
             <p class="display-1 primary--text">Select your character</p>
           </v-row>
-
-          <v-select
-            class="ml-n3"
-            solo
-            prepend-inner-icon="mdi-account-search"
-            :items="characterNames"
-            v-model="selectedCharName"
-            @change="fetchTabData(tab)"
-          ></v-select>
         </v-col>
 
         <v-card>
@@ -130,7 +122,7 @@ export default {
           icon: 'mdi-castle',
         },
         {
-          tab: 'New Character Temporary in Tab',
+          tab: 'Create a New Character',
           content: CreationStepper,
           icon: 'mdi-fire',
         },

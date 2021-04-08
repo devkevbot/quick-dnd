@@ -1,4 +1,4 @@
-// Component for stats and computed modifiers for a character
+<!-- Component for stats and computed modifiers for a character -->
 
 <template>
   <div class="modifiers">

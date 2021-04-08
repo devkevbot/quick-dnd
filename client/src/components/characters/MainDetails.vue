@@ -1,4 +1,4 @@
-// Component contains the primary characteristics for a character
+<!-- Component contains the primary characteristics for a character -->
 
 <template>
   <div class="primaryStats">

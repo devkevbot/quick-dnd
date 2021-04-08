@@ -1,4 +1,4 @@
-// Compnent for inputing a character's background
+<!-- Component for inputing a character's background -->
 
 <template>
   <div class="background">
