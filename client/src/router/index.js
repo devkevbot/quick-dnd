@@ -26,39 +26,41 @@ const routes = [
     },
   },
   {
-    /* TODO: make protected route */
     path: '/campaign',
     name: 'Campaign',
     component: () => import('../views/Campaign.vue'),
     meta: {
       layout: 'Main',
+      protected: true,
     },
   },
   {
-    /* TODO: make protected route */
     path: '/characters',
     name: 'Characters',
     component: () => import('../views/Characters.vue'),
     meta: {
       layout: 'Main',
+      protected: true,
     },
   },
   {
-    /* TODO: make protected route */
+
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue'),
     meta: {
       layout: 'Main',
+      protected: true,
     },
   },
   {
-    /* TODO: make protected route */
+
     path: '/account',
     name: 'Account',
     component: () => import('../views/Account.vue'),
     meta: {
       layout: 'Main',
+      protected: true,
     },
   },
 ];
