@@ -87,3 +87,23 @@ func (m *CharacterModel) GetAllUserCharacters(username string) (*[]models.Charac
 
 	return &storedCharacters, nil
 }
+
+// Delete attempts to delete a character identified by `id`.
+func (m *CharacterModel) Delete(id int) error {
+	stmt := "DELETE FROM Character WHERE id = $1"
+
+	res, err := m.DB.Exec(stmt, id)
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if count != 1 {
+		return models.ErrDeleteSingleRecord
+	}
+
+	return nil
+}

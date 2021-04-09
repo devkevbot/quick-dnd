@@ -223,6 +223,24 @@ func (app *application) retrieveUserCharacters(c echo.Context) error {
 		})
 }
 
+// deleteCharacter attempts to a delete a character given its ID.
+func (app *application) deleteCharacter(c echo.Context) error {
+	requestCharIDStr := c.Param("id")
+	numericCharID, err := strconv.Atoi(requestCharIDStr)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Character deletion", "Could not process request", nil)
+	}
+
+	err = app.characters.Delete(numericCharID)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Character deletion", "Deletion failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Character deletion", "Deletion successful", nil)
+}
+
 // Create a spell which belongs to a character.
 func (app *application) createSpell(c echo.Context) error {
 	charIDString := c.Param("id")
@@ -437,4 +455,3 @@ func (app *application) retrieveAllStats(c echo.Context) error {
 
 	return sendJSONResponse(c, http.StatusOK, "Retrieve all stats", "Retrieval successful", stats)
 }
-
