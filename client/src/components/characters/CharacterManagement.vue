@@ -88,7 +88,7 @@ Here you are able to create, update, and delete character data.
 import PrimaryStats from './MainDetails.vue';
 import StatModifiers from './StatModifiers.vue';
 import ModifyBackground from './ModifyBackground.vue';
-import CreationStepper from './CreationStepper.vue';
+import CreationStepper from './creation/CreationStepper.vue';
 
 export default {
   components: {
