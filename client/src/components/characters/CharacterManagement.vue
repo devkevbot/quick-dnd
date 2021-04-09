@@ -28,10 +28,12 @@
 </template>
 
 <script>
+import CharacterInfo from './updating/CharacterInfo.vue';
 import CreationStepper from './creation/CreationStepper.vue';
 
 export default {
   components: {
+    CharacterInfo,
     CreationStepper,
   },
   data() {
@@ -40,7 +42,7 @@ export default {
       items: [
         {
           tab: 'Manage Existing Character',
-          content: '',
+          content: CharacterInfo,
           icon: 'mdi-book-open-outline',
         },
         {
@@ -49,7 +51,6 @@ export default {
           icon: 'mdi-plus',
         },
       ],
-      characterData: [],
     };
   },
 };
