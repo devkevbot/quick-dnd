@@ -229,13 +229,6 @@ type Character struct {
 	PlayerUsername string        `json:"player_username" db:"player_username"`
 }
 
-// CharacterAbility is the code representation of the
-// "CharacterAbilities" relation in the database schema.
-type CharacterAbility struct {
-	CharacterID int    `json:"character_id" db:"character_id"`
-	Ability     string `json:"ability" db:"ability"`
-}
-
 type ItemType string
 
 const (
@@ -364,14 +357,6 @@ type Spell struct {
 	CastingTime   int             `json:"casting_time" db:"casting_time"`
 	Range         int             `json:"range" db:"range"` // feet
 	Duration      int             `json:"duration" db:"duration"`
-}
-
-// SpellComponent is the code representation of the "SpellComponents"
-// relation in the database schema.
-type SpellComponent struct {
-	CharacterID int    `json:"character_id" db:"character_id"`
-	SpellName   string `json:"spell_name" db:"spell_name"`
-	Component   string `json:"component" db:"component"`
 }
 
 // Campaign is the code representation of the "Campaign" relation in the
