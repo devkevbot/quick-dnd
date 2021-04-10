@@ -292,6 +292,34 @@ func (app *application) retrieveSpell(c echo.Context) error {
 	return sendJSONResponse(c, http.StatusOK, "Spell retrieval", "Retrieval successful", spell)
 }
 
+// Delete a spell belonging to a character.
+func (app *application) deleteSpell(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Spell deletion", "Deletion failed", nil)
+	}
+
+	rawSpellName := c.Param("name")
+	decodedSpellName, err := url.QueryUnescape(rawSpellName)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Spell deletion", "Deletion failed", nil)
+	}
+
+	err = app.spells.Delete(charID, decodedSpellName)
+	if err != nil {
+		log.Error(err)
+		if errors.Is(err, models.ErrNoRecord) {
+			return sendJSONResponse(c, http.StatusNotFound, "Spell deletion", "Deletion failed", nil)
+		}
+		return sendJSONResponse(c, http.StatusInternalServerError, "Spell deletion", "Deletion failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Spell deletion", "Deletion successful", nil)
+}
+
 // Get all spells belonging to a character.
 func (app *application) retrieveAllCharacterSpells(c echo.Context) error {
 	charIDString := c.Param("id")

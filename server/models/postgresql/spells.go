@@ -76,3 +76,27 @@ func (m *SpellModel) GetAllCharacterSpells(characterID int) (*[]models.Spell, er
 
 	return &storedSpells, nil
 }
+
+// Delete a spell belonging to a character.
+func (m *SpellModel) Delete(characterID int, spellName string) error {
+	stmt := "DELETE FROM Spells WHERE character_id = $1 AND spell_name = $2"
+
+	res, err := m.DB.Exec(stmt, characterID, spellName)
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return models.ErrNoRecord
+
+	}
+	if count > 1 {
+		return models.ErrDeleteSingleRecord
+	}
+
+	return nil
+}

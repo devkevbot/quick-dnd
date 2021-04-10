@@ -31,6 +31,7 @@ func (app *application) registerRoutes(e *echo.Echo) {
 	r.POST("/character/:id/spell", app.createSpell)
 	r.GET("/character/:id/spell/:name", app.retrieveSpell)
 	r.GET("/character/:id/spell", app.retrieveAllCharacterSpells)
+	r.DELETE("/character/:id/spell/:name", app.deleteSpell)
 
 	// Protected item endpoints
 	r.POST("/character/:id/item", app.createItem)
