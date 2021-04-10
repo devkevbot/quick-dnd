@@ -13,7 +13,20 @@ characters. Enables other actions such as deleting characters. -->
           prepend-inner-icon="mdi-account-search"
           :items="characterNames"
           v-model="selectedCharName"
-        ></v-select>
+        >
+          <!-- Button used to refresh the character list. -->
+          <template v-slot:append-outer>
+            <v-btn
+              color="primary"
+              fab
+              small
+              class="mt-n2"
+              @click="fetchUserCharacters"
+            >
+              <v-icon>mdi-refresh</v-icon>
+            </v-btn>
+          </template>
+        </v-select>
       </v-col>
     </v-row>
 
