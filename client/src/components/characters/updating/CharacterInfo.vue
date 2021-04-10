@@ -261,7 +261,6 @@ export default {
             color: 'success',
             timeout: 6000,
           });
-          this.fetchUserCharacters();
         })
         .catch((err) => {
           let message = 'Something went wrong. Please try again.';
@@ -273,7 +272,9 @@ export default {
             color: 'error',
             timeout: 6000,
           });
-          /* TODO: Add error handling. */
+        })
+        .finally(() => {
+          this.fetchUserCharacters();
         });
     },
   },
