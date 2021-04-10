@@ -1333,7 +1333,7 @@ INSERT INTO Character VALUES
     'Warlock',
     'at1');
 
-INSERT INTO Barbarians VALUES 
+INSERT INTO Barbarians VALUES
 (1, 'Berserker'),
 (13, 'Totem Warrior'),
 (25, 'Beast'),
@@ -1354,49 +1354,49 @@ INSERT INTO Fighters VALUES
 (39, 'Champion', 'Dueling'),
 (51, 'Rune Knight', 'Protection');
 
-INSERT INTO Rogues VALUES 
+INSERT INTO Rogues VALUES
 (4, 'Thief'),
 (16, 'Assassin'),
 (28, 'Scout'),
 (40, 'Phantom'),
 (52, 'Soulknife');
 
-INSERT INTO Monks VALUES 
+INSERT INTO Monks VALUES
 (5, 'Astral Self'),
 (17, 'Kensei'),
 (29, 'Mercy'),
 (41, 'Shadow'),
 (53, 'Long Death');
 
-INSERT INTO Bards VALUES 
+INSERT INTO Bards VALUES
 (6, 'Creation'),
 (18, 'Lore'),
 (30, 'Whispers'),
 (42, 'Swords'),
 (54, 'Glamour');
 
-INSERT INTO Clerics VALUES 
+INSERT INTO Clerics VALUES
 (7, 'Arcana'),
 (19, 'Death'),
 (31, 'Order'),
 (43, 'War'),
 (55, 'Nature');
 
-INSERT INTO Druids VALUES 
+INSERT INTO Druids VALUES
 (8, 'The Spores'),
 (20, 'The Stars'),
 (32, 'Wildfire'),
 (44, 'The Land'),
 (56, 'Dreams');
 
-INSERT INTO Paladins VALUES 
+INSERT INTO Paladins VALUES
 (9, 'Redemption', 'Defense'),
 (21, 'Conquest', 'Defense'),
 (33, 'The Watchers', 'Great Weapon Fighting'),
 (45, 'The Ancients', 'Unarmed Fighting'),
 (57, 'Glory', 'Protection');
 
-INSERT INTO Rangers VALUES 
+INSERT INTO Rangers VALUES
 (10, 'Beast Master', 'Beasts'),
 (22, 'Beast Master', 'Goblins'),
 (34, 'Hunter', 'Beasts'),
@@ -1404,46 +1404,19 @@ INSERT INTO Rangers VALUES
 (58, 'Fey Wanderer', 'Humanoids');
 
 
-INSERT INTO Sorcerers VALUES 
+INSERT INTO Sorcerers VALUES
 (11, 'Draconic Bloodline'),
 (23, 'Storm'),
 (35, 'Shadow'),
 (47, 'Divine Soul'),
 (59, 'Clockwork Soul');
 
-INSERT INTO Warlocks VALUES 
+INSERT INTO Warlocks VALUES
 (12, 'Genie'),
 (24, 'Fiend'),
 (36, 'Undying'),
 (48, 'Archfey'),
 (60, 'Celestial');
-
-
-INSERT INTO CharacterAbilities VALUES
-(
-    1,
-    'Rage'
-),
-(
-    3,
-    'Second Wind'
-),
-(
-    3,
-    'Action Surge'
-),
-(
-    3,
-    'Sneak Attack'
-),
-(
-    3,
-    'Thieves'' Cant'
-),
-(
-    4,
-    'Cunning Action'
-);
 
 INSERT INTO Items VALUES
 (
@@ -1592,63 +1565,6 @@ INSERT INTO Spells VALUES
     1,
     0,
     60
-);
-
-INSERT INTO SpellComponents VALUES
-(
-    2,
-    'Fire Bolt',
-    'Verbal'
-),
-(
-    2,
-    'Fire Bolt',
-    'Somatic'
-),
-(
-    2,
-    'Frostbite',
-    'Verbal'
-),
-(
-    2,
-    'Frostbite',
-    'Somatic'
-),
-(
-    2,
-    'Burning Hands',
-    'Verbal'
-),
-(
-    2,
-    'Burning Hands',
-    'Somatic'
-),
-(
-    2,
-    'Shield',
-    'Verbal'
-),
-(
-    2,
-    'Shield',
-    'Somatic'
-),
-(
-    2,
-    'False Life',
-    'Verbal'
-),
-(
-    2,
-    'False Life',
-    'Somatic'
-),
-(
-    2,
-    'False Life',
-    'Material'
 );
 
 INSERT INTO Campaign VALUES
