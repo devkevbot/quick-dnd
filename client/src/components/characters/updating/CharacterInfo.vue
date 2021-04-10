@@ -137,7 +137,7 @@ characters. Enables other actions such as deleting characters. -->
             :key="stat.name"
             class="pb-4"
           >
-            <v-text-field readonly :label="stat.name" :value="`${stat.value}`">
+            <v-text-field readonly :label="stat.name" :value="stat.value">
             </v-text-field>
           </v-col>
         </v-row>
