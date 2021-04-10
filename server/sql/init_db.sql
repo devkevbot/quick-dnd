@@ -80,15 +80,6 @@ CREATE TABLE Character (
         ON UPDATE CASCADE
 );
 
-CREATE TABLE CharacterAbilities (
-    character_id        int,
-    ability             text,
-    PRIMARY KEY (character_id, ability),
-    FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
 CREATE TYPE e_item_type AS ENUM (
     'Armor',
     'Potion',
@@ -144,20 +135,10 @@ CREATE TABLE Spells (
     concentration       bool NOT NULL,
     description         text,
     casting_time        int NOT NULL CHECK (casting_time >= 0), -- # Actions
-    range               int NOT NULL CHECK (range >= 0), -- in feett
+    range               int NOT NULL CHECK (range >= 0), -- in feet
     duration            int NOT NULL CHECK (duration >= 0),
     PRIMARY KEY (character_id, spell_name),
     FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
-CREATE TABLE SpellComponents (
-    character_id        int,
-    spell_name          text,
-    component           text,
-    PRIMARY KEY (character_id, spell_name, component),
-    FOREIGN KEY (character_id, spell_name) REFERENCES Spells(character_id  , spell_name)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
