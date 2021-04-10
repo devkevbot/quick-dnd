@@ -19,8 +19,8 @@ func (m *CharacterModel) Insert(c models.Character) (int, error) {
 		alignment, sex, background, race,
 		speed, strength, dexterity, intelligence, wisdom, charisma, constitution,
 		hp_max, ability_points, xp_points,
-		class, player_username)
-		VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+		class, class_attribute, player_username)
+		VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
 		RETURNING id`
 
 	var createdCharacterID int
@@ -29,7 +29,7 @@ func (m *CharacterModel) Insert(c models.Character) (int, error) {
 		c.Alignment, c.Sex, c.Background, c.Race,
 		c.Speed, c.Strength, c.Dexterity, c.Intelligence, c.Wisdom, c.Charisma, c.Constitution,
 		c.HPMax, c.AbilityPoints, c.XPPoints,
-		c.Class, c.PlayerUsername,
+		c.Class, c.ClassAttribute, c.PlayerUsername,
 	).Scan(&createdCharacterID)
 
 	if err != nil {
