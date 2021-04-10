@@ -84,18 +84,18 @@ func (m *ItemModel) Delete(characterID int, itemName string) error {
 
 	res, err := m.DB.Exec(stmt, characterID, itemName)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return models.ErrNoRecord
-		} else {
-			return err
-		}
+		return err
 	}
 
 	count, err := res.RowsAffected()
 	if err != nil {
 		return err
 	}
-	if count != 1 {
+	if count == 0 {
+		return models.ErrNoRecord
+
+	}
+	if count > 1 {
 		return models.ErrDeleteSingleRecord
 	}
 
