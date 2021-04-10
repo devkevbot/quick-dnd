@@ -55,7 +55,7 @@ CREATE TYPE e_sex AS ENUM (
 
 CREATE TABLE Character (
     id                  serial PRIMARY KEY,
-    name                text NOT NULL,
+    name                text CHECK (length(name) > 0) NOT NULL,
     weight              int NOT NULL CHECK (weight > 0 AND weight <= 1000), -- Kilograms
     height              int NOT NULL CHECK (height > 0 AND height <= 1000), -- Centimetres
     alignment           e_alignment NOT NULL,
@@ -102,8 +102,8 @@ CREATE TYPE e_item_rarity AS ENUM (
 );
 
 CREATE TABLE Items (
-    character_id        int,
-    item_name           text,
+    character_id        int CHECK (character_id > 0),
+    item_name           text CHECK (length(item_name) > 0) NOT NULL,
     type                e_item_type NOT NULL,
     rarity              e_item_rarity NOT NULL,
     weight              int CHECK (weight >= 0) NOT NULL, -- In pounds
@@ -128,8 +128,8 @@ CREATE TYPE e_school AS ENUM (
 );
 
 CREATE TABLE Spells (
-    character_id        int,
-    spell_name          text,
+    character_id        int CHECK (character_id > 0),
+    spell_name          text CHECK (length(spell_name) > 0) NOT NULL,
     level               int NOT NULL CHECK (level >= 0 AND level <= 9),
     school              e_school NOT NULL,
     concentration       bool NOT NULL,
@@ -155,8 +155,8 @@ CREATE TABLE Campaign (
 );
 
 CREATE TABLE CampaignMilestones (
-    campaign_id         int,
-    milestone           text,
+    campaign_id         int NOT NULL,
+    milestone           text CHECK (length(milestone) > 0) NOT NULL,
     PRIMARY KEY (campaign_id, milestone),
     FOREIGN KEY (campaign_id) REFERENCES Campaign(id)
         ON DELETE CASCADE
@@ -164,8 +164,8 @@ CREATE TABLE CampaignMilestones (
 );
 
 CREATE TABLE BelongsTo (
-    character_id        int,
-    campaign_id         int,
+    character_id        int CHECK (character_id > 0),
+    campaign_id         int CHECK (campaign_id > 0),
     PRIMARY KEY (character_id, campaign_id),
     FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
@@ -190,8 +190,8 @@ CREATE TYPE e_barbarian_primal_path AS ENUM (
 );
 
 CREATE TABLE Barbarians (
-    character_id        int,
-    primal_path         e_barbarian_primal_path,
+    character_id        int CHECK (character_id > 0),
+    primal_path         e_barbarian_primal_path NOT NULL,
     PRIMARY KEY (character_id),
     FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
@@ -209,8 +209,8 @@ CREATE TYPE e_bard_college AS ENUM (
 );
 
 CREATE TABLE Bards (
-    character_id        int,
-    college             e_bard_college,
+    character_id        int CHECK (character_id > 0),
+    college             e_bard_college NOT NULL,
     PRIMARY KEY (character_id),
     FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
@@ -235,8 +235,8 @@ CREATE TYPE e_cleric_domain AS ENUM (
 );
 
 CREATE TABLE Clerics (
-    character_id        int,
-    divine_domain       e_cleric_domain,
+    character_id        int CHECK (character_id > 0),
+    divine_domain       e_cleric_domain NOT NULL,
     PRIMARY KEY (character_id),
     FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
@@ -254,8 +254,8 @@ CREATE TYPE e_druid_circle AS ENUM (
 );
 
 CREATE TABLE Druids (
-    character_id        int,
-    druid_circle        e_druid_circle,
+    character_id        int CHECK (character_id > 0),
+    druid_circle        e_druid_circle NOT NULL,
     PRIMARY KEY (character_id),
     FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
@@ -291,9 +291,9 @@ CREATE TYPE e_fighting_style AS ENUM (
 );
 
 CREATE TABLE Fighters (
-    character_id        int,
-    archetype           e_fighter_archetype,
-    fighting_style      e_fighting_style,
+    character_id        int CHECK (character_id > 0),
+    archetype           e_fighter_archetype NOT NULL,
+    fighting_style      e_fighting_style NOT NULL,
     PRIMARY KEY (character_id),
     FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
@@ -313,8 +313,8 @@ CREATE TYPE e_monk_tradition AS ENUM (
 );
 
 CREATE TABLE Monks (
-    character_id        int,
-    monastic_tradition  e_monk_tradition,
+    character_id        int CHECK (character_id > 0),
+    monastic_tradition  e_monk_tradition NOT NULL,
     PRIMARY KEY (character_id),
     FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
@@ -334,9 +334,9 @@ CREATE TYPE e_paladin_oath AS ENUM (
 );
 
 CREATE TABLE Paladins (
-    character_id        int,
-    oath                e_paladin_oath,
-    fighting_style      e_fighting_style,
+    character_id        int CHECK (character_id > 0),
+    oath                e_paladin_oath NOT NULL,
+    fighting_style      e_fighting_style NOT NULL,
     PRIMARY KEY (character_id),
     FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
@@ -354,9 +354,9 @@ CREATE TYPE e_ranger_conclave AS ENUM (
 );
 
 CREATE TABLE Rangers (
-    character_id        int,
-    conclave            e_ranger_conclave,
-    favoured_enemy      text,
+    character_id        int CHECK (character_id > 0),
+    conclave            e_ranger_conclave NOT NULL,
+    favoured_enemy      text NOT NULL,
     PRIMARY KEY (character_id),
     FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
@@ -376,8 +376,8 @@ CREATE TYPE e_rogue_archetype AS ENUM (
 );
 
 CREATE TABLE Rogues (
-    character_id        int,
-    archetype           e_rogue_archetype,
+    character_id        int CHECK (character_id > 0),
+    archetype           e_rogue_archetype NOT NULL,
     PRIMARY KEY (character_id),
     FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
@@ -395,8 +395,8 @@ CREATE TYPE e_sorcerer_origin AS ENUM (
 );
 
 CREATE TABLE Sorcerers (
-    character_id        int,
-    sorcerous_origin    e_sorcerer_origin,
+    character_id        int CHECK (character_id > 0),
+    sorcerous_origin    e_sorcerer_origin NOT NULL,
     PRIMARY KEY (character_id),
     FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
@@ -415,8 +415,8 @@ CREATE TYPE e_warlock_patron AS ENUM (
 );
 
 CREATE TABLE Warlocks (
-    character_id        int,
-    patron              e_warlock_patron,
+    character_id        int CHECK (character_id > 0),
+    patron              e_warlock_patron NOT NULL,
     PRIMARY KEY (character_id),
     FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
@@ -440,8 +440,8 @@ CREATE TYPE e_wizard_tradition AS ENUM (
 );
 
 CREATE TABLE Wizards (
-    character_id        int,
-    arcane_tradition    e_wizard_tradition,
+    character_id        int CHECK (character_id > 0),
+    arcane_tradition    e_wizard_tradition NOT NULL,
     PRIMARY KEY (character_id),
     FOREIGN KEY (character_id) REFERENCES Character(id)
         ON DELETE CASCADE
