@@ -32,6 +32,7 @@ type application struct {
 		Insert(s models.Spell) error
 		Get(characterID int, spellName string) (*models.Spell, error)
 		GetAllCharacterSpells(characterID int) (*[]models.Spell, error)
+		Delete(characterID int, spellName string) error
 	}
 	items interface {
 		Insert(i models.Item) error
