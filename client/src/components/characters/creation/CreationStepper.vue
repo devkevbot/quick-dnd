@@ -60,6 +60,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import Background from './Background.vue';
 import Stats from './Stats.vue';
 import Class from './Class.vue';
@@ -80,6 +81,9 @@ export default {
     };
   },
   methods: {
+    ...mapActions({
+      display: 'notifications/display',
+    }),
     /**
      * Increments the current step number by 1. Used as a click event to
      * continue to the next step of a`<v-stepper>`.
@@ -191,10 +195,22 @@ export default {
         method,
       })
         .then(() => {
-          /* TODO: Add success message. */
+          this.display({
+            message: 'Character was successfully created!',
+            color: 'success',
+            timeout: 6000,
+          });
         })
-        .catch(() => {
-          /* TODO: Add error handling. */
+        .catch((err) => {
+          let message = 'Something went wrong. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 6000,
+          });
         });
     },
   },

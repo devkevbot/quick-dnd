@@ -132,6 +132,7 @@ characters. Enables other actions such as deleting characters. -->
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 
 export default {
@@ -216,6 +217,9 @@ export default {
     },
   },
   methods: {
+    ...mapActions({
+      display: 'notifications/display',
+    }),
     /**
      * Sends an HTTP request to fetch the user's characters.
      */
@@ -264,9 +268,26 @@ export default {
         data: null,
         method,
       })
-        .then(() => this.fetchUserCharacters())
-        .catch(() => {
-          /* TODO: Add error handling. */
+        .then(() => {
+          this.display({
+            message: 'Character was successfully deleted!',
+            color: 'success',
+            timeout: 6000,
+          });
+        })
+        .catch((err) => {
+          let message = 'Something went wrong. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 6000,
+          });
+        })
+        .finally(() => {
+          this.fetchUserCharacters();
         });
     },
   },
