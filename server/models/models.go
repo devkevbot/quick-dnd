@@ -35,7 +35,7 @@ var (
 	ErrInvalidMagicSchoolType = errors.New("models: invalid spell magic school type")
 )
 
-// JSON unmarshal errors for class atrribute types.
+// JSON unmarshal errors for class attribute types.
 var (
 	ErrInvalidClassAttribute = errors.New("models: invalid class attribute type")
 )
