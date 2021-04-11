@@ -45,7 +45,7 @@
           <v-text-field
             v-model.trim="character.weight"
             label="Enter weight"
-            suffix="lbs"
+            suffix="kg"
             outlined
             required
           >
@@ -56,7 +56,7 @@
           <v-text-field
             v-model.trim="character.height"
             label="Enter height"
-            suffix="ft"
+            suffix="cm"
             outlined
             required
           >
