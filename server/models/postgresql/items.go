@@ -105,7 +105,7 @@ func (m *ItemModel) Delete(characterID int, itemName string) error {
 func (m *ItemModel) GetTotalWeightCharacterItems(characterID int) (int, error) {
 	var weight int
 
-	stmt := "SELECT SUM(weight*quantity) FROM Items WHERE character_id = $1"
+	stmt := "SELECT COALESCE(SUM(weight*quantity),0) FROM Items WHERE character_id = $1"
 	row := m.DB.QueryRowx(stmt, characterID)
 
 	err := row.Scan(&weight)
