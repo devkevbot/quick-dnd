@@ -45,7 +45,7 @@
           <v-text-field
             v-model.trim="character.weight"
             label="Enter weight"
-            suffix="lbs"
+            suffix="kg"
             outlined
             required
           >
@@ -56,7 +56,7 @@
           <v-text-field
             v-model.trim="character.height"
             label="Enter height"
-            suffix="ft"
+            suffix="cm"
             outlined
             required
           >
@@ -110,8 +110,8 @@ export default {
         name: null,
         sex: 'Male',
         race: 'Human',
-        weight: 180,
-        height: 6.2,
+        weight: 75,
+        height: 185,
         alignment: 'True Neutral',
         background: 'A dark and mysterious past.',
       },

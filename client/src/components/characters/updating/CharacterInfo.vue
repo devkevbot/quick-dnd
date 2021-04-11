@@ -73,7 +73,7 @@ characters. Enables other actions such as deleting characters. -->
             <v-text-field
               readonly
               label="Weight"
-              suffix="lbs"
+              suffix="kg"
               :value="selectedCharacter.weight"
             ></v-text-field>
           </v-col>
@@ -82,7 +82,7 @@ characters. Enables other actions such as deleting characters. -->
             <v-text-field
               readonly
               label="Height"
-              suffix="ft"
+              suffix="cm"
               :value="selectedCharacter.height"
             ></v-text-field>
           </v-col>
