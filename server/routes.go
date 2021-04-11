@@ -41,4 +41,5 @@ func (app *application) registerRoutes(e *echo.Echo) {
 
 	// Protected campaign endpoints
 	r.POST("/campaign", app.createCampaign)
+	r.GET("/campaign/me/stats/player-attendance", app.getPlayersAttendedAll)
 }
