@@ -276,14 +276,23 @@ export default {
         method,
       })
         .then((resp) => {
-          this.characters = resp.data.data.characters;
-          if (this.characters) {
-            const targetChar = this.characters[0];
-            this.selectedCharName = targetChar.name;
-          }
+          const fetchedCharacters = resp.data.data.characters;
+          if (fetchedCharacters === null) return;
+
+          this.characters = fetchedCharacters;
+          const targetChar = this.characters[0];
+          this.selectedCharName = targetChar.name;
         })
-        .catch(() => {
-          /* TODO: Add error handling. */
+        .catch((err) => {
+          let message = 'Could not fetch characters. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 10000,
+          });
         });
     },
     /**
