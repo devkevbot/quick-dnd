@@ -22,6 +22,7 @@ INSERT INTO Character VALUES
     0,
     0,
     'Barbarian',
+    'Berserker',
     'mc1'
 ),
 (
@@ -44,6 +45,7 @@ INSERT INTO Character VALUES
     0,
     300,
     'Wizard',
+    'Abjuration',
     'alove'
 ),
 (
@@ -66,6 +68,7 @@ INSERT INTO Character VALUES
     0,
     300,
     'Fighter',
+    'Psi Warrior',
     'inew'
 ),
 (
@@ -88,6 +91,7 @@ INSERT INTO Character VALUES
     0,
     400,
     'Rogue',
+    'Assassin',
     'at1'
 ),
 (
@@ -110,6 +114,7 @@ INSERT INTO Character VALUES
     0,
     400,
     'Monk',
+    'Astral Self',
     'at1'
 );
 

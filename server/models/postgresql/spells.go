@@ -100,3 +100,25 @@ func (m *SpellModel) Delete(characterID int, spellName string) error {
 
 	return nil
 }
+
+//Get count of spells belonging to each school a character has
+
+func (m *SpellModel) GetCountSpellsPerSchool(characterID int) (*[]models.SpellSchoolCountType, error) {
+	var storedSpellsCount []models.SpellSchoolCountType
+
+	stmt := "SELECT school, count(*) FROM spells WHERE character_id = $1 GROUP BY school"
+	rows, err := m.DB.Queryx(stmt, characterID)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var s models.SpellSchoolCountType
+		err = rows.StructScan(&s)
+		if err != nil {
+			return nil, err
+		}
+		storedSpellsCount = append(storedSpellsCount, s)
+	}
+	return &storedSpellsCount, nil
+}

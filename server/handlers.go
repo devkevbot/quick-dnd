@@ -509,3 +509,39 @@ func (app *application) retrieveAllStats(c echo.Context) error {
 
 	return sendJSONResponse(c, http.StatusOK, "Retrieve all stats", "Retrieval successful", stats)
 }
+
+// Get total weight of items a character has
+func (app *application) getTotalWeightCharacterItems(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Retrieve total character item weight", "Retrieval failed", nil)
+	}
+
+	weight, err := app.items.GetTotalWeightCharacterItems(charID)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusNotFound, "Retrieve total character item weight", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Retrieve total character item weight", "Retrieval successful", weight)
+}
+
+// Get number of spells belonging to a character per class.
+func (app *application) getCountSpellsPerSchool(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Retrieve count character spells per school", "Retrieval failed", nil)
+	}
+
+	spellsCount, err := app.spells.GetCountSpellsPerSchool(charID)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusNotFound, "Retrieve count character spells per school test", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Retrieve count character spells per school", "Retrieval successful", spellsCount)
+}
