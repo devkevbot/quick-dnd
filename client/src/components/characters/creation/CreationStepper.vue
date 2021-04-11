@@ -174,13 +174,13 @@ export default {
      * 'Class' step of the character creation process has been completed.
      * @param {{
      *  className: String
-     *  classAttributes: Object
+     *  classAttribute: Object
      *  }} character - The event data emitted after the
      *  class step has been completed.
      */
-    updateCharacterClassData({ className, classAttributes }) {
+    updateCharacterClassData({ className, classAttribute }) {
       this.character.class = className;
-      this.character.class_attributes = classAttributes;
+      this.character.class_attribute = classAttribute;
     },
     /**
      * Send a request to the backend server's character creation API endpoint.
