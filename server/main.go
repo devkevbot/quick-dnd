@@ -33,12 +33,14 @@ type application struct {
 		Get(characterID int, spellName string) (*models.Spell, error)
 		GetAllCharacterSpells(characterID int) (*[]models.Spell, error)
 		Delete(characterID int, spellName string) error
+		GetCountSpellsPerSchool(characterID int) (*[]models.SpellSchoolCountType, error)
 	}
 	items interface {
 		Insert(i models.Item) error
 		Get(characterID int, itemName string) (*models.Item, error)
 		GetAllCharacterItems(characterID int) (*[]models.Item, error)
 		Delete(characterID int, itemName string) error
+		GetTotalWeightCharacterItems(characterID int) (int, error)
 	}
 	campaigns interface {
 		Insert(c models.Campaign) (int, error)

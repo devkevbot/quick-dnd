@@ -32,12 +32,14 @@ func (app *application) registerRoutes(e *echo.Echo) {
 	r.GET("/character/:id/spell/:name", app.retrieveSpell)
 	r.GET("/character/:id/spell", app.retrieveAllCharacterSpells)
 	r.DELETE("/character/:id/spell/:name", app.deleteSpell)
+	r.GET("/character/:id/spell/count-per-school", app.getCountSpellsPerSchool)
 
 	// Protected item endpoints
 	r.POST("/character/:id/item", app.createItem)
 	r.GET("/character/:id/item/:name", app.retrieveItem)
 	r.GET("/character/:id/item", app.retrieveAllCharacterItems)
 	r.DELETE("/character/:id/item/:name", app.deleteItem)
+	r.GET("/character/:id/item/weight", app.getTotalWeightCharacterItems)
 
 	// Protected campaign endpoints
 	r.POST("/campaign", app.createCampaign)

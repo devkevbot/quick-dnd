@@ -659,3 +659,9 @@ type Stats struct {
 	NumSpellsCreated     int `json:"num_spells_created" db:"num_spells_created"`
 	NumItemsCreated      int `json:"num_items_created" db:"num_items_created"`
 }
+
+/* Model for get Count of spells per Magic School */
+type SpellSchoolCountType struct {
+	School MagicSchoolType `json:"school"`
+	Count  int             `json:"count"`
+}
