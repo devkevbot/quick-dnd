@@ -67,11 +67,58 @@ export default {
     AddCharacterDialog,
     AddCharacterTable,
   },
+  data() {
+    return {
+      idExists: false,
+      tempCharacter: null,
+    };
+  },
   methods: {
+    /**
+     * Displays prompt that asks user to enter a character ID
+     */
     async showAddCharacterDialog() {
       if (await this.$refs.addCharacterDialog.prompt()) {
-        await this.$refs.addCharacterTable.addItem('null', 'null', 'null'); // Test values for now
+        const id = this.$refs.addCharacterDialog.getID;
+
+        await this.fetchCharacterInfo(id);
+
+        if (!this.idExists) return;
+
+        this.$refs.addCharacterTable.addItem(
+          id,
+          this.tempCharacter.cName,
+          this.tempCharacter.cOwner,
+        );
       }
+      this.$refs.addCharacterDialog.clearID();
+      this.idExists = false;
+      this.tempCharacter = null;
+    },
+    /**
+     * Fetches character and owner names based on ID number, and places
+     * the information in "tempCharacter"
+     */
+    async fetchCharacterInfo(id) {
+      const integerID = parseInt(id, 10);
+      const requestURI = `auth/character/${integerID}`;
+      const method = 'GET';
+
+      await this.$http({
+        url: requestURI,
+        data: null,
+        method,
+      })
+        .then((resp) => {
+          this.tempCharacter = {
+            cName: resp.data.data.name,
+            cOwner: resp.data.data.player_username,
+          };
+          this.idExists = true;
+        })
+        .catch(() => {
+          /* TODO: Notify user of invalid ID */
+        });
     },
   },
 };

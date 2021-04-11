@@ -52,5 +52,10 @@ export default {
       this.items = this.items.filter((x) => x.id !== id);
     },
   },
+  computed: {
+    getItems() {
+      return this.items;
+    },
+  },
 };
 </script>
