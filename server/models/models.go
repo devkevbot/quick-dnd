@@ -35,21 +35,9 @@ var (
 	ErrInvalidMagicSchoolType = errors.New("models: invalid spell magic school type")
 )
 
-// JSON unmarshal errors for class-specific data types.
+// JSON unmarshal errors for class attribute types.
 var (
-	ErrInvalidBarbarianPrimalPathType = errors.New("models: invalid barbarian primal path type")
-	ErrInvalidBardCollegeType         = errors.New("models: invalid bard college type")
-	ErrInvalidClericDomainType        = errors.New("models: invalid cleric domain type")
-	ErrInvalidDruidCircleType         = errors.New("models: invalid druid circle type")
-	ErrInvalidFighterArchetypeType    = errors.New("models: invalid fighter archetype type")
-	ErrInvalidFightingStyleType       = errors.New("models: invalid fighting style type")
-	ErrInvalidMonkTraditionType       = errors.New("models: invalid monk tradition type")
-	ErrInvalidPaladinOathType         = errors.New("models: invalid paladin oath type")
-	ErrInvalidRangerConclaveType      = errors.New("models: invalid ranger conclave type")
-	ErrInvalidRogueArchetypeType      = errors.New("models: invalid rogue archetype type")
-	ErrInvalidSorcererOriginType      = errors.New("models: invalid sorcerer origin type")
-	ErrInvalidWarlockPatronType       = errors.New("models: invalid warlock patron type")
-	ErrInvalidWizardTraditionType     = errors.New("models: invalid wizard tradition type")
+	ErrInvalidClassAttribute = errors.New("models: invalid class attribute type")
 )
 
 // Player is the code representation of the "Player" relation in the
@@ -207,26 +195,27 @@ func (t *SexType) UnmarshalJSON(b []byte) error {
 // Character is the code representation of the "Character" relation in
 // the database schema.
 type Character struct {
-	ID             int           `json:"id" db:"id"`
-	Name           string        `json:"name" db:"name"`
-	Weight         int           `json:"weight" db:"weight"`
-	Height         int           `json:"height" db:"height"`
-	Alignment      AlignmentType `json:"alignment" db:"alignment"`
-	Sex            SexType       `json:"sex" db:"sex"`
-	Background     string        `json:"background" db:"background"`
-	Race           RaceType      `json:"race" db:"race"`
-	Speed          int           `json:"speed" db:"speed"`
-	Strength       int           `json:"strength" db:"strength"`
-	Dexterity      int           `json:"dexterity" db:"dexterity"`
-	Intelligence   int           `json:"intelligence" db:"intelligence"`
-	Wisdom         int           `json:"wisdom" db:"wisdom"`
-	Charisma       int           `json:"charisma" db:"charisma"`
-	Constitution   int           `json:"constitution" db:"constitution"`
-	HPMax          int           `json:"hp_max" db:"hp_max"`
-	AbilityPoints  int           `json:"ability_points" db:"ability_points"`
-	XPPoints       int           `json:"xp_points" db:"xp_points"`
-	Class          ClassType     `json:"class" db:"class"`
-	PlayerUsername string        `json:"player_username" db:"player_username"`
+	ID             int                `json:"id" db:"id"`
+	Name           string             `json:"name" db:"name"`
+	Weight         int                `json:"weight" db:"weight"`
+	Height         int                `json:"height" db:"height"`
+	Alignment      AlignmentType      `json:"alignment" db:"alignment"`
+	Sex            SexType            `json:"sex" db:"sex"`
+	Background     string             `json:"background" db:"background"`
+	Race           RaceType           `json:"race" db:"race"`
+	Speed          int                `json:"speed" db:"speed"`
+	Strength       int                `json:"strength" db:"strength"`
+	Dexterity      int                `json:"dexterity" db:"dexterity"`
+	Intelligence   int                `json:"intelligence" db:"intelligence"`
+	Wisdom         int                `json:"wisdom" db:"wisdom"`
+	Charisma       int                `json:"charisma" db:"charisma"`
+	Constitution   int                `json:"constitution" db:"constitution"`
+	HPMax          int                `json:"hp_max" db:"hp_max"`
+	AbilityPoints  int                `json:"ability_points" db:"ability_points"`
+	XPPoints       int                `json:"xp_points" db:"xp_points"`
+	Class          ClassType          `json:"class" db:"class"`
+	ClassAttribute ClassAttributeType `json:"class_attribute" db:"class_attribute"`
+	PlayerUsername string             `json:"player_username" db:"player_username"`
 }
 
 type ItemType string
@@ -383,21 +372,143 @@ type BelongsTo struct {
 	CampaignID  int `json:"campaign_id" db:"campaign_id"`
 }
 
-type BarbarianPrimalPathType string
+type ClassAttributeType string
 
 const (
-	AncestralGuardian BarbarianPrimalPathType = "Ancestral Guardian"
-	Battlerager                               = "Battlerager"
-	Beast                                     = "Beast"
-	Berserker                                 = "Berserker"
-	StormHerald                               = "Storm Herald"
-	TotemWarrior                              = "Totem Warrior"
-	WildMagic                                 = "Wild Magic"
-	Zealot                                    = "Zealot"
+	AncestralGuardian ClassAttributeType = "Ancestral Guardian"
+	Battlerager                          = "Battlerager"
+	Beast                                = "Beast"
+	Berserker                            = "Berserker"
+	StormHerald                          = "Storm Herald"
+	TotemWarrior                         = "Totem Warrior"
+	WildMagic                            = "Wild Magic"
+	Zealot                               = "Zealot"
+
+	Creation  = "Creation"
+	Eloquence = "Eloquence"
+	Glamour   = "Glamour"
+	Lore      = "Lore"
+	Swords    = "Swords"
+	Valor     = "Valor"
+	Whispers  = "Whispers"
+
+	Arcana    = "Arcana"
+	Death     = "Death"
+	Forge     = "Forge"
+	Grave     = "Grave"
+	Knowledge = "Knowledge"
+	Life      = "Life"
+	Light     = "Light"
+	Nature    = "Nature"
+	Order     = "Order"
+	Peace     = "Peace"
+	Tempest   = "Tempest"
+	Trickery  = "Trickery"
+	Twilight  = "Twilight"
+	War       = "War"
+
+	Dreams      = "Dreams"
+	TheLand     = "The Land"
+	TheMoon     = "The Moon"
+	TheShepherd = "The Shepherd"
+	TheSpores   = "The Spores"
+	TheStars    = "The Stars"
+	Wildfire    = "Wildfire"
+
+	ArcaneArcher   = "Arcane Archer"
+	Banneret       = "Banneret"
+	BattleMaster   = "Battle Master"
+	Cavalier       = "Cavalier"
+	Champion       = "Champion"
+	EchoKnight     = "Echo Knight"
+	EldritchKnight = "Eldritch Knight"
+	PsiWarrior     = "Psi Warrior"
+	RuneKnight     = "Rune Knight"
+	Samurai        = "Samurai"
+
+	Archery              = "Archery"
+	BlindFighting        = "Blind Fighting"
+	Defense              = "Defense"
+	DruidicWarrior       = "Druidic Warrior"
+	Dueling              = "Dueling"
+	GreatWeaponFighting  = "Great Weapon Fighting"
+	Interception         = "Interception"
+	Protection           = "Protection"
+	SuperiorTechnique    = "Superior Technique"
+	ThrownWeaponFighting = "Thrown Weapon Fighting"
+	TwoWeaponFighting    = "Two-Weapon Fighting"
+	UnarmedFighting      = "Unarmed Fighting"
+
+	AstralSelf    = "Astral Self"
+	DrunkenMaster = "Drunken Master"
+	FourElements  = "Four Elements"
+	Kensei        = "Kensei"
+	LongDeath     = "Long Death"
+	Mercy         = "Mercy"
+	OpenHand      = "Open Hand"
+	Shadow        = "Shadow"
+	SunSoul       = "Sun Soul"
+
+	TheAncients = "The Ancients"
+	Conquest    = "Conquest"
+	TheCrown    = "The Crown"
+	Devotion    = "Devotion"
+	Glory       = "Glory"
+	Redemption  = "Redemption"
+	Vengeance   = "Vengeance"
+	TheWatchers = "The Watchers"
+	Oathbreaker = "Oathbreaker"
+
+	BeastMaster   = "Beast Master"
+	FeyWanderer   = "Fey Wanderer"
+	GloomStalker  = "Gloom Stalker"
+	HorizonWalker = "Horizon Walker"
+	Hunter        = "Hunter"
+	MonsterSlayer = "Monster Slayer"
+	Swarmkeeper   = "Swarmkeeper"
+
+	ArcaneTrickster = "Arcane Trickster"
+	Assassin        = "Assassin"
+	Inquisitive     = "Inquisitive"
+	Mastermind      = "Mastermind"
+	Phantom         = "Phantom"
+	Scout           = "Scout"
+	Soulknife       = "Soulknife"
+	Swashbuckler    = "Swashbuckler"
+	Thief           = "Thief"
+
+	AberrantMind      = "Aberrant Mind"
+	ClockworkSoul     = "Clockwork Soul"
+	DraconicBloodline = "Draconic Bloodline"
+	DivineSoul        = "Divine Soul"
+	Storm             = "Storm"
+
+	Archfey     = "Archfey"
+	Celestial   = "Celestial"
+	Fathomless  = "Fathomless"
+	Fiend       = "Fiend"
+	Genie       = "Genie"
+	GreatOldOne = "Great Old One"
+	Hexblade    = "Hexblade"
+	Undying     = "Undying"
+
+	WAbjuration    = "Abjuration"
+	Bladesinging   = "Bladesinging"
+	Chronurgy      = "Chronurgy"
+	WConjuration   = "Conjuration"
+	WDivination    = "Divination"
+	WEnchantment   = "Enchantment"
+	WEvocation     = "Evocation"
+	Graviturgy     = "Graviturgy"
+	WIllusion      = "Illusion"
+	WNecromancy    = "Necromancy"
+	OrderOfScribes = "Order of Scribes"
+	Transmutation  = "Transmutation"
+	WarMagic       = "War Magic"
 )
 
-func (t *BarbarianPrimalPathType) UnmarshalJSON(b []byte) error {
-	type T BarbarianPrimalPathType
+func (t *ClassAttributeType) UnmarshalJSON(b []byte) error {
+	type T ClassAttributeType
 	var r *T = (*T)(t)
 	err := json.Unmarshal(b, &r)
 	if err != nil {
@@ -412,83 +523,16 @@ func (t *BarbarianPrimalPathType) UnmarshalJSON(b []byte) error {
 		StormHerald,
 		TotemWarrior,
 		WildMagic,
-		Zealot:
-		return nil
-	}
-	return ErrInvalidBarbarianPrimalPathType
-}
+		Zealot,
 
-type BarbarianClass struct {
-	CharacterID int                     `json:"character_id" db:"character_id"`
-	PrimalPath  BarbarianPrimalPathType `json:"primal_path" db:"primal_path"`
-}
-
-type BardCollegeType string
-
-const (
-	Creation  BardCollegeType = "Creation"
-	Eloquence                 = "Eloquence"
-	Glamour                   = "Glamour"
-	Lore                      = "Lore"
-	Swords                    = "Swords"
-	Valor                     = "Valor"
-	Whispers                  = "Whispers"
-)
-
-func (t *BardCollegeType) UnmarshalJSON(b []byte) error {
-	type T BardCollegeType
-	var r *T = (*T)(t)
-	err := json.Unmarshal(b, &r)
-	if err != nil {
-		return err
-	}
-	switch *t {
-	case
 		Creation,
 		Eloquence,
 		Glamour,
 		Lore,
 		Swords,
 		Valor,
-		Whispers:
-		return nil
-	}
-	return ErrInvalidBardCollegeType
-}
+		Whispers,
 
-type BardClass struct {
-	CharacterID int             `json:"character_id" db:"character_id"`
-	College     BardCollegeType `json:"college" db:"college"`
-}
-
-type ClericDomainType string
-
-const (
-	Arcana    ClericDomainType = "Arcana"
-	Death                      = "Death"
-	Forge                      = "Forge"
-	Grave                      = "Grave"
-	Knowledge                  = "Knowledge"
-	Life                       = "Life"
-	Light                      = "Light"
-	Nature                     = "Nature"
-	Order                      = "Order"
-	Peace                      = "Peace"
-	Tempest                    = "Tempest"
-	Trickery                   = "Trickery"
-	Twilight                   = "Twilight"
-	War                        = "War"
-)
-
-func (t *ClericDomainType) UnmarshalJSON(b []byte) error {
-	type T ClericDomainType
-	var r *T = (*T)(t)
-	err := json.Unmarshal(b, &r)
-	if err != nil {
-		return err
-	}
-	switch *t {
-	case
 		Arcana,
 		Death,
 		Forge,
@@ -502,79 +546,16 @@ func (t *ClericDomainType) UnmarshalJSON(b []byte) error {
 		Tempest,
 		Trickery,
 		Twilight,
-		War:
-		return nil
-	}
-	return ErrInvalidClericDomainType
-}
+		War,
 
-type ClericClass struct {
-	CharacterID  int              `json:"character_id" db:"character_id"`
-	DivineDomain ClericDomainType `json:"divine_domain" db:"divine_domain"`
-}
-
-type DruidCircleType string
-
-const (
-	Dreams      DruidCircleType = "Dreams"
-	TheLand                     = "The Land"
-	TheMoon                     = "The Moon"
-	TheShepherd                 = "The Shepherd"
-	TheSpores                   = "The Spores"
-	TheStars                    = "The Stars"
-	Wildfire                    = "Wildfire"
-)
-
-func (t *DruidCircleType) UnmarshalJSON(b []byte) error {
-	type T DruidCircleType
-	var r *T = (*T)(t)
-	err := json.Unmarshal(b, &r)
-	if err != nil {
-		return err
-	}
-	switch *t {
-	case
 		Dreams,
 		TheLand,
 		TheMoon,
 		TheShepherd,
 		TheSpores,
 		TheStars,
-		Wildfire:
-		return nil
-	}
-	return ErrInvalidDruidCircleType
-}
+		Wildfire,
 
-type DruidClass struct {
-	CharacterID int             `json:"character_id" db:"character_id"`
-	DruidCircle DruidCircleType `json:"druid_circle" db:"druid_circle"`
-}
-
-type FighterArchetypeType string
-
-const (
-	ArcaneArcher   FighterArchetypeType = "Arcane Archer"
-	Banneret                            = "Banneret"
-	BattleMaster                        = "Battle Master"
-	Cavalier                            = "Cavalier"
-	Champion                            = "Champion"
-	EchoKnight                          = "Echo Knight"
-	EldritchKnight                      = "Eldritch Knight"
-	PsiWarrior                          = "Psi Warrior"
-	RuneKnight                          = "Rune Knight"
-	Samurai                             = "Samurai"
-)
-
-func (t *FighterArchetypeType) UnmarshalJSON(b []byte) error {
-	type T FighterArchetypeType
-	var r *T = (*T)(t)
-	err := json.Unmarshal(b, &r)
-	if err != nil {
-		return err
-	}
-	switch *t {
-	case
 		ArcaneArcher,
 		Banneret,
 		BattleMaster,
@@ -584,38 +565,8 @@ func (t *FighterArchetypeType) UnmarshalJSON(b []byte) error {
 		EldritchKnight,
 		PsiWarrior,
 		RuneKnight,
-		Samurai:
-		return nil
-	}
-	return ErrInvalidFighterArchetypeType
-}
+		Samurai,
 
-type FightingStyleType string
-
-const (
-	Archery              FightingStyleType = "Archery"
-	BlindFighting                          = "Blind Fighting"
-	Defense                                = "Defense"
-	DruidicWarrior                         = "Druidic Warrior"
-	Dueling                                = "Dueling"
-	GreatWeaponFighting                    = "Great Weapon Fighting"
-	Interception                           = "Interception"
-	Protection                             = "Protection"
-	SuperiorTechnique                      = "Superior Technique"
-	ThrownWeaponFighting                   = "Thrown Weapon Fighting"
-	TwoWeaponFighting                      = "Two-Weapon Fighting"
-	UnarmedFighting                        = "Unarmed Fighting"
-)
-
-func (t *FightingStyleType) UnmarshalJSON(b []byte) error {
-	type T FightingStyleType
-	var r *T = (*T)(t)
-	err := json.Unmarshal(b, &r)
-	if err != nil {
-		return err
-	}
-	switch *t {
-	case
 		Archery,
 		BlindFighting,
 		Defense,
@@ -627,41 +578,8 @@ func (t *FightingStyleType) UnmarshalJSON(b []byte) error {
 		SuperiorTechnique,
 		ThrownWeaponFighting,
 		TwoWeaponFighting,
-		UnarmedFighting:
-		return nil
-	}
-	return ErrInvalidFightingStyleType
-}
+		UnarmedFighting,
 
-type FighterClass struct {
-	CharacterID   int                  `json:"character_id" db:"character_id"`
-	Archetype     FighterArchetypeType `json:"archetype" db:"archetype"`
-	FightingStyle FightingStyleType    `json:"fighting_style" db:"fighting_style"`
-}
-
-type MonkTraditionType string
-
-const (
-	AstralSelf    MonkTraditionType = "Astral Self"
-	DrunkenMaster                   = "Drunken Master"
-	FourElements                    = "Four Elements"
-	Kensei                          = "Kensei"
-	LongDeath                       = "Long Death"
-	Mercy                           = "Mercy"
-	OpenHand                        = "Open Hand"
-	Shadow                          = "Shadow"
-	SunSoul                         = "Sun Soul"
-)
-
-func (t *MonkTraditionType) UnmarshalJSON(b []byte) error {
-	type T MonkTraditionType
-	var r *T = (*T)(t)
-	err := json.Unmarshal(b, &r)
-	if err != nil {
-		return err
-	}
-	switch *t {
-	case
 		AstralSelf,
 		DrunkenMaster,
 		FourElements,
@@ -670,40 +588,8 @@ func (t *MonkTraditionType) UnmarshalJSON(b []byte) error {
 		Mercy,
 		OpenHand,
 		Shadow,
-		SunSoul:
-		return nil
-	}
-	return ErrInvalidMonkTraditionType
-}
+		SunSoul,
 
-type MonkClass struct {
-	CharacterID       int               `json:"character_id" db:"character_id"`
-	MonasticTradition MonkTraditionType `json:"monastic_tradition" db:"monastic_tradition"`
-}
-
-type PaladinOathType string
-
-const (
-	TheAncients PaladinOathType = "The Ancients"
-	Conquest                    = "Conquest"
-	TheCrown                    = "The Crown"
-	Devotion                    = "Devotion"
-	Glory                       = "Glory"
-	Redemption                  = "Redemption"
-	Vengeance                   = "Vengeance"
-	TheWatchers                 = "The Watchers"
-	Oathbreaker                 = "Oathbreaker"
-)
-
-func (t *PaladinOathType) UnmarshalJSON(b []byte) error {
-	type T PaladinOathType
-	var r *T = (*T)(t)
-	err := json.Unmarshal(b, &r)
-	if err != nil {
-		return err
-	}
-	switch *t {
-	case
 		TheAncients,
 		Conquest,
 		TheCrown,
@@ -712,80 +598,16 @@ func (t *PaladinOathType) UnmarshalJSON(b []byte) error {
 		Redemption,
 		Vengeance,
 		TheWatchers,
-		Oathbreaker:
-		return nil
-	}
-	return ErrInvalidPaladinOathType
-}
+		Oathbreaker,
 
-type PaladinClass struct {
-	CharacterID   int               `json:"character_id" db:"character_id"`
-	Oath          PaladinOathType   `json:"oath" db:"oath"`
-	FightingStyle FightingStyleType `json:"fighting_style" db:"fighting_style"`
-}
-
-type RangerConclaveType string
-
-const (
-	BeastMaster   RangerConclaveType = "Beast Master"
-	FeyWanderer                      = "Fey Wanderer"
-	GloomStalker                     = "Gloom Stalker"
-	HorizonWalker                    = "Horizon Walker"
-	Hunter                           = "Hunter"
-	MonsterSlayer                    = "Monster Slayer"
-	Swarmkeeper                      = "Swarmkeeper"
-)
-
-func (t *RangerConclaveType) UnmarshalJSON(b []byte) error {
-	type T RangerConclaveType
-	var r *T = (*T)(t)
-	err := json.Unmarshal(b, &r)
-	if err != nil {
-		return err
-	}
-	switch *t {
-	case
 		BeastMaster,
 		FeyWanderer,
 		GloomStalker,
 		HorizonWalker,
 		Hunter,
 		MonsterSlayer,
-		Swarmkeeper:
-		return nil
-	}
-	return ErrInvalidRangerConclaveType
-}
+		Swarmkeeper,
 
-type RangerClass struct {
-	CharacterID   int                `json:"character_id" db:"character_id"`
-	Conclave      RangerConclaveType `json:"conclave" db:"conclave"`
-	FavouredEnemy string             `json:"favoured_enemy" db:"favoured_enemy"`
-}
-
-type RogueArchetypeType string
-
-const (
-	ArcaneTrickster RogueArchetypeType = "Arcane Trickster"
-	Assassin                           = "Assassin"
-	Inquisitive                        = "Inquisitive"
-	Mastermind                         = "Mastermind"
-	Phantom                            = "Phantom"
-	Scout                              = "Scout"
-	Soulknife                          = "Soulknife"
-	Swashbuckler                       = "Swashbuckler"
-	Thief                              = "Thief"
-)
-
-func (t *RogueArchetypeType) UnmarshalJSON(b []byte) error {
-	type T RogueArchetypeType
-	var r *T = (*T)(t)
-	err := json.Unmarshal(b, &r)
-	if err != nil {
-		return err
-	}
-	switch *t {
-	case
 		ArcaneTrickster,
 		Assassin,
 		Inquisitive,
@@ -794,77 +616,14 @@ func (t *RogueArchetypeType) UnmarshalJSON(b []byte) error {
 		Scout,
 		Soulknife,
 		Swashbuckler,
-		Thief:
-		return nil
-	}
-	return ErrInvalidRogueArchetypeType
-}
+		Thief,
 
-type RogueClass struct {
-	CharacterID int                `json:"character_id" db:"character_id"`
-	Archetype   RogueArchetypeType `json:"archetype" db:"archetype"`
-}
-
-type SorcererOriginType string
-
-const (
-	AberrantMind      SorcererOriginType = "Aberrant Mind"
-	ClockworkSoul                        = "Clockwork Soul"
-	DraconicBloodline                    = "Draconic Bloodline"
-	DivineSoul                           = "Divine Soul"
-	SorcShadow                           = "Shadow"
-	Storm                                = "Storm"
-	SorcWildMagic                        = "Wild Magic"
-)
-
-func (t *SorcererOriginType) UnmarshalJSON(b []byte) error {
-	type T SorcererOriginType
-	var r *T = (*T)(t)
-	err := json.Unmarshal(b, &r)
-	if err != nil {
-		return err
-	}
-	switch *t {
-	case
 		AberrantMind,
 		ClockworkSoul,
 		DraconicBloodline,
 		DivineSoul,
-		SorcShadow,
+
 		Storm,
-		SorcWildMagic:
-		return nil
-	}
-	return ErrInvalidSorcererOriginType
-}
-
-type SorcererClass struct {
-	CharacterID     int                `json:"character_id" db:"character_id"`
-	SorcerousOrigin SorcererOriginType `json:"sorcerous_origin" db:"sorcerous_origin"`
-}
-
-type WarlockPatronType string
-
-const (
-	Archfey     WarlockPatronType = "Archfey"
-	Celestial                     = "Celestial"
-	Fathomless                    = "Fathomless"
-	Fiend                         = "Fiend"
-	Genie                         = "Genie"
-	GreatOldOne                   = "Great Old One"
-	Hexblade                      = "Hexblade"
-	Undying                       = "Undying"
-)
-
-func (t *WarlockPatronType) UnmarshalJSON(b []byte) error {
-	type T WarlockPatronType
-	var r *T = (*T)(t)
-	err := json.Unmarshal(b, &r)
-	if err != nil {
-		return err
-	}
-	switch *t {
-	case
 		Archfey,
 		Celestial,
 		Fathomless,
@@ -872,44 +631,8 @@ func (t *WarlockPatronType) UnmarshalJSON(b []byte) error {
 		Genie,
 		GreatOldOne,
 		Hexblade,
-		Undying:
-		return nil
-	}
-	return ErrInvalidWarlockPatronType
-}
+		Undying,
 
-type WarlockClass struct {
-	CharacterID int               `json:"character_id" db:"character_id"`
-	Patron      WarlockPatronType `json:"patron" db:"patron"`
-}
-
-type WizardTraditionType string
-
-const (
-	WAbjuration    WizardTraditionType = "Abjuration"
-	Bladesinging                       = "Bladesinging"
-	Chronurgy                          = "Chronurgy"
-	WConjuration                       = "Conjuration"
-	WDivination                        = "Divination"
-	WEnchantment                       = "Enchantment"
-	WEvocation                         = "Evocation"
-	Graviturgy                         = "Graviturgy"
-	WIllusion                          = "Illusion"
-	WNecromancy                        = "Necromancy"
-	OrderOfScribes                     = "Order of Scribes"
-	Transmutation                      = "Transmutation"
-	WarMagic                           = "War Magic"
-)
-
-func (t *WizardTraditionType) UnmarshalJSON(b []byte) error {
-	type T WizardTraditionType
-	var r *T = (*T)(t)
-	err := json.Unmarshal(b, &r)
-	if err != nil {
-		return err
-	}
-	switch *t {
-	case
 		WAbjuration,
 		Bladesinging,
 		Chronurgy,
@@ -925,12 +648,7 @@ func (t *WizardTraditionType) UnmarshalJSON(b []byte) error {
 		WarMagic:
 		return nil
 	}
-	return ErrInvalidWizardTraditionType
-}
-
-type WizardClass struct {
-	CharacterID     int                 `json:"character_id" db:"character_id"`
-	ArcaneTradition WizardTraditionType `json:"arcane_tradition" db:"arcane_tradition"`
+	return ErrInvalidClassAttribute
 }
 
 /* Model for global statistics. */

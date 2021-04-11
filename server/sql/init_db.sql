@@ -73,6 +73,7 @@ CREATE TABLE Character (
     ability_points      int NOT NULL CHECK (ability_points >= 0 AND ability_points <= 180), -- Unused ability points
     xp_points           int NOT NULL CHECK (xp_points >= 0 AND xp_points <= 355000),
     class               e_class NOT NULL,
+    class_attribute     text CHECK (length(class_attribute) > 0) NOT NULL,
     player_username     text NOT NULL,
     UNIQUE (name, player_username), -- No player should have multiple characters of the same name
     FOREIGN KEY (player_username) REFERENCES Player(username)
@@ -189,15 +190,6 @@ CREATE TYPE e_barbarian_primal_path AS ENUM (
     'Zealot'
 );
 
-CREATE TABLE Barbarians (
-    character_id        int CHECK (character_id > 0),
-    primal_path         e_barbarian_primal_path NOT NULL,
-    PRIMARY KEY (character_id),
-    FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
 CREATE TYPE e_bard_college AS ENUM (
     'Creation',
     'Eloquence',
@@ -206,15 +198,6 @@ CREATE TYPE e_bard_college AS ENUM (
     'Swords',
     'Valor',
     'Whispers'
-);
-
-CREATE TABLE Bards (
-    character_id        int CHECK (character_id > 0),
-    college             e_bard_college NOT NULL,
-    PRIMARY KEY (character_id),
-    FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
 CREATE TYPE e_cleric_domain AS ENUM (
@@ -234,15 +217,6 @@ CREATE TYPE e_cleric_domain AS ENUM (
     'War'
 );
 
-CREATE TABLE Clerics (
-    character_id        int CHECK (character_id > 0),
-    divine_domain       e_cleric_domain NOT NULL,
-    PRIMARY KEY (character_id),
-    FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
 CREATE TYPE e_druid_circle AS ENUM (
     'Dreams',
     'The Land',
@@ -251,15 +225,6 @@ CREATE TYPE e_druid_circle AS ENUM (
     'The Spores',
     'The Stars',
     'Wildfire'
-);
-
-CREATE TABLE Druids (
-    character_id        int CHECK (character_id > 0),
-    druid_circle        e_druid_circle NOT NULL,
-    PRIMARY KEY (character_id),
-    FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
 CREATE TYPE e_fighter_archetype AS ENUM (
@@ -290,16 +255,6 @@ CREATE TYPE e_fighting_style AS ENUM (
     'Unarmed Fighting'
 );
 
-CREATE TABLE Fighters (
-    character_id        int CHECK (character_id > 0),
-    archetype           e_fighter_archetype NOT NULL,
-    fighting_style      e_fighting_style NOT NULL,
-    PRIMARY KEY (character_id),
-    FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
 CREATE TYPE e_monk_tradition AS ENUM (
     'Astral Self',
     'Drunken Master',
@@ -310,15 +265,6 @@ CREATE TYPE e_monk_tradition AS ENUM (
     'Open Hand',
     'Shadow',
     'Sun Soul'
-);
-
-CREATE TABLE Monks (
-    character_id        int CHECK (character_id > 0),
-    monastic_tradition  e_monk_tradition NOT NULL,
-    PRIMARY KEY (character_id),
-    FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
 CREATE TYPE e_paladin_oath AS ENUM (
@@ -333,16 +279,6 @@ CREATE TYPE e_paladin_oath AS ENUM (
     'Oathbreaker'
 );
 
-CREATE TABLE Paladins (
-    character_id        int CHECK (character_id > 0),
-    oath                e_paladin_oath NOT NULL,
-    fighting_style      e_fighting_style NOT NULL,
-    PRIMARY KEY (character_id),
-    FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
 CREATE TYPE e_ranger_conclave AS ENUM (
     'Beast Master',
     'Fey Wanderer',
@@ -351,16 +287,6 @@ CREATE TYPE e_ranger_conclave AS ENUM (
     'Hunter',
     'Monster Slayer',
     'Swarmkeeper'
-);
-
-CREATE TABLE Rangers (
-    character_id        int CHECK (character_id > 0),
-    conclave            e_ranger_conclave NOT NULL,
-    favoured_enemy      text NOT NULL,
-    PRIMARY KEY (character_id),
-    FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
 CREATE TYPE e_rogue_archetype AS ENUM (
@@ -375,15 +301,6 @@ CREATE TYPE e_rogue_archetype AS ENUM (
     'Thief'
 );
 
-CREATE TABLE Rogues (
-    character_id        int CHECK (character_id > 0),
-    archetype           e_rogue_archetype NOT NULL,
-    PRIMARY KEY (character_id),
-    FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
 CREATE TYPE e_sorcerer_origin AS ENUM (
     'Aberrant Mind',
     'Clockwork Soul',
@@ -392,15 +309,6 @@ CREATE TYPE e_sorcerer_origin AS ENUM (
     'Shadow',
     'Storm',
     'Wild Magic'
-);
-
-CREATE TABLE Sorcerers (
-    character_id        int CHECK (character_id > 0),
-    sorcerous_origin    e_sorcerer_origin NOT NULL,
-    PRIMARY KEY (character_id),
-    FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
 CREATE TYPE e_warlock_patron AS ENUM (
@@ -412,15 +320,6 @@ CREATE TYPE e_warlock_patron AS ENUM (
     'Great Old One',
     'Hexblade',
     'Undying'
-);
-
-CREATE TABLE Warlocks (
-    character_id        int CHECK (character_id > 0),
-    patron              e_warlock_patron NOT NULL,
-    PRIMARY KEY (character_id),
-    FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
 CREATE TYPE e_wizard_tradition AS ENUM (
@@ -437,15 +336,6 @@ CREATE TYPE e_wizard_tradition AS ENUM (
     'Order of Scribes',
     'Transmutation',
     'War Magic'
-);
-
-CREATE TABLE Wizards (
-    character_id        int CHECK (character_id > 0),
-    arcane_tradition    e_wizard_tradition NOT NULL,
-    PRIMARY KEY (character_id),
-    FOREIGN KEY (character_id) REFERENCES Character(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
 CREATE TABLE Stats (
