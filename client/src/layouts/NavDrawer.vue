@@ -41,6 +41,7 @@ export default {
         { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/dashboard' },
         { title: 'My account', icon: 'mdi-account-box', to: '/account' },
         { title: 'Character management', icon: 'mdi-gavel', to: '/characters' },
+        { title: 'Spell management', icon: 'mdi-gavel', to: '/spells' },
         { title: 'Start a campaign', icon: 'mdi-castle', to: '/campaign' },
       ],
     };

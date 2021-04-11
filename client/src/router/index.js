@@ -63,6 +63,15 @@ const routes = [
       protected: true,
     },
   },
+  {
+    path: '/spells',
+    name: 'Spells',
+    component: () => import('../views/Spells.vue'),
+    meta: {
+      layout: 'Main',
+      protected: true,
+    },
+  },
 ];
 
 const router = new VueRouter({
