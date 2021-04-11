@@ -271,10 +271,12 @@ export default {
   },
   methods: {
     /**
-     * Emits the up-to-date class data entered by the user.
-     * Should be used a click handler for the "next step" button.
+     * Checks if the user has completed the step. If so, emits the
+     * up-to-date class data entered by the user. Should be used as a
+     * click handler for the "create" button.
      */
     onComplete() {
+      if (!this.stepIsComplete) return;
       const data = this.prepareDataForEmit();
       this.$emit('complete', data);
     },
@@ -302,8 +304,18 @@ export default {
      * class that the user has selected.
      */
     classSpecificAttrs() {
+      if (this.selectedClass === null) return null;
       const c = this.classOptions.filter((x) => x.name === this.selectedClass);
       return c.map((x) => x.attributes)[0];
+    },
+    /**
+     * @returns {Boolean} True if the user has entered the data required
+     * for this step. False otherwise.
+     */
+    stepIsComplete() {
+      if (this.selectedClass === null) return false;
+      if (this.classSpecificAttrs.selected === null) return false;
+      return true;
     },
   },
 };
