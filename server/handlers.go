@@ -12,6 +12,32 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
+// Fetches a list of player usernames that have attended each campaign
+// that was created by the requestor.
+func (app *application) getPlayersAttendedAll(c echo.Context) error {
+	dungeonMaster := getUsernameFromToken(c)
+	if strings.TrimSpace(dungeonMaster) == "" {
+		return sendJSONResponse(c, http.StatusUnauthorized,
+			"Campaign stats - Players with perfect attendance in requestor's created campaigns", "Access denied", nil)
+	}
+
+	usernames, err := app.campaigns.GetPlayersAttendedAll(dungeonMaster)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnauthorized,
+			"Campaign stats -  Players with perfect attendance in requestor's created campaigns", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK,
+		"Campaign stats - Players with perfect attendance in requestor's created campaigns", "Retrieval successful",
+		struct {
+			Usernames []string `json:"usernames"`
+		}{
+			*usernames,
+		},
+	)
+}
+
 type playerCreationRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`

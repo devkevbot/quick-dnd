@@ -45,3 +45,39 @@ func (m *CampaignModel) Get(id int) (*models.Campaign, error) {
 
 	return &storedCampaign, nil
 }
+
+func (m *CampaignModel) GetAllCharacterCampaigns(characterID int) {
+	/* TODO: Implement this function */
+}
+
+// GetPlayersAttendedAll fetches the usernames of players which have
+// participated in all campaigns which were created by `dungeonMaster`.
+func (m *CampaignModel) GetPlayersAttendedAll(dungeonMaster string) (*[]string, error) {
+	var storedUsernames []string
+
+	stmt := `SELECT DISTINCT ch.player_username
+			FROM Character ch
+			WHERE NOT EXISTS
+				(SELECT ca.id
+				FROM Campaign ca
+				WHERE ca.dungeon_master = $1 AND ca.id NOT IN
+					(SELECT campaign_id
+					FROM BelongsTo bt
+					WHERE bt.character_id = ch.id))`
+
+	rows, err := m.DB.Queryx(stmt, dungeonMaster)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var username string
+		err = rows.Scan(&username)
+		if err != nil {
+			return nil, err
+		}
+		storedUsernames = append(storedUsernames, username)
+	}
+
+	return &storedUsernames, nil
+}

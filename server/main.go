@@ -44,6 +44,7 @@ type application struct {
 		Insert(c models.Campaign) (int, error)
 		Get(id int) (*models.Campaign, error)
 		GetAllCharacterCampaigns(characterID int)
+		GetPlayersAttendedAll(dungeonMaster string) (*[]string, error)
 	}
 	belongsTo interface {
 		Insert(c models.BelongsTo) error
@@ -87,6 +88,7 @@ func main() {
 		spells:        &postgresql.SpellModel{DB: db},
 		items:         &postgresql.ItemModel{DB: db},
 		stats:         &postgresql.StatsModel{DB: db},
+		campaigns:     &postgresql.CampaignModel{DB: db},
 	}
 
 	if cfg.IsTest {
