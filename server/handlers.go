@@ -525,7 +525,12 @@ func (app *application) getTotalWeightCharacterItems(c echo.Context) error {
 		return sendJSONResponse(c, http.StatusInternalServerError, "Retrieve total character item weight", "Retrieval failed", nil)
 	}
 
-	return sendJSONResponse(c, http.StatusOK, "Retrieve total character item weight", "Retrieval successful", weight)
+	return sendJSONResponse(c, http.StatusOK, "Retrieve total character item weight", "Retrieval successful",
+		struct {
+			Weight int `json:"weight"`
+		}{
+			weight,
+		})
 }
 
 // Get number of spells belonging to a character per class.
@@ -543,5 +548,10 @@ func (app *application) getCountSpellsPerSchool(c echo.Context) error {
 		return sendJSONResponse(c, http.StatusInternalServerError, "Retrieve count character spells per school test", "Retrieval failed", nil)
 	}
 
-	return sendJSONResponse(c, http.StatusOK, "Retrieve count character spells per school", "Retrieval successful", spellsCount)
+	return sendJSONResponse(c, http.StatusOK, "Retrieve count character spells per school", "Retrieval successful",
+		struct {
+			SpellsCount *[]models.SpellSchoolCountType `json:"spells_count"`
+		}{
+			spellsCount,
+		})
 }

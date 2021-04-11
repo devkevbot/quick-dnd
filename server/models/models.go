@@ -662,6 +662,6 @@ type Stats struct {
 
 /* Model for get Count of spells per Magic School */
 type SpellSchoolCountType struct {
-	School MagicSchoolType
-	Count  int
+	School MagicSchoolType `json:"school"`
+	Count  int             `json:"count"`
 }
