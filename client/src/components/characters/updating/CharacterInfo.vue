@@ -126,6 +126,21 @@ characters. Enables other actions such as deleting characters. -->
             </v-text-field>
           </v-col>
         </v-row>
+
+        <p class="headline primary--text">Modifiers</p>
+        <v-row>
+          <v-col
+            cols="12"
+            md="6"
+            lg="1"
+            v-for="stat in statModifiers"
+            :key="stat.name"
+            class="pb-4"
+          >
+            <v-text-field readonly :label="stat.name" :value="stat.value">
+            </v-text-field>
+          </v-col>
+        </v-row>
       </v-container>
     </v-card>
   </v-container>
@@ -149,12 +164,12 @@ export default {
       given character object. */
       stats: [
         {
-          name: 'Speed',
-          dataName: 'speed',
+          name: 'Charisma',
+          dataName: 'charisma',
         },
         {
-          name: 'Strength',
-          dataName: 'strength',
+          name: 'Constitution',
+          dataName: 'constitution',
         },
         {
           name: 'Dexterity',
@@ -165,16 +180,16 @@ export default {
           dataName: 'intelligence',
         },
         {
+          name: 'Strength',
+          dataName: 'strength',
+        },
+        {
           name: 'Wisdom',
           dataName: 'wisdom',
         },
         {
-          name: 'Charisma',
-          dataName: 'charisma',
-        },
-        {
-          name: 'Constitution',
-          dataName: 'constitution',
+          name: 'Speed',
+          dataName: 'speed',
         },
         {
           name: 'Max HP',
@@ -214,6 +229,34 @@ export default {
 
       const target = this.selectedCharName;
       return this.characters.filter((x) => x.name === target)[0];
+    },
+    statModifiers() {
+      return [
+        {
+          name: 'Charisma',
+          value: Math.floor((this.selectedCharacter.charisma - 10) / 2),
+        },
+        {
+          name: 'Constitution',
+          value: Math.floor((this.selectedCharacter.constitution - 10) / 2),
+        },
+        {
+          name: 'Dexterity',
+          value: Math.floor((this.selectedCharacter.dexterity - 10) / 2),
+        },
+        {
+          name: 'Intelligence',
+          value: Math.floor((this.selectedCharacter.intelligence - 10) / 2),
+        },
+        {
+          name: 'Strength',
+          value: Math.floor((this.selectedCharacter.strength - 10) / 2),
+        },
+        {
+          name: 'Wisdom',
+          value: Math.floor((this.selectedCharacter.wisdom - 10) / 2),
+        },
+      ];
     },
   },
   methods: {
