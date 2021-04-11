@@ -101,8 +101,7 @@ func (m *SpellModel) Delete(characterID int, spellName string) error {
 	return nil
 }
 
-//Get count of spells belonging to each school a character has
-
+//Get count of spells belonging to each school a character has.
 func (m *SpellModel) GetCountSpellsPerSchool(characterID int) (*[]models.SpellSchoolCountType, error) {
 	var storedSpellsCount []models.SpellSchoolCountType
 

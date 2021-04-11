@@ -522,7 +522,7 @@ func (app *application) getTotalWeightCharacterItems(c echo.Context) error {
 	weight, err := app.items.GetTotalWeightCharacterItems(charID)
 	if err != nil {
 		log.Error(err)
-		return sendJSONResponse(c, http.StatusNotFound, "Retrieve total character item weight", "Retrieval failed", nil)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Retrieve total character item weight", "Retrieval failed", nil)
 	}
 
 	return sendJSONResponse(c, http.StatusOK, "Retrieve total character item weight", "Retrieval successful", weight)
@@ -540,7 +540,7 @@ func (app *application) getCountSpellsPerSchool(c echo.Context) error {
 	spellsCount, err := app.spells.GetCountSpellsPerSchool(charID)
 	if err != nil {
 		log.Error(err)
-		return sendJSONResponse(c, http.StatusNotFound, "Retrieve count character spells per school test", "Retrieval failed", nil)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Retrieve count character spells per school test", "Retrieval failed", nil)
 	}
 
 	return sendJSONResponse(c, http.StatusOK, "Retrieve count character spells per school", "Retrieval successful", spellsCount)

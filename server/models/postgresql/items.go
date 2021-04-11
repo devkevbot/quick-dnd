@@ -102,7 +102,7 @@ func (m *ItemModel) Delete(characterID int, itemName string) error {
 	return nil
 }
 
-func (m *ItemModel) GetTotalWeightCharacterItems(characterID int) (*int, error) {
+func (m *ItemModel) GetTotalWeightCharacterItems(characterID int) (int, error) {
 	var weight int
 
 	stmt := "SELECT SUM(weight*quantity) FROM Items WHERE character_id = $1"
@@ -110,7 +110,7 @@ func (m *ItemModel) GetTotalWeightCharacterItems(characterID int) (*int, error) 
 
 	err := row.Scan(&weight)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return &weight, nil
+	return weight, nil
 }
