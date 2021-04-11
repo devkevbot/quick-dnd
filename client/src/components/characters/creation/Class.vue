@@ -13,18 +13,13 @@
         <!-- Once the user has selected a class, let them choose the
         class-specific attributes. -->
         <span v-if="selectedClass">
-          <div
-            v-for="attribute in selectedClassAttributes"
-            :key="attribute.name"
-          >
-            <!-- Values for each attribute. -->
-            <v-select
-              v-model="attribute.selected"
-              :label="attribute.name"
-              :items="attribute.values"
-              required
-            ></v-select>
-          </div>
+          <!-- Values for each attribute. -->
+          <v-select
+            v-model="classSpecificAttrs.selected"
+            :label="classSpecificAttrs.name"
+            :items="classSpecificAttrs.values"
+            required
+          ></v-select>
         </span>
       </v-col>
 
@@ -45,294 +40,231 @@ export default {
       classOptions: [
         {
           name: 'Barbarian',
-          attributes: [
-            {
-              name: 'Primal Path',
-              dataName: 'primal_path',
-              values: [
-                'Ancestral Guardian',
-                'Battlerager',
-                'Beast',
-                'Berserker',
-                'Storm Herald',
-                'Totem Warrior',
-                'Wild Magic',
-                'Zealot',
-              ],
-              selected: null,
-            },
-          ],
+          attributes: {
+            name: 'Primal Path',
+            dataName: 'primal_path',
+            values: [
+              'Ancestral Guardian',
+              'Battlerager',
+              'Beast',
+              'Berserker',
+              'Storm Herald',
+              'Totem Warrior',
+              'Wild Magic',
+              'Zealot',
+            ],
+            selected: null,
+          },
         },
         {
           name: 'Bard',
-          attributes: [
-            {
-              name: 'College',
-              dataName: 'college',
-              values: [
-                'Creation',
-                'Eloquence',
-                'Glamour',
-                'Lore',
-                'Swords',
-                'Valor',
-                'Whispers',
-              ],
-              selected: null,
-            },
-          ],
+          attributes: {
+            name: 'College',
+            dataName: 'college',
+            values: [
+              'Creation',
+              'Eloquence',
+              'Glamour',
+              'Lore',
+              'Swords',
+              'Valor',
+              'Whispers',
+            ],
+            selected: null,
+          },
         },
         {
           name: 'Cleric',
-          attributes: [
-            {
-              name: 'Domain',
-              dataName: 'divine_domain',
-              values: [
-                'Arcana',
-                'Death',
-                'Forge',
-                'Grave',
-                'Knowledge',
-                'Life',
-                'Light',
-                'Nature',
-                'Order',
-                'Peace',
-                'Tempest',
-                'Trickery',
-                'Twilight',
-                'War',
-              ],
-              selected: null,
-            },
-          ],
+          attributes: {
+            name: 'Domain',
+            dataName: 'divine_domain',
+            values: [
+              'Arcana',
+              'Death',
+              'Forge',
+              'Grave',
+              'Knowledge',
+              'Life',
+              'Light',
+              'Nature',
+              'Order',
+              'Peace',
+              'Tempest',
+              'Trickery',
+              'Twilight',
+              'War',
+            ],
+            selected: null,
+          },
         },
         {
           name: 'Druid',
-          attributes: [
-            {
-              name: 'Circle',
-              dataName: 'druid_circle',
-              values: [
-                'Dreams',
-                'The Land',
-                'The Moon',
-                'The Shepherd',
-                'The Spores',
-                'The Stars',
-                'Wildfire',
-              ],
-              selected: null,
-            },
-          ],
+          attributes: {
+            name: 'Circle',
+            dataName: 'druid_circle',
+            values: [
+              'Dreams',
+              'The Land',
+              'The Moon',
+              'The Shepherd',
+              'The Spores',
+              'The Stars',
+              'Wildfire',
+            ],
+            selected: null,
+          },
         },
         {
           name: 'Fighter',
-          attributes: [
-            {
-              name: 'Archetype',
-              dataName: 'archetype',
-              values: [
-                'Arcane Archer',
-                'Banneret',
-                'Battle Master',
-                'Cavalier',
-                'Champion',
-                'Echo Knight',
-                'Eldritch Knight',
-                'Psi Warrior',
-                'Rune Knight',
-                'Samurai',
-              ],
-              selected: null,
-            },
-            {
-              name: 'Fighting Style',
-              dataName: 'fighting_style',
-              values: [
-                'Archery',
-                'Blind Fighting',
-                'Defense',
-                'Druidic Warrior',
-                'Dueling',
-                'Great Weapon Fighting',
-                'Interception',
-                'Protection',
-                'Superior Technique',
-                'Thrown Weapon Fighting',
-                'Two-Weapon Fighting',
-                'Unarmed Fighting',
-              ],
-              selected: null,
-            },
-          ],
+          attributes: {
+            name: 'Archetype',
+            dataName: 'archetype',
+            values: [
+              'Arcane Archer',
+              'Banneret',
+              'Battle Master',
+              'Cavalier',
+              'Champion',
+              'Echo Knight',
+              'Eldritch Knight',
+              'Psi Warrior',
+              'Rune Knight',
+              'Samurai',
+            ],
+            selected: null,
+          },
         },
         {
           name: 'Monk',
-          attributes: [
-            {
-              name: 'Tradition',
-              dataName: 'monastic_tradition',
-              values: [
-                'Astral Self',
-                'Drunken Master',
-                'Four Elements',
-                'Kensei',
-                'Long Death',
-                'Mercy',
-                'Open Hand',
-                'Shadow',
-                'Sun Soul',
-              ],
-              selected: null,
-            },
-          ],
+          attributes: {
+            name: 'Tradition',
+            dataName: 'monastic_tradition',
+            values: [
+              'Astral Self',
+              'Drunken Master',
+              'Four Elements',
+              'Kensei',
+              'Long Death',
+              'Mercy',
+              'Open Hand',
+              'Shadow',
+              'Sun Soul',
+            ],
+            selected: null,
+          },
         },
         {
           name: 'Paladin',
-          attributes: [
-            {
-              name: 'Oath',
-              dataName: 'oath',
-              values: [
-                'The Ancients',
-                'Conquest',
-                'The Crown',
-                'Devotion',
-                'Glory',
-                'Redemption',
-                'Vengeance',
-                'The Watchers',
-                'Oathbreaker',
-              ],
-              selected: null,
-            },
-            {
-              name: 'Fighting Style',
-              dataName: 'fighting_style',
-              values: [
-                'Archery',
-                'Blind Fighting',
-                'Defense',
-                'Druidic Warrior',
-                'Dueling',
-                'Great Weapon Fighting',
-                'Interception',
-                'Protection',
-                'Superior Technique',
-                'Thrown Weapon Fighting',
-                'Two-Weapon Fighting',
-                'Unarmed Fighting',
-              ],
-              selected: null,
-            },
-          ],
+          attributes: {
+            name: 'Oath',
+            dataName: 'oath',
+            values: [
+              'The Ancients',
+              'Conquest',
+              'The Crown',
+              'Devotion',
+              'Glory',
+              'Redemption',
+              'Vengeance',
+              'The Watchers',
+              'Oathbreaker',
+            ],
+            selected: null,
+          },
         },
         {
-          /* TODO: insert "favored enemy" attribute. */
           name: 'Ranger',
-          attributes: [
-            {
-              name: 'Conclave',
-              dataName: 'conclave',
-              values: [
-                'Beast Master',
-                'Fey Wanderer',
-                'Gloom Stalker',
-                'Horizon Walker',
-                'Hunter',
-                'Monster Slayer',
-                'Swarmkeeper',
-              ],
-              selected: null,
-            },
-          ],
+          attributes: {
+            name: 'Conclave',
+            dataName: 'conclave',
+            values: [
+              'Beast Master',
+              'Fey Wanderer',
+              'Gloom Stalker',
+              'Horizon Walker',
+              'Hunter',
+              'Monster Slayer',
+              'Swarmkeeper',
+            ],
+            selected: null,
+          },
         },
         {
           name: 'Rogue',
-          attributes: [
-            {
-              name: 'Archetype',
-              dataName: 'archetype',
-              values: [
-                'Arcane Trickster',
-                'Assassin',
-                'Inquisitive',
-                'Mastermind',
-                'Phantom',
-                'Scout',
-                'Soulknife',
-                'Swashbuckler',
-                'Thief',
-              ],
-              selected: null,
-            },
-          ],
+          attributes: {
+            name: 'Archetype',
+            dataName: 'archetype',
+            values: [
+              'Arcane Trickster',
+              'Assassin',
+              'Inquisitive',
+              'Mastermind',
+              'Phantom',
+              'Scout',
+              'Soulknife',
+              'Swashbuckler',
+              'Thief',
+            ],
+            selected: null,
+          },
         },
         {
           name: 'Sorcerer',
-          attributes: [
-            {
-              name: 'Origin',
-              dataName: 'sorcerous_origin',
-              values: [
-                'Aberrant Mind',
-                'Clockwork Soul',
-                'Draconic Bloodline',
-                'Divine Soul',
-                'Shadow',
-                'Storm',
-                'Wild Magic',
-              ],
-              selected: null,
-            },
-          ],
+          attributes: {
+            name: 'Origin',
+            dataName: 'sorcerous_origin',
+            values: [
+              'Aberrant Mind',
+              'Clockwork Soul',
+              'Draconic Bloodline',
+              'Divine Soul',
+              'Shadow',
+              'Storm',
+              'Wild Magic',
+            ],
+            selected: null,
+          },
         },
         {
           name: 'Warlock',
-          attributes: [
-            {
-              name: 'Patron',
-              dataName: 'patron',
-              values: [
-                'Archfey',
-                'Celestial',
-                'Fathomless',
-                'Fiend',
-                'Genie',
-                'Great Old One',
-                'Hexblade',
-                'Undying',
-              ],
-              selected: null,
-            },
-          ],
+          attributes: {
+            name: 'Patron',
+            dataName: 'patron',
+            values: [
+              'Archfey',
+              'Celestial',
+              'Fathomless',
+              'Fiend',
+              'Genie',
+              'Great Old One',
+              'Hexblade',
+              'Undying',
+            ],
+            selected: null,
+          },
         },
         {
           name: 'Wizard',
-          attributes: [
-            {
-              name: 'Arcane Tradition',
-              dataName: 'arcane_tradition',
-              values: [
-                'Abjuration',
-                'Bladesinging',
-                'Chronurgy',
-                'Conjuration',
-                'Divination',
-                'Enchantment',
-                'Evocation',
-                'Graviturgy',
-                'Illusion',
-                'Necromancy',
-                'Order of Scribes',
-                'Transmutation',
-                'War Magic',
-              ],
-              selected: null,
-            },
-          ],
+          attributes: {
+            name: 'Arcane Tradition',
+            dataName: 'arcane_tradition',
+            values: [
+              'Abjuration',
+              'Bladesinging',
+              'Chronurgy',
+              'Conjuration',
+              'Divination',
+              'Enchantment',
+              'Evocation',
+              'Graviturgy',
+              'Illusion',
+              'Necromancy',
+              'Order of Scribes',
+              'Transmutation',
+              'War Magic',
+            ],
+            selected: null,
+          },
         },
       ],
     };
@@ -350,16 +282,9 @@ export default {
      * @returns {Object} - Formatted class data that is ready to emit.
      */
     prepareDataForEmit() {
-      /* Create an object which maps curr.DataName to curr.selected */
-      const callback = (acc, curr) => ({
-        ...acc,
-        [curr.dataName]: curr.selected,
-      });
-      const classAttributes = this.selectedClassAttributes.reduce(callback, {});
-
       const data = {
         className: this.selectedClass,
-        classAttributes,
+        classAttribute: this.classSpecificAttrs.selected,
       };
       return data;
     },
@@ -373,10 +298,10 @@ export default {
       return this.classOptions.map((x) => x.name);
     },
     /**
-     * @returns {Array<Object>} A list of attribute objects for the
-     * class that is selected.
+     * @returns {Array<Object>} The class-specific attributes for the
+     * class that the user has selected.
      */
-    selectedClassAttributes() {
+    classSpecificAttrs() {
       const c = this.classOptions.filter((x) => x.name === this.selectedClass);
       return c.map((x) => x.attributes)[0];
     },
