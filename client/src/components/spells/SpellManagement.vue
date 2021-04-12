@@ -1,4 +1,4 @@
-<!-- CharacterManagement.vue-->
+<!-- SpellManagement.vue-->
 
 <template>
   <v-container>
@@ -28,27 +28,27 @@
 </template>
 
 <script>
-import DeleteSpell from './deletion/SpellDetails.vue';
 import CreateSpell from './creation/CreateSpell.vue';
+import DeleteSpell from './deletion/SpellDetails.vue';
 
 export default {
   components: {
-    DeleteSpell,
     CreateSpell,
+    DeleteSpell,
   },
   data() {
     return {
       tab: null,
       items: [
         {
-          tab: 'Delete a Spell',
-          content: DeleteSpell,
-          icon: 'mdi-book-open-outline',
-        },
-        {
           tab: 'Create a Spell',
           content: CreateSpell,
           icon: 'mdi-plus',
+        },
+        {
+          tab: 'Delete a Spell',
+          content: DeleteSpell,
+          icon: 'mdi-book-open-outline',
         },
       ],
     };
