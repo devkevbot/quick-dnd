@@ -13,6 +13,7 @@ The player is then able to delete the spell. -->
           prepend-inner-icon="mdi-account-search"
           :items="characterNames"
           v-model="selectedCharName"
+          @change="fetchCharacterSpells()"
         >
           <!-- Button used to refresh the character list. -->
           <template v-slot:append-outer>
@@ -28,17 +29,13 @@ The player is then able to delete the spell. -->
           </template>
         </v-select>
       </v-col>
-    </v-row>
 
-    <!-- Spell selection dropdown -->
-    <v-row>
-      <v-col cols="4">
-        <p v-if="selectedCharName" class="headline primary--text">
-          Select your spell
-        </p>
+      <!-- Spell selection dropdown -->
+      <v-col cols="4" v-if="selectedCharName">
+        <p class="headline primary--text">Select your spell</p>
         <v-select
-          v-if="selectedCharName"
           solo
+          no-data-text="This character has no spells."
           prepend-inner-icon="mdi-account-search"
           :items="spellNames"
           v-model="selectedSpellName"
@@ -50,7 +47,7 @@ The player is then able to delete the spell. -->
               fab
               small
               class="mt-n2"
-              @click="fetchCharacterSpells(61)"
+              @click="fetchCharacterSpells()"
             >
               <v-icon>mdi-refresh</v-icon>
             </v-btn>
@@ -60,20 +57,19 @@ The player is then able to delete the spell. -->
     </v-row>
 
     <!-- Spell Name and Character ID -->
-    <v-card v-if="selectedCharName" class="pl-2">
+    <v-card v-if="characters.length && spells.length" class="pl-2">
       <v-card-title class="display-1 primary--text">
-        {{ characterSpells[selectedSpellIndex].spell_name }}
+        {{ selectedSpell.spell_name }}
       </v-card-title>
-      <v-card-subtitle>
-        Character ID: {{ selectedCharacter.id }}
-      </v-card-subtitle>
 
       <!-- Delete button -->
       <v-card-actions>
-        <v-btn class="error" @click="displayCharacterDeletionPrompt">
-          Delete {{ characterSpells[selectedSpellIndex].spell_name }}
+        <v-btn class="error" @click="displaySpellDeletionPrompt">
+          Delete Spell
           <v-icon class="ml-2">mdi-delete-forever</v-icon>
         </v-btn>
+
+        <ConfirmDialog ref="confirmDelete" />
       </v-card-actions>
 
       <!-- This container displays all spell information -->
@@ -84,7 +80,7 @@ The player is then able to delete the spell. -->
             <v-text-field
               readonly
               label="Level"
-              :value="characterSpells[selectedSpellIndex].level"
+              :value="selectedSpell.level"
             ></v-text-field>
           </v-col>
 
@@ -92,7 +88,7 @@ The player is then able to delete the spell. -->
             <v-text-field
               readonly
               label="School"
-              :value="characterSpells[selectedSpellIndex].school"
+              :value="selectedSpell.school"
             ></v-text-field>
           </v-col>
 
@@ -100,7 +96,7 @@ The player is then able to delete the spell. -->
             <v-text-field
               readonly
               label="Concentration"
-              :value="characterSpells[selectedSpellIndex].concentration"
+              :value="selectedSpell.concentration"
             ></v-text-field>
           </v-col>
 
@@ -108,7 +104,7 @@ The player is then able to delete the spell. -->
             <v-text-field
               readonly
               label="Casting Time"
-              :value="characterSpells[selectedSpellIndex].casting_time"
+              :value="selectedSpell.casting_time"
             ></v-text-field>
           </v-col>
 
@@ -116,7 +112,7 @@ The player is then able to delete the spell. -->
             <v-text-field
               readonly
               label="Range"
-              :value="characterSpells[selectedSpellIndex].range"
+              :value="selectedSpell.range"
             ></v-text-field>
           </v-col>
 
@@ -124,7 +120,7 @@ The player is then able to delete the spell. -->
             <v-text-field
               readonly
               label="Duration"
-              :value="characterSpells[selectedSpellIndex].duration"
+              :value="selectedSpell.duration"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -136,7 +132,7 @@ The player is then able to delete the spell. -->
               no-resize
               label="Description"
               outlined
-              :value="characterSpells[selectedSpellIndex].description"
+              :value="selectedSpell.description"
             ></v-textarea>
           </v-col>
         </v-row>
@@ -147,55 +143,31 @@ The player is then able to delete the spell. -->
 
 <script>
 import { mapActions } from 'vuex';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
 
 export default {
   name: 'SpellDetails',
+  components: {
+    ConfirmDialog,
+  },
   data() {
     return {
       characters: [],
-      spells: [],
       selectedCharName: null,
+
+      spells: [],
       selectedSpellName: null,
-      selectedSpellIndex: 0,
-      characterSpells: [
-        {
-          character_id: '',
-        },
-        {
-          spell_name: '',
-        },
-        {
-          level: '',
-        },
-        {
-          school: '',
-        },
-        {
-          concentration: '',
-        },
-        {
-          description: '',
-        },
-        {
-          casting_time: '',
-        },
-        {
-          range: '',
-        },
-        {
-          duration: '',
-        },
-      ],
     };
   },
   /**
    * Fetches all of the user's character and spell data when the component loads.
-   * Does not handle fetch errors.
-   * Not sure how to handle spell loading.
    */
   async created() {
     await this.fetchUserCharacters();
-    await this.fetchCharacterSpells(61);
+    /* Only fetch spells if the user has characters and they were
+    successfully loaded. */
+    if (this.characters.length === 0) return;
+    await this.fetchCharacterSpells(this.characters[0].id);
   },
   computed: {
     /**
@@ -203,20 +175,22 @@ export default {
      * any).
      */
     characterNames() {
+      if (this.characters === null) return [];
       return this.characters.map((x) => x.name);
     },
     /**
-     * @returns {Array<String>} - The names of the user's spell (if
+     * @returns {Array<String>} - The names of the user's spells (if
      * any).
      */
     spellNames() {
-      return this.characterSpells.map((x) => x.spell_name);
+      if (this.spells === null) return [];
+      return this.spells.map((x) => x.spell_name);
     },
     /**
      * @returns {String} - The character currently selected by the user.
      */
     selectedCharacter() {
-      if (this.selectedCharName === null) return '';
+      if (!this.selectedCharName) return {};
 
       const target = this.selectedCharName;
       return this.characters.filter((x) => x.name === target)[0];
@@ -225,7 +199,7 @@ export default {
      * @returns {String} - The spell currently selected by the user.
      */
     selectedSpell() {
-      if (this.selectedSpellName === null) return '';
+      if (!this.selectedSpellName) return {};
 
       const target = this.selectedSpellName;
       return this.spells.filter((x) => x.spell_name === target)[0];
@@ -248,24 +222,32 @@ export default {
         method,
       })
         .then((resp) => {
-          this.characters = resp.data.data.characters;
-          if (this.characters) {
-            const targetChar = this.characters[0];
-            this.selectedCharName = targetChar.name;
+          const fetchedCharacters = resp.data.data.characters;
+          if (fetchedCharacters) {
+            this.characters = fetchedCharacters;
+            this.selectedCharName = fetchedCharacters[0].name;
+          } else {
+            this.characters = [];
+            this.selectedCharName = null;
           }
         })
-        .catch(() => {
-          /* TODO: Add error handling. */
+        .catch((err) => {
+          let message = 'Could not fetch characters. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 10000,
+          });
         });
     },
     /**
-     * @param {String} charID - The character ID which can help to identify the spells
-     * to fetch.
+     * Fetches spells for the currently-selected character.
      */
-    async fetchCharacterSpells(charID) {
-      const integerID = parseInt(charID, 10);
-
-      const requestURI = `auth/character/${integerID}/spell`;
+    async fetchCharacterSpells() {
+      const requestURI = `auth/character/${this.selectedCharacter.id}/spell`;
       const method = 'GET';
 
       await this.$http({
@@ -274,14 +256,72 @@ export default {
         method,
       })
         .then((resp) => {
-          this.characterSpells = resp.data.data.spells;
-          if (this.spells) {
-            const targetSpell = this.spells[0];
-            this.selectedSpellName = targetSpell.spell_name;
+          const fetchedSpells = resp.data.data.spells;
+          if (fetchedSpells) {
+            this.spells = fetchedSpells;
+            this.selectedSpellName = fetchedSpells[0].spell_name;
+          } else {
+            this.spells = [];
+            this.selectedSpellName = null;
           }
         })
-        .catch(() => {
-          /* TODO: Add error handling. */
+        .catch((err) => {
+          let message = 'Could not fetch spells. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 10000,
+          });
+        });
+    },
+    /**
+     * Displays a prompt to the user, asking them to confirm their
+     * spell deletion.
+     */
+    async displaySpellDeletionPrompt() {
+      const title = 'Confirm deletion';
+      const message = 'Delete your spell? This action is irreversible.';
+      if (await this.$refs.confirmDelete.prompt(title, message)) {
+        await this.requestSpellDeletion();
+      }
+    },
+    /**
+     * Sends an HTTP request to delete the user's spells for a specific character.
+     */
+    async requestSpellDeletion() {
+      const integerID = parseInt(this.selectedCharacter.id, 10);
+
+      const requestURI = `auth/character/${integerID}/spell/${this.selectedSpellName}`;
+      const method = 'DELETE';
+
+      await this.$http({
+        url: requestURI,
+        data: null,
+        method,
+      })
+        .then(() => {
+          this.display({
+            message: 'Spell was successfully deleted!',
+            color: 'success',
+            timeout: 6000,
+          });
+        })
+        .catch((err) => {
+          let message = 'Something went wrong. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 6000,
+          });
+        })
+        .finally(() => {
+          this.fetchCharacterSpells();
         });
     },
   },

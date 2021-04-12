@@ -27,14 +27,14 @@
         </v-col>
       </v-row>
 
-      <v-card class="pl-2">
-        <!-- Spell name, shcool, and concentration. -->
-        <p class="headline primary--text">Spell Information</p>
+      <v-card class="pa-4" v-if="selectedCharacter">
+        <!-- Spell name, school, and concentration. -->
+        <p class="headline primary--text">General information</p>
         <v-row>
           <v-col cols="12" md="2">
             <v-text-field
-              v-model.trim="spell_name"
-              label="Enter name"
+              v-model.trim="spell.name"
+              label="Enter spell name"
               outlined
               required
             >
@@ -43,9 +43,9 @@
 
           <v-col cols="12" md="2">
             <v-select
-              v-model="school"
+              v-model="spell.school"
               :items="schoolOptions"
-              label="Choose School"
+              label="Choose school"
               outlined
               required
             >
@@ -54,9 +54,9 @@
 
           <v-col cols="12" md="2">
             <v-select
-              v-model.trim="concentration"
+              v-model.trim="spell.concentration"
               :items="concentrationOptions"
-              label="Choose Concentration"
+              label="Choose concentration"
               outlined
               required
             >
@@ -64,13 +64,23 @@
           </v-col>
         </v-row>
 
-        <!-- Spell cast time, duration, and range. -->
-        <p class="headline primary--text">Values</p>
+        <!-- Spell level, casting time, duration, and range. -->
+        <p class="headline primary--text">Numeric details</p>
         <v-row>
           <v-col cols="12" md="2">
             <v-text-field
-              v-model.trim="casting_time"
-              label="Enter cast time"
+              v-model.trim="spell.level"
+              label="Enter level number"
+              outlined
+              required
+            >
+            </v-text-field>
+          </v-col>
+
+          <v-col cols="12" md="2">
+            <v-text-field
+              v-model.trim="spell.casting_time"
+              label="Enter casting time"
               suffix="s"
               outlined
               required
@@ -80,7 +90,7 @@
 
           <v-col cols="12" md="2">
             <v-text-field
-              v-model.trim="duration"
+              v-model.trim="spell.duration"
               label="Enter duration"
               suffix="s"
               outlined
@@ -91,8 +101,8 @@
 
           <v-col cols="12" md="2">
             <v-text-field
-              v-model.trim="range"
-              label="Enter Range"
+              v-model.trim="spell.range"
+              label="Enter range"
               suffix="ft"
               outlined
               required
@@ -106,7 +116,7 @@
         <v-row>
           <v-col cols="12" md="6">
             <v-textarea
-              v-model.trim="description"
+              v-model.trim="spell.description"
               label="Enter description"
               placeholder=""
               outlined
@@ -135,14 +145,16 @@ export default {
       characters: [],
       selectedCharName: null,
 
-      spellName: '',
-      level: '',
-      school: '',
-      concentration: '',
-      description: '',
-      castingTime: '',
-      range: '',
-      duration: '',
+      spell: {
+        name: '',
+        school: 'Abjuration',
+        concentration: true,
+        level: 0,
+        casting_time: 5,
+        duration: 1,
+        range: 10,
+        description: 'Blasts a foe into oblivion.',
+      },
 
       schoolOptions: [
         'Abjuration',
@@ -154,7 +166,8 @@ export default {
         'Necromancy',
         'Transmutation',
       ],
-      concentrationOptions: ['True', 'False'],
+
+      concentrationOptions: [true, false],
     };
   },
   /**
@@ -197,50 +210,80 @@ export default {
         method,
       })
         .then((resp) => {
-          this.characters = resp.data.data.characters;
-          if (this.characters) {
-            const targetChar = this.characters[0];
-            this.selectedCharName = targetChar.name;
-          }
+          const fetchedCharacters = resp.data.data.characters;
+          if (fetchedCharacters === null) return;
+
+          this.characters = fetchedCharacters;
+          const targetChar = this.characters[0];
+          this.selectedCharName = targetChar.name;
         })
-        .catch(() => {
-          /* TODO: Add error handling. */
+        .catch((err) => {
+          let message = 'Could not fetch characters. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 10000,
+          });
         });
     },
     /**
-     * Updates the current character spell data. Triggered when the
-     * 'Create Button' has been clicked.
-     * @param {{
-     *  spellName: String
-     *  level: String
-     *  school: String
-     *  concentration: String
-     *  description: String
-     *  castingTime: String
-     *  range: String
-     *  duration: String
-     *  }} spell
+     * Click handler for the 'create' button for the spell form.
      */
-    updateCharacterSpellData({
-      charID,
-      spellName,
-      level,
-      school,
-      concentration,
-      description,
-      castingTime,
-      range,
-      duration,
-    }) {
-      this.spell.characterId = charID;
-      this.spell.spellName = spellName;
-      this.spell.level = parseInt(level, 10);
-      this.spell.school = school;
-      this.spell.concentration = concentration;
-      this.spell.description = description;
-      this.spell.castingTime = parseInt(castingTime, 10);
-      this.spell.range = parseInt(range, 10);
-      this.spell.duration = parseInt(duration, 10);
+    async onComplete() {
+      /* TODO: validate inputs. */
+      await this.sendSpellCreationRequest();
+      /* TODO: cleanup creation form. */
+    },
+    /**
+     * @returns {Object} Properly-formatted spell data that can be sent
+     * the body of an HTTP request for spell creation.
+     */
+    prepareDataForRequest() {
+      return {
+        spell_name: this.spell.name,
+        level: parseInt(this.spell.level, 10),
+        school: this.spell.school,
+        concentration: this.spell.concentration,
+        casting_time: parseInt(this.spell.casting_time, 10),
+        duration: parseInt(this.spell.duration, 10),
+        range: parseInt(this.spell.range, 10),
+        description: this.spell.description,
+      };
+    },
+    /**
+     * Sends an HTTP request to the backend's spell creation API
+     * endpoint.
+     */
+    async sendSpellCreationRequest() {
+      const requestURI = `auth/character/${this.selectedCharacter.id}/spell`;
+      const method = 'POST';
+
+      await this.$http({
+        url: requestURI,
+        data: this.prepareDataForRequest(),
+        method,
+      })
+        .then(() => {
+          this.display({
+            message: 'Spell was successfully created!',
+            color: 'success',
+            timeout: 6000,
+          });
+        })
+        .catch((err) => {
+          let message = 'Something went wrong. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 6000,
+          });
+        });
     },
   },
 };
