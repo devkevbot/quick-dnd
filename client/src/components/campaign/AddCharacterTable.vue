@@ -56,6 +56,9 @@ export default {
     getItems() {
       return this.items;
     },
+    getIDs() {
+      return this.items.map(({ id }) => parseInt(id, 10));
+    },
   },
 };
 </script>

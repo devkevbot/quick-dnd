@@ -18,6 +18,7 @@ campaign. Assumes the user is authenticated.
         <v-row class="mb-3">
           <v-col cols="12" md="6">
             <v-text-field
+              v-model="name"
               :counter="50"
               label="Campaign Name"
               required
@@ -26,6 +27,7 @@ campaign. Assumes the user is authenticated.
 
           <v-col cols="12" md="6">
             <v-text-field
+              v-model="location"
               :counter="50"
               label="Location"
               required
@@ -34,7 +36,11 @@ campaign. Assumes the user is authenticated.
         </v-row>
 
         <v-row>
-          <v-textarea filled label="Current State"></v-textarea>
+          <v-textarea
+            v-model="state"
+            filled
+            label="Current State"
+          ></v-textarea>
         </v-row>
 
         <v-row class="ml-n2 mb-1">
@@ -48,7 +54,10 @@ campaign. Assumes the user is authenticated.
         </v-row>
 
         <v-row class="ml-0 mt-10">
-          <v-btn color="primary">Create</v-btn>
+          <v-btn
+            color="primary"
+            @click="requestCampaignCreation()"
+          >Create</v-btn>
         </v-row>
 
         <AddCharacterDialog ref="addCharacterDialog" />
@@ -69,6 +78,9 @@ export default {
   },
   data() {
     return {
+      name: '',
+      location: '',
+      state: '',
       idExists: false,
       tempCharacter: null,
     };
@@ -83,7 +95,7 @@ export default {
 
         await this.fetchCharacterInfo(id);
 
-        if (!this.idExists) return;
+        if (!this.idExists) return; // TODO: Notify user of invalid id
 
         this.$refs.addCharacterTable.addItem(
           id,
@@ -117,7 +129,30 @@ export default {
           this.idExists = true;
         })
         .catch(() => {
-          /* TODO: Notify user of invalid ID */
+          /* TODO: Add error handling */
+        });
+    },
+    /**
+     * Sends HTTP requests to create a new campaign
+     */
+    async requestCampaignCreation() {
+      const requestURI = 'auth/campaign';
+      const data = {
+        campaign: {
+          name: this.name,
+          current_location: this.location,
+          state: this.state,
+        },
+        character_id: this.$refs.addCharacterTable.getIDs,
+      };
+      const method = 'POST';
+
+      await this.$http({ url: requestURI, data, method })
+        .then(() => {
+          this.$router.push('/dashboard');
+        })
+        .catch(() => {
+          /* TODO: Add error handling */
         });
     },
   },

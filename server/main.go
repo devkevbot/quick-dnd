@@ -89,8 +89,9 @@ func main() {
 		characters:    &postgresql.CharacterModel{DB: db},
 		spells:        &postgresql.SpellModel{DB: db},
 		items:         &postgresql.ItemModel{DB: db},
-		stats:         &postgresql.StatsModel{DB: db},
 		campaigns:     &postgresql.CampaignModel{DB: db},
+		belongsTo:     &postgresql.BelongsToModel{DB: db},
+		stats:         &postgresql.StatsModel{DB: db},
 	}
 
 	if cfg.IsTest {

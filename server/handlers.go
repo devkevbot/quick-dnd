@@ -472,8 +472,16 @@ func (app *application) deleteItem(c echo.Context) error {
 	return sendJSONResponse(c, http.StatusOK, "Item deletion", "Deletion successful", nil)
 }
 
+type CreateCampaignRequest struct {
+	CampaignInfo models.Campaign `json:"campaign"`
+	CharacterId  []int           `json:"character_id"`
+}
+
+// Create a new campaign, insert its info into the "Campaign" table, and insert
+// campaign/character relationship info into the "BelongsTo" table if successful
 func (app *application) createCampaign(c echo.Context) error {
-	var req models.Campaign
+	var req CreateCampaignRequest
+
 	if err := c.Bind(&req); err != nil {
 		log.Error(err)
 		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Campaign creation", "Could not process request", nil)
@@ -484,17 +492,32 @@ func (app *application) createCampaign(c echo.Context) error {
 		return sendJSONResponse(c, http.StatusUnauthorized, "Campaign creation", "Creation failed", nil)
 	}
 
-	id, err := app.campaigns.Insert(req)
+	req.CampaignInfo.DungeonMaster = creatorUsername
+
+	campaignId, err := app.campaigns.Insert(req.CampaignInfo)
 	if err != nil {
 		log.Error(err)
 		return sendJSONResponse(c, http.StatusInternalServerError, "Campaign creation", "Creation failed", nil)
+	}
+
+	relationship := models.BelongsTo{
+		CharacterID: 0,
+		CampaignID:  campaignId,
+	}
+	for _, id := range req.CharacterId {
+		relationship.CharacterID = id
+		err = app.belongsTo.Insert(relationship)
+		if err != nil {
+			log.Error(err)
+			return sendJSONResponse(c, http.StatusInternalServerError, "Campaign creation", "Creation failed", nil)
+		}
 	}
 
 	return sendJSONResponse(c, http.StatusCreated, "Campaign creation", "Creation successful",
 		struct {
 			ResourceURI string `json:"resource_uri"`
 		}{
-			"/campaign/" + strconv.Itoa(id),
+			"/campaign/" + strconv.Itoa(campaignId),
 		},
 	)
 }
