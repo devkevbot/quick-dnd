@@ -44,6 +44,7 @@ campaign. Assumes the user is authenticated.
         <v-row>
           <v-textarea
             v-model="state"
+            :counter="1024"
             filled
             label="Current State"
             required
@@ -79,6 +80,7 @@ campaign. Assumes the user is authenticated.
 <script>
 import {
   required,
+  maxLength,
 } from 'vuelidate/lib/validators';
 import AddCharacterDialog from './AddCharacterDialog.vue';
 import AddCharacterTable from './AddCharacterTable.vue';
@@ -101,12 +103,15 @@ export default {
   validations: {
     name: {
       required,
+      maxLength: maxLength(50),
     },
     location: {
       required,
+      maxLength: maxLength(50),
     },
     state: {
       required,
+      maxLength: maxLength(1024),
     },
   },
   methods: {
@@ -193,6 +198,9 @@ export default {
       if (!this.$v.name.required) {
         errors.push('Name is required.');
       }
+      if (!this.$v.name.maxLength) {
+        errors.push('Max length exceeded.');
+      }
       return errors;
     },
     locationErrors() {
@@ -201,6 +209,9 @@ export default {
       if (!this.$v.location.required) {
         errors.push('Location is required.');
       }
+      if (!this.$v.location.maxLength) {
+        errors.push('Max length exceeded.');
+      }
       return errors;
     },
     stateErrors() {
@@ -208,6 +219,9 @@ export default {
       if (!this.$v.state.$dirty) return errors;
       if (!this.$v.state.required) {
         errors.push('State is required.');
+      }
+      if (!this.$v.state.maxLength) {
+        errors.push('Max length exceeded.');
       }
       return errors;
     },

@@ -44,6 +44,7 @@ add a new character to their campaign.
 import {
   required,
   numeric,
+  maxLength,
 } from 'vuelidate/lib/validators';
 
 export default {
@@ -60,6 +61,7 @@ export default {
     id: {
       required,
       numeric,
+      maxLength: maxLength(50),
     },
   },
   methods: {
@@ -106,6 +108,9 @@ export default {
       }
       if (!this.$v.id.numeric) {
         errors.push('ID must be numeric.');
+      }
+      if (!this.$v.id.maxLength) {
+        errors.push('Max length exceeded.');
       }
       return errors;
     },
