@@ -22,6 +22,9 @@ campaign. Assumes the user is authenticated.
               :counter="50"
               label="Campaign Name"
               required
+              :error-messages="nameErrors"
+              @input="$v.name.$touch()"
+              @blur="$v.name.touch()"
             ></v-text-field>
           </v-col>
 
@@ -31,6 +34,9 @@ campaign. Assumes the user is authenticated.
               :counter="50"
               label="Location"
               required
+              :error-messages="locationErrors"
+              @input="$v.location.$touch()"
+              @blur="$v.location.touch()"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -40,6 +46,10 @@ campaign. Assumes the user is authenticated.
             v-model="state"
             filled
             label="Current State"
+            required
+            :error-messages="stateErrors"
+            @input="$v.state.$touch()"
+            @blur="$v.state.touch()"
           ></v-textarea>
         </v-row>
 
@@ -56,7 +66,7 @@ campaign. Assumes the user is authenticated.
         <v-row class="ml-0 mt-10">
           <v-btn
             color="primary"
-            @click="requestCampaignCreation()"
+            @click="onClickCreate()"
           >Create</v-btn>
         </v-row>
 
@@ -67,6 +77,9 @@ campaign. Assumes the user is authenticated.
 </template>
 
 <script>
+import {
+  required,
+} from 'vuelidate/lib/validators';
 import AddCharacterDialog from './AddCharacterDialog.vue';
 import AddCharacterTable from './AddCharacterTable.vue';
 
@@ -85,10 +98,27 @@ export default {
       tempCharacter: null,
     };
   },
+  validations: {
+    name: {
+      required,
+    },
+    location: {
+      required,
+    },
+    state: {
+      required,
+    },
+  },
   methods: {
     /**
      * Displays prompt that asks user to enter a character ID
      */
+    async onClickCreate() {
+      this.$v.$touch();
+      if (this.$v.$invalid) return;
+      this.$v.$reset();
+      this.requestCampaignCreation();
+    },
     async showAddCharacterDialog() {
       if (await this.$refs.addCharacterDialog.prompt()) {
         const id = this.$refs.addCharacterDialog.getID;
@@ -154,6 +184,32 @@ export default {
         .catch(() => {
           /* TODO: Add error handling */
         });
+    },
+  },
+  computed: {
+    nameErrors() {
+      const errors = [];
+      if (!this.$v.name.$dirty) return errors;
+      if (!this.$v.name.required) {
+        errors.push('Name is required.');
+      }
+      return errors;
+    },
+    locationErrors() {
+      const errors = [];
+      if (!this.$v.location.$dirty) return errors;
+      if (!this.$v.location.required) {
+        errors.push('Location is required.');
+      }
+      return errors;
+    },
+    stateErrors() {
+      const errors = [];
+      if (!this.$v.state.$dirty) return errors;
+      if (!this.$v.state.required) {
+        errors.push('State is required.');
+      }
+      return errors;
     },
   },
 };
