@@ -16,7 +16,7 @@ const getters = {
 const mutations = {
   onLoginSuccess(state, { token, username }) {
     state.token = token;
-    state.player.username = username;
+    state.player = { username };
   },
   onLogout(state) {
     state.token = null;
