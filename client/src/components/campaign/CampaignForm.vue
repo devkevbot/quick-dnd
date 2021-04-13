@@ -24,7 +24,7 @@ campaign. Assumes the user is authenticated.
               required
               :error-messages="nameErrors"
               @input="$v.name.$touch()"
-              @blur="$v.name.touch()"
+              @blur="$v.name.$touch()"
             ></v-text-field>
           </v-col>
 
@@ -36,7 +36,7 @@ campaign. Assumes the user is authenticated.
               required
               :error-messages="locationErrors"
               @input="$v.location.$touch()"
-              @blur="$v.location.touch()"
+              @blur="$v.location.$touch()"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -49,7 +49,7 @@ campaign. Assumes the user is authenticated.
             required
             :error-messages="stateErrors"
             @input="$v.state.$touch()"
-            @blur="$v.state.touch()"
+            @blur="$v.state.$touch()"
           ></v-textarea>
         </v-row>
 

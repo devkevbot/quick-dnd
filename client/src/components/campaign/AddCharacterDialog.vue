@@ -27,7 +27,7 @@ add a new character to their campaign.
           required
           :error-messages="idErrors"
           @input="$v.id.$touch()"
-          @blur="$v.id.touch()"
+          @blur="$v.id.$touch()"
         ></v-text-field>
 
         <v-card-actions class="pt-4">
