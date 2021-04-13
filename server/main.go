@@ -43,7 +43,7 @@ type application struct {
 		GetTotalWeightCharacterItems(characterID int) (int, error)
 	}
 	campaigns interface {
-		Insert(c models.Campaign) (int, error)
+		Insert(c models.Campaign, characterIDs []int) (int, error)
 		Get(id int) (*models.Campaign, error)
 		GetAllCharacterCampaigns(characterID int)
 		GetPlayersAttendedAll(dungeonMaster string) (*[]string, error)

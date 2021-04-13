@@ -12,15 +12,39 @@ type CampaignModel struct {
 	DB *sqlx.DB
 }
 
-func (m *CampaignModel) Insert(c models.Campaign) (int, error) {
-	stmt := `INSERT INTO Campaign (name, current_location, state, dungeon_master)
+// Inserts a new campaign into the DB and any accompanying characters into the
+// BelongsTo relation
+func (m *CampaignModel) Insert(c models.Campaign, characterIDs []int) (int, error) {
+	stmtCampaign := `INSERT INTO Campaign (name, current_location, state, dungeon_master)
 		VALUES($1, $2, $3, $4)
 		RETURNING id`
+	stmtBelongsTo := `INSERT INTO BelongsTo (character_id, campaign_id)
+	VALUES($1, $2)`
 
 	var createdCampaignID int
-	err := m.DB.QueryRowx(
-		stmt, c.Name, c.CurrentLocation, c.State, c.DungeonMaster,
+
+	tx, err := m.DB.Beginx()
+	if err != nil {
+		return -1, err
+	}
+
+	err = tx.QueryRowx(
+		stmtCampaign, c.Name, c.CurrentLocation, c.State, c.DungeonMaster,
 	).Scan(&createdCampaignID)
+	if err != nil {
+		tx.Rollback()
+		return -1, err
+	}
+
+	for _, id := range characterIDs {
+		_, err := tx.Exec(stmtBelongsTo, id, createdCampaignID)
+		if err != nil {
+			tx.Rollback()
+			return -1, err
+		}
+	}
+
+	err = tx.Commit()
 
 	return createdCampaignID, err
 }

@@ -494,23 +494,10 @@ func (app *application) createCampaign(c echo.Context) error {
 
 	req.CampaignInfo.DungeonMaster = creatorUsername
 
-	campaignId, err := app.campaigns.Insert(req.CampaignInfo)
+	campaignId, err := app.campaigns.Insert(req.CampaignInfo, req.CharacterId)
 	if err != nil {
 		log.Error(err)
 		return sendJSONResponse(c, http.StatusInternalServerError, "Campaign creation", "Creation failed", nil)
-	}
-
-	relationship := models.BelongsTo{
-		CharacterID: 0,
-		CampaignID:  campaignId,
-	}
-	for _, id := range req.CharacterId {
-		relationship.CharacterID = id
-		err = app.belongsTo.Insert(relationship)
-		if err != nil {
-			log.Error(err)
-			return sendJSONResponse(c, http.StatusInternalServerError, "Campaign creation", "Creation failed", nil)
-		}
 	}
 
 	return sendJSONResponse(c, http.StatusCreated, "Campaign creation", "Creation successful",
