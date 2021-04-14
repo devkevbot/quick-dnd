@@ -28,13 +28,13 @@
       </v-row>
 
       <v-card class="pa-4" v-if="selectedCharacter">
-        <!-- Spell name, school, and concentration. -->
+        <!-- Item name, type, and rarity. -->
         <p class="headline primary--text">General information</p>
         <v-row>
           <v-col cols="12" md="2">
             <v-text-field
-              v-model.trim="spell.name"
-              label="Enter spell name"
+              v-model.trim="item.name"
+              label="Enter item name"
               outlined
               required
             >
@@ -43,9 +43,9 @@
 
           <v-col cols="12" md="2">
             <v-select
-              v-model="spell.school"
-              :items="schoolOptions"
-              label="Choose school"
+              v-model="item.type"
+              :items="typeOptions"
+              label="Choose item type"
               outlined
               required
             >
@@ -54,9 +54,9 @@
 
           <v-col cols="12" md="2">
             <v-select
-              v-model.trim="spell.concentration"
-              :items="concentrationOptions"
-              label="Choose concentration"
+              v-model.trim="item.rarity"
+              :items="rarityOptions"
+              label="Choose rarity"
               outlined
               required
             >
@@ -64,13 +64,14 @@
           </v-col>
         </v-row>
 
-        <!-- Spell level, casting time, duration, and range. -->
+        <!-- Item level, weight, gold value, and quantity. -->
         <p class="headline primary--text">Numeric details</p>
         <v-row>
           <v-col cols="12" md="2">
             <v-text-field
-              v-model.trim="spell.level"
-              label="Enter level number"
+              v-model.trim="item.weight"
+              label="Enter item weight"
+              suffix="lbs"
               outlined
               required
             >
@@ -79,9 +80,9 @@
 
           <v-col cols="12" md="2">
             <v-text-field
-              v-model.trim="spell.casting_time"
-              label="Enter casting time"
-              suffix="s"
+              v-model.trim="item.goldValue"
+              label="Enter item's gold value"
+              suffix="gold"
               outlined
               required
             >
@@ -90,20 +91,8 @@
 
           <v-col cols="12" md="2">
             <v-text-field
-              v-model.trim="spell.duration"
-              label="Enter duration"
-              suffix="s"
-              outlined
-              required
-            >
-            </v-text-field>
-          </v-col>
-
-          <v-col cols="12" md="2">
-            <v-text-field
-              v-model.trim="spell.range"
-              label="Enter range"
-              suffix="ft"
+              v-model.trim="item.quantity"
+              label="Enter quantity of item(s)"
               outlined
               required
             >
@@ -111,12 +100,12 @@
           </v-col>
         </v-row>
 
-        <!-- Spell description. -->
+        <!-- Item description. -->
         <p class="headline primary--text">Description</p>
         <v-row>
           <v-col cols="12" md="6">
             <v-textarea
-              v-model.trim="spell.description"
+              v-model.trim="item.description"
               label="Enter description"
               placeholder=""
               outlined
@@ -139,35 +128,42 @@
 import { mapActions } from 'vuex';
 
 export default {
-  name: 'CreateSpell',
+  name: 'CreateItem',
   data() {
     return {
       characters: [],
       selectedCharName: null,
 
-      spell: {
+      item: {
         name: '',
-        school: 'Abjuration',
-        concentration: true,
-        level: 0,
-        casting_time: 5,
-        duration: 1,
-        range: 10,
-        description: 'Blasts a foe into oblivion.',
+        type: 'Armor',
+        rarity: 'Common',
+        weight: 15,
+        goldValue: 10,
+        quantity: 1,
+        description: 'The most humble of items.',
       },
 
-      schoolOptions: [
-        'Abjuration',
-        'Conjuration',
-        'Divination',
-        'Enchantment',
-        'Evocation',
-        'Illusion',
-        'Necromancy',
-        'Transmutation',
+      typeOptions: [
+        'Armor',
+        'Potion',
+        'Ring',
+        'Rod',
+        'Scroll',
+        'Staff',
+        'Wand',
+        'Weapon',
+        'Wondrous Item',
       ],
 
-      concentrationOptions: [true, false],
+      rarityOptions: [
+        'Common',
+        'Uncommon',
+        'Rare',
+        'Very Rare',
+        'Legendary',
+        'Artifact',
+      ],
     };
   },
   /**
@@ -229,60 +225,19 @@ export default {
         });
     },
     /**
-     * Click handler for the 'create' button for the spell form.
-     */
-    async onComplete() {
-      /* TODO: validate inputs. */
-      await this.sendSpellCreationRequest();
-      /* TODO: cleanup creation form. */
-    },
-    /**
-     * @returns {Object} Properly-formatted spell data that can be sent
-     * the body of an HTTP request for spell creation.
+     * @returns {Object} Properly-formatted item data that can be sent
+     * the body of an HTTP request for item creation.
      */
     prepareDataForRequest() {
       return {
-        spell_name: this.spell.name,
-        level: parseInt(this.spell.level, 10),
-        school: this.spell.school,
-        concentration: this.spell.concentration,
-        casting_time: parseInt(this.spell.casting_time, 10),
-        duration: parseInt(this.spell.duration, 10),
-        range: parseInt(this.spell.range, 10),
-        description: this.spell.description,
+        item_name: this.item.name,
+        type: this.item.type,
+        rarity: this.item.rarity,
+        weight: parseInt(this.item.weight, 10),
+        gold_value: parseInt(this.item.goldValue, 10),
+        quantity: parseInt(this.item.quantity, 10),
+        description: this.item.description,
       };
-    },
-    /**
-     * Sends an HTTP request to the backend's spell creation API
-     * endpoint.
-     */
-    async sendSpellCreationRequest() {
-      const requestURI = `auth/character/${this.selectedCharacter.id}/spell`;
-      const method = 'POST';
-
-      await this.$http({
-        url: requestURI,
-        data: this.prepareDataForRequest(),
-        method,
-      })
-        .then(() => {
-          this.display({
-            message: 'Spell was successfully created!',
-            color: 'success',
-            timeout: 6000,
-          });
-        })
-        .catch((err) => {
-          let message = 'Something went wrong. Please try again.';
-          if (err.response) {
-            message = `Error: ${err.response.data.message}. Please try again.`;
-          }
-          this.display({
-            message,
-            color: 'error',
-            timeout: 6000,
-          });
-        });
     },
   },
 };

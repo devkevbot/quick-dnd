@@ -64,6 +64,16 @@ const routes = [
     },
   },
   {
+
+    path: '/items',
+    name: 'Itmes',
+    component: () => import('../views/Items.vue'),
+    meta: {
+      layout: 'Main',
+      protected: true,
+    },
+  },
+  {
     path: '/spells',
     name: 'Spells',
     component: () => import('../views/Spells.vue'),
