@@ -43,7 +43,7 @@ type application struct {
 		GetTotalWeightCharacterItems(characterID int) (int, error)
 	}
 	campaigns interface {
-		Insert(c models.Campaign) (int, error)
+		Insert(c models.Campaign, characterIDs []int) (int, error)
 		Get(id int) (*models.Campaign, error)
 		GetAllCharacterCampaigns(characterID int)
 		GetPlayersAttendedAll(dungeonMaster string) (*[]string, error)
@@ -89,8 +89,9 @@ func main() {
 		characters:    &postgresql.CharacterModel{DB: db},
 		spells:        &postgresql.SpellModel{DB: db},
 		items:         &postgresql.ItemModel{DB: db},
-		stats:         &postgresql.StatsModel{DB: db},
 		campaigns:     &postgresql.CampaignModel{DB: db},
+		belongsTo:     &postgresql.BelongsToModel{DB: db},
+		stats:         &postgresql.StatsModel{DB: db},
 	}
 
 	if cfg.IsTest {

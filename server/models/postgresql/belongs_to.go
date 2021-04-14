@@ -12,7 +12,7 @@ type BelongsToModel struct {
 	DB *sqlx.DB
 }
 
-func (m BelongsToModel) Insert(c models.BelongsTo) error {
+func (m *BelongsToModel) Insert(c models.BelongsTo) error {
 	stmt := `INSERT INTO BelongsTo (character_id, campaign_id)
 		VALUES($1, $2)`
 
@@ -26,7 +26,6 @@ func (m BelongsToModel) Insert(c models.BelongsTo) error {
 		}
 		return err
 	}
-
 	return nil
 }
 

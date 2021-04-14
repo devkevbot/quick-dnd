@@ -25,6 +25,9 @@ add a new character to their campaign.
           :counter="50"
           label="ID"
           required
+          :error-messages="idErrors"
+          @input="$v.id.$touch()"
+          @blur="$v.id.$touch()"
         ></v-text-field>
 
         <v-card-actions class="pt-4">
@@ -38,6 +41,12 @@ add a new character to their campaign.
 </template>
 
 <script>
+import {
+  required,
+  numeric,
+  maxLength,
+} from 'vuelidate/lib/validators';
+
 export default {
   name: 'AddCharacterDialog',
   data() {
@@ -47,6 +56,13 @@ export default {
       reject: null,
       id: null,
     };
+  },
+  validations: {
+    id: {
+      required,
+      numeric,
+      maxLength: maxLength(50),
+    },
   },
   methods: {
     prompt() {
@@ -60,8 +76,12 @@ export default {
      * Runs when the user accepts the prompt. Closes the prompt.
      */
     accept() {
+      this.$v.$touch();
+      if (this.$v.$invalid) return;
+
       this.resolve(true);
       this.showPrompt = false;
+      this.$v.$reset();
     },
     /**
      * Runs when the user declines the prompt. Closes the prompt. Can be
@@ -70,6 +90,32 @@ export default {
     decline() {
       this.resolve(false);
       this.showPrompt = false;
+      this.$v.$reset();
+    },
+    /**
+     * Clears ID from the text box
+     */
+    clearID() {
+      this.id = null;
+    },
+  },
+  computed: {
+    idErrors() {
+      const errors = [];
+      if (!this.$v.id.$dirty) return errors;
+      if (!this.$v.id.required) {
+        errors.push('ID is required.');
+      }
+      if (!this.$v.id.numeric) {
+        errors.push('ID must be numeric.');
+      }
+      if (!this.$v.id.maxLength) {
+        errors.push('Max length exceeded.');
+      }
+      return errors;
+    },
+    getID() {
+      return this.id;
     },
   },
 };

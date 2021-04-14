@@ -359,3 +359,8 @@ INSERT INTO BelongsTo VALUES
     4,
     2
 );
+
+
+-- Manually reset primary key indeces so that "serial" values continue from correct location
+SELECT setval(pg_get_serial_sequence('Character', 'id'), (SELECT MAX(id) FROM Character));
+SELECT setval(pg_get_serial_sequence('Campaign', 'id'), (SELECT MAX(id) FROM Campaign));
