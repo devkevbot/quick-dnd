@@ -66,7 +66,7 @@ const routes = [
   {
 
     path: '/items',
-    name: 'Itmes',
+    name: 'Items',
     component: () => import('../views/Items.vue'),
     meta: {
       layout: 'Main',
