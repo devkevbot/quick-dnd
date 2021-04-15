@@ -12,32 +12,6 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-// Fetches a list of player usernames that have attended each campaign
-// that was created by the requestor.
-func (app *application) getPlayersAttendedAll(c echo.Context) error {
-	dungeonMaster := getUsernameFromToken(c)
-	if strings.TrimSpace(dungeonMaster) == "" {
-		return sendJSONResponse(c, http.StatusUnauthorized,
-			"Campaign stats - Players with perfect attendance in requestor's created campaigns", "Access denied", nil)
-	}
-
-	usernames, err := app.campaigns.GetPlayersAttendedAll(dungeonMaster)
-	if err != nil {
-		log.Error(err)
-		return sendJSONResponse(c, http.StatusUnauthorized,
-			"Campaign stats -  Players with perfect attendance in requestor's created campaigns", "Retrieval failed", nil)
-	}
-
-	return sendJSONResponse(c, http.StatusOK,
-		"Campaign stats - Players with perfect attendance in requestor's created campaigns", "Retrieval successful",
-		struct {
-			Usernames []string `json:"usernames"`
-		}{
-			*usernames,
-		},
-	)
-}
-
 type playerCreationRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -505,6 +479,55 @@ func (app *application) createCampaign(c echo.Context) error {
 			ResourceURI string `json:"resource_uri"`
 		}{
 			"/campaign/" + strconv.Itoa(campaignId),
+		},
+	)
+}
+
+// Fetches all campaigns which a given character is participating in (as
+// a player)
+func (app *application) getAllCharacterCampaigns(c echo.Context) error {
+	charIDString := c.Param("id")
+	charID, err := strconv.Atoi(charIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Retrieve all character campaigns", "Retrieval failed", nil)
+	}
+
+	campaigns, err := app.campaigns.GetAllCharacterCampaigns(charID)
+	if err != nil {
+		return sendJSONResponse(c, http.StatusInternalServerError, "Retrieve all character campaigns", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Retrieve all character campaigns", "Retrieval successful",
+		struct {
+			Campaigns []models.Campaign `json:"campaigns"`
+		}{
+			*campaigns,
+		})
+}
+
+// Fetches a list of player usernames that have attended each campaign
+// that was created by the requestor.
+func (app *application) getPlayersAttendedAll(c echo.Context) error {
+	dungeonMaster := getUsernameFromToken(c)
+	if strings.TrimSpace(dungeonMaster) == "" {
+		return sendJSONResponse(c, http.StatusUnauthorized,
+			"Campaign stats - Players with perfect attendance in requestor's created campaigns", "Access denied", nil)
+	}
+
+	usernames, err := app.campaigns.GetPlayersAttendedAll(dungeonMaster)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnauthorized,
+			"Campaign stats -  Players with perfect attendance in requestor's created campaigns", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK,
+		"Campaign stats - Players with perfect attendance in requestor's created campaigns", "Retrieval successful",
+		struct {
+			Usernames []string `json:"usernames"`
+		}{
+			*usernames,
 		},
 	)
 }
