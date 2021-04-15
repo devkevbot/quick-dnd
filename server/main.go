@@ -40,7 +40,7 @@ type application struct {
 		Get(characterID int, itemName string) (*models.Item, error)
 		GetAllCharacterItems(characterID int) (*[]models.Item, error)
 		Delete(characterID int, itemName string) error
-		GetTotalWeightCharacterItems(characterID int) (int, error)
+		GetItemStats(characterID int) (*models.ItemStats, error)
 	}
 	campaigns interface {
 		Insert(c models.Campaign, characterIDs []int) (int, error)

@@ -299,6 +299,11 @@ type Item struct {
 	Description string     `json:"description" db:"description"`
 }
 
+type ItemStats struct {
+	Weight    int `json:"total_weight"`
+	GoldValue int `json:"total_gold_value"`
+}
+
 type MagicSchoolType string
 
 const (
