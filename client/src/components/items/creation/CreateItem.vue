@@ -225,6 +225,14 @@ export default {
         });
     },
     /**
+     * Click handler for the 'create' button for the item form.
+     */
+    async onComplete() {
+      /* TODO: validate inputs. */
+      await this.sendItemCreationRequest();
+      /* TODO: cleanup creation form. */
+    },
+    /**
      * @returns {Object} Properly-formatted item data that can be sent
      * the body of an HTTP request for item creation.
      */
@@ -238,6 +246,38 @@ export default {
         quantity: parseInt(this.item.quantity, 10),
         description: this.item.description,
       };
+    },
+    /**
+     * Sends an HTTP request to the backend's item creation API
+     * endpoint.
+     */
+    async sendItemCreationRequest() {
+      const requestURI = `auth/character/${this.selectedCharacter.id}/item`;
+      const method = 'POST';
+
+      await this.$http({
+        url: requestURI,
+        data: this.prepareDataForRequest(),
+        method,
+      })
+        .then(() => {
+          this.display({
+            message: 'Item was successfully created!',
+            color: 'success',
+            timeout: 6000,
+          });
+        })
+        .catch((err) => {
+          let message = 'Something went wrong. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 6000,
+          });
+        });
     },
   },
 };

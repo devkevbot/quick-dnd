@@ -13,6 +13,7 @@ The player is then able to delete the item. -->
           prepend-inner-icon="mdi-account-search"
           :items="characterNames"
           v-model="selectedCharName"
+          @change="fetchCharacterItems()"
         >
           <!-- Button used to refresh the character list. -->
           <template v-slot:append-outer>
@@ -36,11 +37,18 @@ The player is then able to delete the item. -->
           solo
           no-data-text="This character has no items."
           prepend-inner-icon="mdi-account-search"
-          :items="['Character Items Here']"
+          :items="itemNames"
+          v-model="selectedItemName"
         >
           <!-- Button used to refresh the item list. -->
           <template v-slot:append-outer>
-            <v-btn color="primary" fab small class="mt-n2">
+            <v-btn
+              color="primary"
+              fab
+              small
+              class="mt-n2"
+              @click="fetchCharacterItems()"
+            >
               <v-icon>mdi-refresh</v-icon>
             </v-btn>
           </template>
@@ -51,13 +59,20 @@ The player is then able to delete the item. -->
     </v-row>
 
     <!-- Item Name -->
-    <v-card class="pl-2">
+    <v-card v-if="characters.length && items.length" class="pl-2">
       <v-card-title class="display-1 primary--text">
-        Item Name Here
+        {{ selectedItem.item_name }}
       </v-card-title>
 
       <!-- Delete button -->
-      <v-btn class="error"> Delete Item </v-btn>
+      <v-card-actions>
+        <v-btn class="error" @click="displayItemDeletionPrompt">
+          Delete Item
+          <v-icon class="ml-2">mdi-delete-forever</v-icon>
+        </v-btn>
+
+        <ConfirmDialog ref="confirmDelete" />
+      </v-card-actions>
 
       <!-- This container displays all item information -->
       <v-container>
@@ -67,7 +82,7 @@ The player is then able to delete the item. -->
             <v-text-field
               readonly
               label="Type"
-              :value="'Item Type Here'"
+              :value="selectedItem.type"
             ></v-text-field>
           </v-col>
 
@@ -75,7 +90,7 @@ The player is then able to delete the item. -->
             <v-text-field
               readonly
               label="Rarity"
-              :value="'Item Rarity Here'"
+              :value="selectedItem.rarity"
             ></v-text-field>
           </v-col>
 
@@ -83,7 +98,7 @@ The player is then able to delete the item. -->
             <v-text-field
               readonly
               label="Weight"
-              :value="'Item Weight Here'"
+              :value="selectedItem.weight"
             ></v-text-field>
           </v-col>
 
@@ -91,7 +106,7 @@ The player is then able to delete the item. -->
             <v-text-field
               readonly
               label="Gold Value"
-              :value="'Item Gold Value Here'"
+              :value="selectedItem.gold_value"
             ></v-text-field>
           </v-col>
 
@@ -99,7 +114,7 @@ The player is then able to delete the item. -->
             <v-text-field
               readonly
               label="Quantity"
-              :value="'Item Quantity Here'"
+              :value="selectedItem.quantity"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -111,7 +126,7 @@ The player is then able to delete the item. -->
               no-resize
               label="Description"
               outlined
-              :value="'Item Description Here'"
+              :value="selectedItem.description"
             ></v-textarea>
           </v-col>
         </v-row>
@@ -122,9 +137,13 @@ The player is then able to delete the item. -->
 
 <script>
 import { mapActions } from 'vuex';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
 
 export default {
   name: 'ItemDetails',
+  components: {
+    ConfirmDialog,
+  },
   data() {
     return {
       characters: [],
@@ -139,6 +158,10 @@ export default {
    */
   async created() {
     await this.fetchUserCharacters();
+    /* Only fetch items if the user has characters and they were
+    successfully loaded. */
+    if (this.characters.length === 0) return;
+    await this.fetchCharacterItems(this.characters[0].id);
   },
   computed: {
     /**
@@ -150,6 +173,14 @@ export default {
       return this.characters.map((x) => x.name);
     },
     /**
+     * @returns {Array<String>} - The names of the user's items (if
+     * any).
+     */
+    itemNames() {
+      if (this.items === null) return [];
+      return this.items.map((x) => x.item_name);
+    },
+    /**
      * @returns {String} - The character currently selected by the user.
      */
     selectedCharacter() {
@@ -157,6 +188,15 @@ export default {
 
       const target = this.selectedCharName;
       return this.characters.filter((x) => x.name === target)[0];
+    },
+    /**
+     * @returns {String} - The item currently selected by the user.
+     */
+    selectedItem() {
+      if (!this.selectedItemName) return {};
+
+      const target = this.selectedItemName;
+      return this.items.filter((x) => x.item_name === target)[0];
     },
   },
   methods: {
@@ -195,6 +235,87 @@ export default {
             color: 'error',
             timeout: 10000,
           });
+        });
+    },
+    /**
+     * Fetches items for the currently-selected character.
+     */
+    async fetchCharacterItems() {
+      const requestURI = `auth/character/${this.selectedCharacter.id}/item`;
+      const method = 'GET';
+
+      await this.$http({
+        url: requestURI,
+        data: null,
+        method,
+      })
+        .then((resp) => {
+          const fetchedItems = resp.data.data.items;
+          if (fetchedItems) {
+            this.items = fetchedItems;
+            this.selectedItemName = fetchedItems[0].item_name;
+          } else {
+            this.items = [];
+            this.selectedItemName = null;
+          }
+        })
+        .catch((err) => {
+          let message = 'Could not fetch items. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 10000,
+          });
+        });
+    },
+    /**
+     * Displays a prompt to the user, asking them to confirm their
+     * item deletion.
+     */
+    async displayItemDeletionPrompt() {
+      const title = 'Confirm deletion';
+      const message = 'Delete your item? This action is irreversible.';
+      if (await this.$refs.confirmDelete.prompt(title, message)) {
+        await this.requestItemDeletion();
+      }
+    },
+    /**
+     * Sends an HTTP request to delete the user's item for a specific character.
+     */
+    async requestItemDeletion() {
+      const integerID = parseInt(this.selectedCharacter.id, 10);
+
+      const requestURI = `auth/character/${integerID}/item/${this.selectedItemName}`;
+      const method = 'DELETE';
+
+      await this.$http({
+        url: requestURI,
+        data: null,
+        method,
+      })
+        .then(() => {
+          this.display({
+            message: 'Item was successfully deleted!',
+            color: 'success',
+            timeout: 6000,
+          });
+        })
+        .catch((err) => {
+          let message = 'Something went wrong. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 6000,
+          });
+        })
+        .finally(() => {
+          this.fetchCharacterItems();
         });
     },
   },
