@@ -1,6 +1,35 @@
 -- Populate DB with some preset values for testing
 -- Since this is just used for testing, don't expect many of these numbers to make sense in a real game
 
+-- Passwords are formatted as "test<username>". Obviously this not
+-- secure, but we need credentials for testing.
+INSERT INTO Player (username, password, name) VALUES
+(
+    'kjerome',
+    '$2a$10$90TeDDAllwO5dWpi0IS0y.iU6uUDHiKsZoLq9Ez/mRZipS0UIpZYq',
+    'Kevin Jerome'
+),
+(
+    'drowsell',
+    '$2a$10$QDtmmPVkT0nsBNAZi1NBwOfaQVdhgqAYej3Y4rYH9mUCjMizfmrsS',
+    'Dylan Rowsell'
+),
+(
+    'ksmolko',
+    '$2a$10$9g28.ZhUpLJBUuYOuFq0RO2ipZpElgbtCaoeKQPR6HEPaLtKdt.3W',
+    'Kyle Smolko'
+),
+(
+    'agervacio',
+    '$2a$10$ebt5.5mQg3zAdataDc4dHOZNwNoBkhTPVMYeIip5De0imIMBhI642',
+    'Arsenen Gervacio'
+),
+(
+    'newuser',
+    '$2a$10$obetuWhYWFuJW6lNvyYb9uothIStuAgmPwhX4/r8wG2nbWZkDfGlK',
+    'New User'
+);
+
 INSERT INTO Character VALUES
 (
     DEFAULT,
@@ -23,7 +52,7 @@ INSERT INTO Character VALUES
     0,
     'Barbarian',
     'Berserker',
-    'mc1'
+    'kjerome'
 ),
 (
     DEFAULT,
@@ -46,7 +75,7 @@ INSERT INTO Character VALUES
     300,
     'Wizard',
     'Abjuration',
-    'alove'
+    'drowsell'
 ),
 (
     DEFAULT,
@@ -69,7 +98,7 @@ INSERT INTO Character VALUES
     300,
     'Fighter',
     'Psi Warrior',
-    'inew'
+    'ksmolko'
 ),
 (
     DEFAULT,
@@ -92,7 +121,7 @@ INSERT INTO Character VALUES
     400,
     'Rogue',
     'Assassin',
-    'at1'
+    'agervacio'
 ),
 (
     DEFAULT,
@@ -115,7 +144,7 @@ INSERT INTO Character VALUES
     400,
     'Monk',
     'Astral Self',
-    'at1'
+    'newuser'
 );
 
 INSERT INTO Items VALUES
@@ -130,7 +159,7 @@ INSERT INTO Items VALUES
     'Martial Melee Weapon'
 ),
 (
-    1,
+    2,
     'Chainmail',
     'Armor',
     'Common',
@@ -140,7 +169,7 @@ INSERT INTO Items VALUES
     'Heavy Armor'
 ),
 (
-    2,
+    3,
     'Wand',
     'Wand',
     'Common',
@@ -150,7 +179,7 @@ INSERT INTO Items VALUES
     'Arcane Focus'
 ),
 (
-    2,
+    4,
     'Pride Silk Outfit',
     'Armor',
     'Common',
@@ -160,7 +189,7 @@ INSERT INTO Items VALUES
     'Light Armor'
 ),
 (
-    2,
+    5,
     'Blight Ichor',
     'Potion',
     'Common',
@@ -170,7 +199,7 @@ INSERT INTO Items VALUES
     'Vulnerability to Psychic Damage for 1 hour'
 ),
 (
-    3,
+    1,
     'Greatsword',
     'Weapon',
     'Common',
@@ -180,7 +209,7 @@ INSERT INTO Items VALUES
     'Martial Melee Weapon'
 ),
 (
-    3,
+    2,
     'Breastplate',
     'Armor',
     'Common',
@@ -190,7 +219,7 @@ INSERT INTO Items VALUES
     'Medium Armor'
 ),
 (
-    4,
+    3,
     'Dagger',
     'Weapon',
     'Common',
@@ -212,7 +241,7 @@ INSERT INTO Items VALUES
 
 INSERT INTO Spells VALUES
 (
-    2,
+    1,
     'Fire Bolt',
     0,
     'Evocation',
@@ -234,7 +263,7 @@ INSERT INTO Spells VALUES
     0
 ),
 (
-    2,
+    3,
     'Burning Hands',
     1,
     'Evocation',
@@ -245,7 +274,7 @@ INSERT INTO Spells VALUES
     0
 ),
 (
-    2,
+    4,
     'Shield',
     1,
     'Abjuration',
@@ -256,7 +285,7 @@ INSERT INTO Spells VALUES
     0
 ),
 (
-    2,
+    5,
     'False Life',
     1,
     'Necromancy',
@@ -273,35 +302,35 @@ INSERT INTO Campaign VALUES
     'Campaign 1',
     'Baldur''s Gate',
     'Doing nothing of substance',
-    'ae1'
+    'kjerome'
 ),
 (
     2,
     'Campaign 2',
     'Icewind Dale',
     'Fighting a troll',
-    'ae1'
+    'drowsell'
 ),
 (
     3,
     'Campaign 3',
     'Nowhere',
     'Not started',
-    'mc1'
+    'ksmolko'
 ),
 (
     4,
     'Campaign 4',
     'Baldur''s Gate',
     'Following Campaign 1',
-    'ae1'
+    'agervacio'
 ),
 (
     5,
     'Campaign 5',
     'The Void',
     'Not started',
-    'mc1'
+    'newuser'
 );
 
 INSERT INTO CampaignMilestones VALUES
@@ -310,11 +339,11 @@ INSERT INTO CampaignMilestones VALUES
     'Started your wonderful journey'
 ),
 (
-    1,
+    2,
     'Defeated the big bad Dragon'
 ),
 (
-    2,
+    3,
     'Started your wonderful journey'
 ),
 (
@@ -322,7 +351,7 @@ INSERT INTO CampaignMilestones VALUES
     'Started your wonderful journey'
 ),
 (
-    4,
+    5,
     'Found an orphan'
 );
 

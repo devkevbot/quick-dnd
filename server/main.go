@@ -94,10 +94,6 @@ func main() {
 		stats:         &postgresql.StatsModel{DB: db},
 	}
 
-	if cfg.IsTest {
-		app.runTests(db)
-	}
-
 	app.registerRoutes(e)
 
 	e.Logger.Fatal(e.Start(":" + strconv.Itoa(cfg.HTTPServer.Port)))

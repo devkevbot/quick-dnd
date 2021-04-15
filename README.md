@@ -55,9 +55,3 @@ Create a new `config.yml` file inside the `server` directory:
 Navigate to the `client/` folder and run `npm install`.
 
 Follow the instructions in `client/README.md`.
-
-## Testing
-
-* Make sure `test_run` is set to `true` in `server/config.yml`
-
-* Run `go run .` from the `server/` directory.
