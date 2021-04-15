@@ -40,10 +40,10 @@ export default {
         /* TODO: update links when they are created */
         { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/dashboard' },
         { title: 'My account', icon: 'mdi-account-box', to: '/account' },
-        { title: 'Character management', icon: 'mdi-gavel', to: '/characters' },
-        { title: 'Item management', icon: 'mdi-sword-cross', to: '/items' },
-        { title: 'Spell management', icon: 'mdi-fire', to: '/spells' },
-        { title: 'Start a campaign', icon: 'mdi-castle', to: '/campaign' },
+        { title: 'Characters', icon: 'mdi-gavel', to: '/characters' },
+        { title: 'Items', icon: 'mdi-sword-cross', to: '/items' },
+        { title: 'Spells', icon: 'mdi-fire', to: '/spells' },
+        { title: 'Campaigns', icon: 'mdi-castle', to: '/campaign' },
       ],
     };
   },
