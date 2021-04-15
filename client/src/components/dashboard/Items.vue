@@ -24,14 +24,24 @@
                 </tr>
               </thead>
 
-              <tbody>
-                <tr v-if="data.items.length === 0">
+              <tbody v-if="data.items.length === 0">
+                <tr>
                   <td>This character has no items!</td>
                 </tr>
+              </tbody>
 
-                <tr v-else>
+              <tbody v-else>
+                <tr>
                   <td class="subtitle-1">Total item weight</td>
-                  <td class="subtitle-1">{{ data.totalItemWeight }} lbs</td>
+                  <td class="subtitle-1">
+                    {{ data.itemStats.total_weight }} lbs
+                  </td>
+                </tr>
+                <tr>
+                  <td class="subtitle-1">Total gold value</td>
+                  <td class="subtitle-1">
+                    {{ data.itemStats.total_gold_value }} gold
+                  </td>
                 </tr>
               </tbody>
             </v-simple-table>

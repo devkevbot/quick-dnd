@@ -102,15 +102,18 @@ func (m *ItemModel) Delete(characterID int, itemName string) error {
 	return nil
 }
 
-func (m *ItemModel) GetTotalWeightCharacterItems(characterID int) (int, error) {
-	var weight int
+// GetItemStats returns several interesting stats which can be shown to
+// the user.
+func (m *ItemModel) GetItemStats(characterID int) (*models.ItemStats, error) {
+	var istats models.ItemStats
 
-	stmt := "SELECT COALESCE(SUM(weight*quantity),0) FROM Items WHERE character_id = $1"
+	stmt := "SELECT COALESCE(SUM(weight*quantity),0), COALESCE(SUM(gold_value*quantity),0) FROM Items WHERE character_id = $1"
 	row := m.DB.QueryRowx(stmt, characterID)
 
-	err := row.Scan(&weight)
+	err := row.Scan(&istats.Weight, &istats.GoldValue)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
-	return weight, nil
+
+	return &istats, nil
 }

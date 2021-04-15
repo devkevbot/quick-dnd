@@ -84,7 +84,7 @@ export default {
 
       data: {
         items: [],
-        totalItemWeight: 0,
+        itemStats: {},
         spells: [],
         spellCountPerSchool: [],
       },
@@ -247,7 +247,7 @@ export default {
     async fetchItemStats(charID) {
       const integerID = parseInt(charID, 10);
 
-      const requestURI = `auth/character/${integerID}/item/weight`;
+      const requestURI = `auth/character/${integerID}/item/stats`;
       const method = 'GET';
 
       await this.$http({
@@ -256,7 +256,7 @@ export default {
         method,
       })
         .then((resp) => {
-          this.data.totalItemWeight = resp.data.data.weight ?? 0;
+          this.data.itemStats = resp.data.data.stats ?? {};
         })
         .catch(() => {
           /* TODO: Add error handling. */

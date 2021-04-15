@@ -520,26 +520,26 @@ func (app *application) retrieveAllStats(c echo.Context) error {
 	return sendJSONResponse(c, http.StatusOK, "Retrieve all stats", "Retrieval successful", stats)
 }
 
-// Get total weight of items a character has
-func (app *application) getTotalWeightCharacterItems(c echo.Context) error {
+// Get several interesting items for a given character
+func (app *application) getItemStats(c echo.Context) error {
 	charIDString := c.Param("id")
 	charID, err := strconv.Atoi(charIDString)
 	if err != nil {
 		log.Error(err)
-		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Retrieve total character item weight", "Retrieval failed", nil)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Retrieve character item stats", "Retrieval failed", nil)
 	}
 
-	weight, err := app.items.GetTotalWeightCharacterItems(charID)
+	stats, err := app.items.GetItemStats(charID)
 	if err != nil {
 		log.Error(err)
-		return sendJSONResponse(c, http.StatusInternalServerError, "Retrieve total character item weight", "Retrieval failed", nil)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Retrieve character item stats", "Retrieval failed", nil)
 	}
 
-	return sendJSONResponse(c, http.StatusOK, "Retrieve total character item weight", "Retrieval successful",
+	return sendJSONResponse(c, http.StatusOK, "Retrieve character item stats", "Retrieval successful",
 		struct {
-			Weight int `json:"weight"`
+			Stats models.ItemStats `json:"stats"`
 		}{
-			weight,
+			*stats,
 		})
 }
 
