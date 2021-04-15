@@ -82,9 +82,12 @@ export default {
       characters: [],
       selectedCharName: null,
 
-      data: [],
-      characterSpells: [],
-      characterItems: [],
+      data: {
+        items: [],
+        totalItemWeight: 0,
+        spells: [],
+        spellCountPerSchool: [],
+      },
     };
   },
   /**
@@ -99,14 +102,16 @@ export default {
       data: null,
       method,
     })
-      .then((resp) => {
+      .then(async (resp) => {
         const fetchedCharacters = resp.data.data.characters;
         if (fetchedCharacters === null) return;
 
         this.characters = fetchedCharacters;
         const targetChar = this.characters[0];
         this.selectedCharName = targetChar.name;
-        this.fetchCharacterSpells(targetChar.id);
+
+        await this.fetchSpellData(targetChar.id);
+        await this.fetchSpellStats(targetChar.id);
       })
       .catch((err) => {
         let message = 'Could not fetch characters. Please try again.';
@@ -155,10 +160,12 @@ export default {
 
       switch (selected.tab) {
         case 'Spells':
-          await this.fetchCharacterSpells(this.selectedCharacterID);
+          await this.fetchSpellData(this.selectedCharacterID);
+          await this.fetchSpellStats(this.selectedCharacterID);
           break;
         case 'Items':
-          await this.fetchCharacterItems(this.selectedCharacterID);
+          await this.fetchItemData(this.selectedCharacterID);
+          await this.fetchItemStats(this.selectedCharacterID);
           break;
         /* TODO: create campaign fetching API */
         case 'Campaigns':
@@ -171,7 +178,7 @@ export default {
      * @param {String} charID - The character ID which can help to identify the spells
      * to fetch.
      */
-    async fetchCharacterSpells(charID) {
+    async fetchSpellData(charID) {
       const integerID = parseInt(charID, 10);
 
       const requestURI = `auth/character/${integerID}/spell`;
@@ -183,8 +190,29 @@ export default {
         method,
       })
         .then((resp) => {
-          this.characterSpells = resp.data.data.spells;
-          this.data = this.characterSpells;
+          this.data.spells = resp.data.data.spells ?? [];
+        })
+        .catch(() => {
+          /* TODO: Add error handling. */
+        });
+    },
+    /**
+     * @param {String} charID - The character ID which can help to
+     * identify the character data to fetch.
+     */
+    async fetchSpellStats(charID) {
+      const integerID = parseInt(charID, 10);
+
+      const requestURI = `auth/character/${integerID}/spell/count-per-school`;
+      const method = 'GET';
+
+      await this.$http({
+        url: requestURI,
+        data: null,
+        method,
+      })
+        .then((resp) => {
+          this.data.spellCountPerSchool = resp.data.data.spells_count ?? [];
         })
         .catch(() => {
           /* TODO: Add error handling. */
@@ -194,7 +222,7 @@ export default {
      * @param {String} charID - The character ID which can help to identify the items
      * to fetch.
      */
-    async fetchCharacterItems(charID) {
+    async fetchItemData(charID) {
       const integerID = parseInt(charID, 10);
 
       const requestURI = `auth/character/${integerID}/item`;
@@ -206,8 +234,29 @@ export default {
         method,
       })
         .then((resp) => {
-          this.characterItems = resp.data.data.items;
-          this.data = this.characterItems;
+          this.data.items = resp.data.data.items ?? [];
+        })
+        .catch(() => {
+          /* TODO: Add error handling. */
+        });
+    },
+    /**
+     * @param {String} charID - The character ID which can help to
+     * identify the character data to fetch.
+     */
+    async fetchItemStats(charID) {
+      const integerID = parseInt(charID, 10);
+
+      const requestURI = `auth/character/${integerID}/item/weight`;
+      const method = 'GET';
+
+      await this.$http({
+        url: requestURI,
+        data: null,
+        method,
+      })
+        .then((resp) => {
+          this.data.totalItemWeight = resp.data.data.weight ?? 0;
         })
         .catch(() => {
           /* TODO: Add error handling. */
