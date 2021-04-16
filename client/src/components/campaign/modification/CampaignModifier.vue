@@ -45,12 +45,6 @@
           <v-icon class="ml-2">mdi-pencil</v-icon>
         </v-btn>
 
-        <v-btn>
-          <!-- TODO: implement the click handler. -->
-          Add Milestone
-          <v-icon class="mx-2">mdi-plus</v-icon>
-        </v-btn>
-
         <v-btn class="error" @click="displayCampaignDeletionPrompt">
           Delete Campaign
           <v-icon>mdi-delete-forever</v-icon>
@@ -63,14 +57,16 @@
       <v-container>
         <p class="headline primary--text">Campaign information</p>
         <v-row>
-          <v-col cols="12" lg="4">
+          <v-col cols="12" md="8" lg="8">
             <v-text-field
               readonly
               label="Location"
               :value="selectedCampaign.current_location"
             ></v-text-field>
           </v-col>
+        </v-row>
 
+        <v-row>
           <v-col cols="12" lg="12">
             <v-textarea
               readonly
@@ -81,6 +77,26 @@
             ></v-textarea>
           </v-col>
         </v-row>
+
+        <!-- Campaign milestone information -->
+        <p class="headline primary--text">Campaign milestones</p>
+        <v-btn @click="displayAddMilestoneForm">
+          <!-- TODO: implement the click handler. -->
+          Add Milestone
+          <v-icon class="mx-2">mdi-plus</v-icon>
+        </v-btn>
+
+        <AddMilestoneForm
+          ref="addMilestone"
+          @complete="sendAddMilestoneRequest"
+        >
+        </AddMilestoneForm>
+
+        <v-row>
+          <v-col cols="12" lg="12">
+            <MilestoneTimeline :milestones="milestones"></MilestoneTimeline>
+          </v-col>
+        </v-row>
       </v-container>
     </v-card>
   </v-container>
@@ -89,16 +105,21 @@
 <script>
 import { mapActions } from 'vuex';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import AddMilestoneForm from './AddMilestoneForm.vue';
+import MilestoneTimeline from './MilestoneTimeline.vue';
 
 export default {
   name: 'CampaignModifier',
   components: {
     ConfirmDialog,
+    AddMilestoneForm,
+    MilestoneTimeline,
   },
   data() {
     return {
       campaigns: [],
       selectedCampaignID: null,
+      milestones: [],
     };
   },
   /**
@@ -106,6 +127,9 @@ export default {
    */
   async created() {
     await this.fetchPlayerCreatedCampaigns();
+
+    if (this.selectedCampaignID === null) return;
+    await this.fetchCampaignMilestones();
   },
   computed: {
     /**
@@ -163,6 +187,80 @@ export default {
             message,
             color: 'error',
             timeout: 10000,
+          });
+        });
+    },
+    /**
+     * Shows the user a form which will allow them to add milestones for
+     * a campaign.
+     */
+    async displayAddMilestoneForm() {
+      await this.$refs.addMilestone.prompt();
+    },
+    /**
+     * Send an HTTP request to create a milestone for the given campaign.
+     * @param {String} milestone - The milestone text.
+     */
+    async sendAddMilestoneRequest({ milestone }) {
+      const campaignID = parseInt(this.selectedCampaignID, 10);
+      const requestURI = 'auth/campaign/milestone';
+      const method = 'POST';
+
+      await this.$http({
+        url: requestURI,
+        data: {
+          campaign_id: campaignID,
+          milestone,
+        },
+        method,
+      })
+        .then(() => {
+          this.display({
+            message: 'Milestone was successfully created!',
+            color: 'success',
+            timeout: 6000,
+          });
+        })
+        .catch((err) => {
+          let message = 'Something went wrong. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 6000,
+          });
+        })
+        .finally(() => {
+          this.fetchCampaignMilestones();
+        });
+    },
+    /**
+     * @returns {Array<String>} An array of milestones for the currently-selected campaign.
+     */
+    async fetchCampaignMilestones() {
+      const campaignID = parseInt(this.selectedCampaignID, 10);
+      const requestURI = `auth/campaign/${campaignID}/milestone`;
+      const method = 'GET';
+      await this.$http({
+        url: requestURI,
+        data: null,
+        method,
+      })
+        .then((resp) => {
+          const fetchedMilestones = resp.data.data.milestones;
+          this.milestones = fetchedMilestones ?? [];
+        })
+        .catch((err) => {
+          let message = 'Something went wrong. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 6000,
           });
         });
     },

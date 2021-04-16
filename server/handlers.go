@@ -574,6 +574,47 @@ func (app *application) getPlayersAttendedAll(c echo.Context) error {
 	)
 }
 
+// Create a new milestone for a given campaign.
+func (app *application) createMilestone(c echo.Context) error {
+	var req models.CampaignMilestone
+
+	if err := c.Bind(&req); err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Milestone creation", "Could not process request", nil)
+	}
+
+	err := app.milestones.Insert(req.CampaignID, req.Milestone)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Milestone creation", "Creation failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Milestone creation", "Creation successful", nil)
+}
+
+// Retrieve all milestones belonging to a campaign given the campaign ID.
+func (app *application) getAllMilestonesForCampaign(c echo.Context) error {
+	campaignIDString := c.Param("id")
+	campaignID, err := strconv.Atoi(campaignIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Milestone retrieval", "Retrieval failed", nil)
+	}
+
+	milestones, err := app.milestones.GetAllForCampaign(campaignID)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Milestone retrieval", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Milestone retrieval", "Retrieval successful",
+		struct {
+			Milestones []string `json:"milestones"`
+		}{
+			*milestones,
+		})
+}
+
 // Get all global stats.
 func (app *application) retrieveAllStats(c echo.Context) error {
 	stats, err := app.stats.GetAll()
