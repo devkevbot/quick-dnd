@@ -78,10 +78,52 @@
           </v-col>
         </v-row>
 
+        <!-- Display some data bout the campaign participants. -->
+        <p class="headline primary--text">Campaign participants</p>
+        <v-row class="mb-4">
+          <v-simple-table>
+            <thead>
+              <tr>
+                <th class="primary--text subtitle-1">Player</th>
+                <th class="primary--text subtitle-1">Character</th>
+                <th class="primary--text subtitle-1">Race</th>
+                <th class="primary--text subtitle-1">Class</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr v-if="participants.length === 0">
+                <td>This campaign has no participants!</td>
+              </tr>
+
+              <tr
+                v-else
+                v-for="(particpant, index) in participants"
+                :key="index"
+              >
+                <td class="subtitle-1">
+                  {{ particpant.player_username }}
+                </td>
+
+                <td class="subtitle-1">
+                  {{ particpant.character_name }}
+                </td>
+
+                <td class="subtitle-1">
+                  {{ particpant.character_race }}
+                </td>
+
+                <td class="subtitle-1">
+                  {{ particpant.character_class }}
+                </td>
+              </tr>
+            </tbody>
+          </v-simple-table>
+        </v-row>
+
         <!-- Campaign milestone information -->
         <p class="headline primary--text">Campaign milestones</p>
         <v-btn @click="displayAddMilestoneForm">
-          <!-- TODO: implement the click handler. -->
           Add Milestone
           <v-icon class="mx-2">mdi-plus</v-icon>
         </v-btn>
@@ -120,6 +162,7 @@ export default {
       campaigns: [],
       selectedCampaignID: null,
       milestones: [],
+      participants: [],
     };
   },
   /**
@@ -130,6 +173,7 @@ export default {
 
     if (this.selectedCampaignID === null) return;
     await this.fetchCampaignMilestones();
+    await this.fetchCampaignParticipants();
   },
   computed: {
     /**
@@ -310,6 +354,35 @@ export default {
         })
         .finally(() => {
           this.fetchPlayerCreatedCampaigns();
+        });
+    },
+    /**
+     * Retrieves some data about the players and characters
+     * particiin the selected campaign.
+     */
+    async fetchCampaignParticipants() {
+      const campaignID = parseInt(this.selectedCampaignID, 10);
+      const requestURI = `auth/campaign/${campaignID}/participants`;
+      const method = 'GET';
+      await this.$http({
+        url: requestURI,
+        data: null,
+        method,
+      })
+        .then((resp) => {
+          const fetchedparticipants = resp.data.data.participants;
+          this.participants = fetchedparticipants ?? [];
+        })
+        .catch((err) => {
+          let message = 'Something went wrong. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 6000,
+          });
         });
     },
   },
