@@ -70,6 +70,55 @@ func (m *CampaignModel) Get(id int) (*models.Campaign, error) {
 	return &storedCampaign, nil
 }
 
+// Delete attempts to delete a campaign identified by `id`.
+func (m *CampaignModel) Delete(id int) error {
+	stmt := "DELETE FROM Campaign WHERE id = $1"
+
+	res, err := m.DB.Exec(stmt, id)
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return models.ErrNoRecord
+
+	}
+	if count > 1 {
+		return models.ErrDeleteSingleRecord
+	}
+
+	return nil
+}
+
+// Get all campaigns started by `dungeonMaster`.
+func (m *CampaignModel) GetPlayersCreatedCampaigns(dungeonMaster string) (*[]models.Campaign, error) {
+	var storedCampaigns []models.Campaign
+
+	stmt := `SELECT *
+			FROM Campaign
+			WHERE dungeon_master = $1`
+
+	rows, err := m.DB.Queryx(stmt, dungeonMaster)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var campaign models.Campaign
+		err = rows.StructScan(&campaign)
+		if err != nil {
+			return nil, err
+		}
+		storedCampaigns = append(storedCampaigns, campaign)
+	}
+
+	return &storedCampaigns, nil
+}
+
 func (m *CampaignModel) GetAllCharacterCampaigns(characterID int) (*[]models.Campaign, error) {
 	var storedCampaigns []models.Campaign
 

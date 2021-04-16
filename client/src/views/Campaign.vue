@@ -4,17 +4,17 @@ This component is the view shown when a user is on the Campaign creation page.
 
 <template>
   <div class="campaign">
-    <CampaignForm />
+    <CampaignManagement />
   </div>
 </template>
 
 <script>
-import CampaignForm from '../components/campaign/CampaignForm.vue';
+import CampaignManagement from '../components/campaign/CampaignManagement.vue';
 
 export default {
   name: 'Campaign',
   components: {
-    CampaignForm,
+    CampaignManagement,
   },
 };
 </script>

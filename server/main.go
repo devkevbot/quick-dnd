@@ -45,6 +45,8 @@ type application struct {
 	campaigns interface {
 		Insert(c models.Campaign, characterIDs []int) (int, error)
 		Get(id int) (*models.Campaign, error)
+		Delete(id int) error
+		GetPlayersCreatedCampaigns(dungeonMaster string) (*[]models.Campaign, error)
 		GetAllCharacterCampaigns(characterID int) (*[]models.Campaign, error)
 		GetPlayersAttendedAll(dungeonMaster string) (*[]string, error)
 	}

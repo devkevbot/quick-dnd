@@ -483,6 +483,48 @@ func (app *application) createCampaign(c echo.Context) error {
 	)
 }
 
+// Deletes a single campaign given its unique `id.`
+func (app *application) deleteCampaign(c echo.Context) error {
+	// TODO: Check if the requestor actually is the player who created
+	// the campaign. Right now anyone can delete another player's
+	// campaign as long as they are authenticated.
+
+	campaignIDString := c.Param("id")
+	campaignID, err := strconv.Atoi(campaignIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Campaign deletion", "Deletion failed", nil)
+	}
+
+	err = app.campaigns.Delete(campaignID)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Campaign deletion", "Deletion failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Campaign deletion", "Deletion successful", nil)
+}
+
+// Fetches all campaigns started by the requestor.
+func (app *application) getsPlayersCreatedCampaigns(c echo.Context) error {
+	dungeonMaster := getUsernameFromToken(c)
+	if strings.TrimSpace(dungeonMaster) == "" {
+		return sendJSONResponse(c, http.StatusUnauthorized, "Retrieve all player's started campaigns", "Retrieval failed", nil)
+	}
+
+	campaigns, err := app.campaigns.GetPlayersCreatedCampaigns(dungeonMaster)
+	if err != nil {
+		return sendJSONResponse(c, http.StatusInternalServerError, "Retrieve all player's started campaigns", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Retrieve all player's started campaigns", "Retrieval successful",
+		struct {
+			Campaigns []models.Campaign `json:"campaigns"`
+		}{
+			*campaigns,
+		})
+}
+
 // Fetches all campaigns which a given character is participating in (as
 // a player)
 func (app *application) getAllCharacterCampaigns(c echo.Context) error {
