@@ -50,6 +50,7 @@
 import { mapActions } from 'vuex';
 import Spells from './Spells.vue';
 import Items from './Items.vue';
+import Campaigns from './Campaigns.vue';
 
 export default {
   name: 'InfoPane',
@@ -61,7 +62,6 @@ export default {
     return {
       tab: null,
       items: [
-        /* TODO: import and add components when they are created */
         {
           tab: 'Spells',
           content: Spells,
@@ -74,7 +74,7 @@ export default {
         },
         {
           tab: 'Campaigns',
-          content: '',
+          content: Campaigns,
           icon: 'mdi-castle',
         },
       ],
@@ -87,6 +87,7 @@ export default {
         itemStats: {},
         spells: [],
         spellCountPerSchool: [],
+        campaigns: [],
       },
     };
   },
@@ -167,8 +168,8 @@ export default {
           await this.fetchItemData(this.selectedCharacterID);
           await this.fetchItemStats(this.selectedCharacterID);
           break;
-        /* TODO: create campaign fetching API */
         case 'Campaigns':
+          await this.fetchCampaignData(this.selectedCharacterID);
           break;
         default:
           break;
@@ -257,6 +258,28 @@ export default {
       })
         .then((resp) => {
           this.data.itemStats = resp.data.data.stats ?? {};
+        })
+        .catch(() => {
+          /* TODO: Add error handling. */
+        });
+    },
+    /**
+     * @param {String} charID - The character ID which can help to
+     * identify the campaign data to fetch.
+     */
+    async fetchCampaignData(charID) {
+      const integerID = parseInt(charID, 10);
+
+      const requestURI = `auth/character/${integerID}/campaign`;
+      const method = 'GET';
+
+      await this.$http({
+        url: requestURI,
+        data: null,
+        method,
+      })
+        .then((resp) => {
+          this.data.campaigns = resp.data.data.campaigns ?? [];
         })
         .catch(() => {
           /* TODO: Add error handling. */
