@@ -370,6 +370,13 @@ type CampaignMilestone struct {
 	Milestone  string `json:"milestone" db:"milestone"`
 }
 
+type CampaignParticipants struct {
+	PlayerUsername string    `json:"player_username"`
+	CharacterName  string    `json:"character_name"`
+	CharacterRace  RaceType  `json:"character_race"`
+	CharacterClass ClassType `json:"character_class"`
+}
+
 // BelongsTo is the code representation of the "BelongsTo" relation in
 // the database schema.
 type BelongsTo struct {

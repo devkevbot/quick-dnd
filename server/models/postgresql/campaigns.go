@@ -147,6 +147,41 @@ func (m *CampaignModel) GetAllCharacterCampaigns(characterID int) (*[]models.Cam
 	return &storedCampaigns, nil
 }
 
+// GetCampaignParticpants fetches some data about the players and
+// characters that belong to a campaign identified by `id`.
+func (m *CampaignModel) GetCampaignParticpants(id int) (*[]models.CampaignParticipants, error) {
+	var participants []models.CampaignParticipants
+
+	stmt := `SELECT ch.player_username, ch.name, ch.race, ch.class
+			FROM Character AS ch
+			INNER JOIN BelongsTo
+			ON BelongsTo.character_id = ch.id
+			INNER JOIN Campaign AS ca
+			ON BelongsTo.campaign_id = ca.id
+			WHERE ca.id = $1`
+
+	rows, err := m.DB.Queryx(stmt, id)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var participant models.CampaignParticipants
+		err = rows.Scan(
+			&participant.PlayerUsername,
+			&participant.CharacterName,
+			&participant.CharacterRace,
+			&participant.CharacterClass,
+		)
+		if err != nil {
+			return nil, err
+		}
+		participants = append(participants, participant)
+	}
+
+	return &participants, nil
+}
+
 // GetPlayersAttendedAll fetches the usernames of players which have
 // participated in all campaigns which were created by `dungeonMaster`.
 func (m *CampaignModel) GetPlayersAttendedAll(dungeonMaster string) (*[]string, error) {

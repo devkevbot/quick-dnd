@@ -48,6 +48,7 @@ type application struct {
 		Delete(id int) error
 		GetPlayersCreatedCampaigns(dungeonMaster string) (*[]models.Campaign, error)
 		GetAllCharacterCampaigns(characterID int) (*[]models.Campaign, error)
+		GetCampaignParticpants(id int) (*[]models.CampaignParticipants, error)
 		GetPlayersAttendedAll(dungeonMaster string) (*[]string, error)
 	}
 	milestones interface {
