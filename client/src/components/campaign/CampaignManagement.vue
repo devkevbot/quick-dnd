@@ -29,10 +29,12 @@
 
 <script>
 import CampaignForm from './creation/CampaignForm.vue';
+import CampaignModifier from './modification/CampaignModifier.vue';
 
 export default {
   components: {
     CampaignForm,
+    CampaignModifier,
   },
   data() {
     return {
@@ -42,6 +44,11 @@ export default {
           tab: 'Create a New Campaign',
           content: CampaignForm,
           icon: 'mdi-plus',
+        },
+        {
+          tab: 'Modify an Existing Campaign',
+          content: CampaignModifier,
+          icon: 'mdi-pencil',
         },
       ],
     };
