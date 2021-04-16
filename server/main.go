@@ -50,6 +50,10 @@ type application struct {
 		GetAllCharacterCampaigns(characterID int) (*[]models.Campaign, error)
 		GetPlayersAttendedAll(dungeonMaster string) (*[]string, error)
 	}
+	milestones interface {
+		Insert(campaignID int, milestone string) error
+		GetAllForCampaign(campaignID int) (*[]string, error)
+	}
 	belongsTo interface {
 		Insert(c models.BelongsTo) error
 		GetAllCharacterCampaigns(characterID int) (*[]models.Campaign, error)
@@ -92,6 +96,7 @@ func main() {
 		spells:        &postgresql.SpellModel{DB: db},
 		items:         &postgresql.ItemModel{DB: db},
 		campaigns:     &postgresql.CampaignModel{DB: db},
+		milestones:    &postgresql.MilestoneModel{DB: db},
 		belongsTo:     &postgresql.BelongsToModel{DB: db},
 		stats:         &postgresql.StatsModel{DB: db},
 	}

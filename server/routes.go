@@ -45,6 +45,8 @@ func (app *application) registerRoutes(e *echo.Echo) {
 	// Protected campaign endpoints
 	r.POST("/campaign", app.createCampaign)
 	r.DELETE("/campaign/:id", app.deleteCampaign)
+	r.POST("/campaign/milestone", app.createMilestone)
+	r.GET("/campaign/:id/milestone", app.getAllMilestonesForCampaign)
 	r.GET("/campaign/me/stats/player-attendance", app.getPlayersAttendedAll)
 	r.GET("/campaign/me", app.getsPlayersCreatedCampaigns)
 	r.GET("/character/:id/campaign", app.getAllCharacterCampaigns)
