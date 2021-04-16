@@ -70,6 +70,28 @@ func (m *CampaignModel) Get(id int) (*models.Campaign, error) {
 	return &storedCampaign, nil
 }
 
+// Update attempts to update the state and location of the campaign
+// identified by `id`.
+func (m *CampaignModel) Update(id int, state string, location string) error {
+	stmt := "UPDATE Campaign SET state = $2, current_location = $3 WHERE id = $1"
+
+	res, err := m.DB.Exec(stmt, id, state, location)
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if count != 1 {
+		return models.ErrUpdateSingleRecord
+	}
+
+	return nil
+
+}
+
 // Delete attempts to delete a campaign identified by `id`.
 func (m *CampaignModel) Delete(id int) error {
 	stmt := "DELETE FROM Campaign WHERE id = $1"
