@@ -14,6 +14,7 @@
           item-text="name"
           item-value="id"
           v-model="selectedCampaignID"
+          @change="fetchAuxiliaryCampaignData"
         >
           <!-- Button used to refresh the campaign list. -->
           <template v-slot:append-outer>
@@ -180,9 +181,7 @@ export default {
     await this.fetchPlayerCreatedCampaigns();
 
     if (this.selectedCampaignID === null) return;
-    await this.fetchCampaignMilestones();
-    await this.fetchCampaignParticipants();
-    await this.fetchPlayersWithPerfectAttendance();
+    await this.fetchAuxiliaryCampaignData();
   },
   computed: {
     /**
@@ -208,6 +207,15 @@ export default {
     ...mapActions({
       display: 'notifications/display',
     }),
+    /**
+     * Attempts to fetch all data that requires the campaign to first be
+     * selected.
+     */
+    async fetchAuxiliaryCampaignData() {
+      await this.fetchCampaignMilestones();
+      await this.fetchCampaignParticipants();
+      await this.fetchPlayersWithPerfectAttendance();
+    },
     /**
      * Attempts to retrieve all campaigns which have been created by the
      * logged in player.
