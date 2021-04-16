@@ -88,6 +88,9 @@
                 <th class="primary--text subtitle-1">Character</th>
                 <th class="primary--text subtitle-1">Race</th>
                 <th class="primary--text subtitle-1">Class</th>
+                <th class="primary--text subtitle-1">
+                  Attendance record for your campaigns
+                </th>
               </tr>
             </thead>
 
@@ -98,23 +101,27 @@
 
               <tr
                 v-else
-                v-for="(particpant, index) in participants"
+                v-for="(participant, index) in participants"
                 :key="index"
               >
                 <td class="subtitle-1">
-                  {{ particpant.player_username }}
+                  {{ participant.player_username }}
                 </td>
 
                 <td class="subtitle-1">
-                  {{ particpant.character_name }}
+                  {{ participant.character_name }}
                 </td>
 
                 <td class="subtitle-1">
-                  {{ particpant.character_race }}
+                  {{ participant.character_race }}
                 </td>
 
                 <td class="subtitle-1">
-                  {{ particpant.character_class }}
+                  {{ participant.character_class }}
+                </td>
+
+                <td class="subtitle-1">
+                  {{ getPlayerAttendanceStatus(participant.player_username) }}
                 </td>
               </tr>
             </tbody>
@@ -163,6 +170,7 @@ export default {
       selectedCampaignID: null,
       milestones: [],
       participants: [],
+      perfectPlayers: [],
     };
   },
   /**
@@ -174,6 +182,7 @@ export default {
     if (this.selectedCampaignID === null) return;
     await this.fetchCampaignMilestones();
     await this.fetchCampaignParticipants();
+    await this.fetchPlayersWithPerfectAttendance();
   },
   computed: {
     /**
@@ -358,7 +367,7 @@ export default {
     },
     /**
      * Retrieves some data about the players and characters
-     * particiin the selected campaign.
+     * participating in the selected campaign.
      */
     async fetchCampaignParticipants() {
       const campaignID = parseInt(this.selectedCampaignID, 10);
@@ -384,6 +393,44 @@ export default {
             timeout: 6000,
           });
         });
+    },
+    /**
+     * Fetch all players who have a perfect participation record for
+     * campaigns created by the logged-in user.
+     */
+    async fetchPlayersWithPerfectAttendance() {
+      const requestURI = '/auth/campaign/me/stats/player-attendance';
+      const method = 'GET';
+      await this.$http({
+        url: requestURI,
+        data: null,
+        method,
+      })
+        .then((resp) => {
+          const fetchedUsernames = resp.data.data.usernames;
+          this.perfectPlayers = fetchedUsernames ?? [];
+        })
+        .catch((err) => {
+          let message = 'Something went wrong. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 6000,
+          });
+        });
+    },
+    /**
+     * @param {String} username - The username of the player to check.
+     * @returns {String} - A text description of the player's attendance
+     * record. It's all-or-nothing at the moment.
+     */
+    getPlayerAttendanceStatus(username) {
+      if (!this.perfectPlayers) return 'Not perfec attendance';
+      const isPerfect = this.perfectPlayers.includes(username);
+      return isPerfect ? 'Perfect attendance' : 'Not perfect attendance';
     },
   },
 };
