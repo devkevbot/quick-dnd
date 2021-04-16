@@ -70,6 +70,31 @@ func (m *CampaignModel) Get(id int) (*models.Campaign, error) {
 	return &storedCampaign, nil
 }
 
+// Get all campaigns started by `dungeonMaster`.
+func (m *CampaignModel) GetPlayersCreatedCampaigns(dungeonMaster string) (*[]models.Campaign, error) {
+	var storedCampaigns []models.Campaign
+
+	stmt := `SELECT *
+			FROM Campaign
+			WHERE dungeon_master = $1`
+
+	rows, err := m.DB.Queryx(stmt, dungeonMaster)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var campaign models.Campaign
+		err = rows.StructScan(&campaign)
+		if err != nil {
+			return nil, err
+		}
+		storedCampaigns = append(storedCampaigns, campaign)
+	}
+
+	return &storedCampaigns, nil
+}
+
 func (m *CampaignModel) GetAllCharacterCampaigns(characterID int) (*[]models.Campaign, error) {
 	var storedCampaigns []models.Campaign
 

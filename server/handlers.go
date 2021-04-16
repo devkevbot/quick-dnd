@@ -483,6 +483,26 @@ func (app *application) createCampaign(c echo.Context) error {
 	)
 }
 
+// Fetches all campaigns started by the requestor.
+func (app *application) getsPlayersCreatedCampaigns(c echo.Context) error {
+	dungeonMaster := getUsernameFromToken(c)
+	if strings.TrimSpace(dungeonMaster) == "" {
+		return sendJSONResponse(c, http.StatusUnauthorized, "Retrieve all player's started campaigns", "Retrieval failed", nil)
+	}
+
+	campaigns, err := app.campaigns.GetPlayersCreatedCampaigns(dungeonMaster)
+	if err != nil {
+		return sendJSONResponse(c, http.StatusInternalServerError, "Retrieve all player's started campaigns", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Retrieve all player's started campaigns", "Retrieval successful",
+		struct {
+			Campaigns []models.Campaign `json:"campaigns"`
+		}{
+			*campaigns,
+		})
+}
+
 // Fetches all campaigns which a given character is participating in (as
 // a player)
 func (app *application) getAllCharacterCampaigns(c echo.Context) error {
