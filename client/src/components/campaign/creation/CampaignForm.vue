@@ -4,16 +4,12 @@ campaign. Assumes the user is authenticated.
 -->
 
 <template>
-  <div class="campaign-form">
-    <v-form>
-      <v-container class="mb-1">
-        <v-row class="ml-n3 mb-1">
-          <p class="display-1 primary--text">Create a Campaign</p>
-        </v-row>
+  <v-form>
+    <v-container class="mb-1">
+      <p class="display-1 primary--text">Create a Campaign</p>
 
-        <v-row class="ml-n2 mt-2 mb-n1">
-          <p class="subtitle-2 primary--text">Info</p>
-        </v-row>
+      <v-card class="pa-4">
+        <p class="headline primary--text">Info</p>
 
         <v-row class="mb-3">
           <v-col cols="12" md="6">
@@ -41,7 +37,7 @@ campaign. Assumes the user is authenticated.
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row class="px-2">
           <v-textarea
             v-model="state"
             :counter="1024"
@@ -54,34 +50,22 @@ campaign. Assumes the user is authenticated.
           ></v-textarea>
         </v-row>
 
-        <v-row class="ml-n2 mb-1">
-          <p class="subtitle-2 primary--text">Campaign Characters</p>
-        </v-row>
-
+        <p class="headline primary--text">Campaign Characters</p>
         <AddCharacterTable ref="addCharacterTable" />
 
-        <v-row class="ml-0 mt-3">
+        <v-card-actions>
           <v-btn @click="showAddCharacterDialog()">Add Character</v-btn>
-        </v-row>
+          <v-btn color="primary" @click="onClickCreate()">Create</v-btn>
+        </v-card-actions>
+      </v-card>
 
-        <v-row class="ml-0 mt-10">
-          <v-btn
-            color="primary"
-            @click="onClickCreate()"
-          >Create</v-btn>
-        </v-row>
-
-        <AddCharacterDialog ref="addCharacterDialog" />
-      </v-container>
-    </v-form>
-  </div>
+      <AddCharacterDialog ref="addCharacterDialog" />
+    </v-container>
+  </v-form>
 </template>
 
 <script>
-import {
-  required,
-  maxLength,
-} from 'vuelidate/lib/validators';
+import { required, maxLength } from 'vuelidate/lib/validators';
 import AddCharacterDialog from './AddCharacterDialog.vue';
 import AddCharacterTable from './AddCharacterTable.vue';
 
@@ -97,7 +81,7 @@ export default {
       location: '',
       state: '',
       idExists: false,
-      tempCharacter: null,
+      character: null,
     };
   },
   validations: {
@@ -132,19 +116,16 @@ export default {
 
         if (!this.idExists) return; // TODO: Notify user of invalid id
 
-        this.$refs.addCharacterTable.addItem(
-          id,
-          this.tempCharacter.cName,
-          this.tempCharacter.cOwner,
-        );
+        const { name, owner } = this.character;
+        this.$refs.addCharacterTable.addItem(id, name, owner);
       }
       this.$refs.addCharacterDialog.clearID();
       this.idExists = false;
-      this.tempCharacter = null;
+      this.character = null;
     },
     /**
      * Fetches character and owner names based on ID number, and places
-     * the information in "tempCharacter"
+     * the information in "character"
      */
     async fetchCharacterInfo(id) {
       const integerID = parseInt(id, 10);
@@ -157,9 +138,9 @@ export default {
         method,
       })
         .then((resp) => {
-          this.tempCharacter = {
-            cName: resp.data.data.name,
-            cOwner: resp.data.data.player_username,
+          this.character = {
+            name: resp.data.data.name,
+            owner: resp.data.data.player_username,
           };
           this.idExists = true;
         })
