@@ -40,8 +40,7 @@
 
       <!-- Buttons -->
       <v-card-actions>
-        <v-btn class="primary">
-          <!-- TODO: implement the click handler. -->
+        <v-btn class="primary" @click="displayCampaignEditorPrompt">
           Edit Campaign
           <v-icon class="ml-2">mdi-pencil</v-icon>
         </v-btn>
@@ -51,6 +50,12 @@
           <v-icon>mdi-delete-forever</v-icon>
         </v-btn>
       </v-card-actions>
+
+      <ModifyCampaignForm
+        ref="modifyCampaign"
+        @complete="sendCampaignUpdateRequest"
+      >
+      </ModifyCampaignForm>
 
       <ConfirmDialog ref="confirmDelete" />
 
@@ -157,6 +162,7 @@ import { mapActions } from 'vuex';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import AddMilestoneForm from './AddMilestoneForm.vue';
 import MilestoneTimeline from './MilestoneTimeline.vue';
+import ModifyCampaignForm from './ModifyCampaignForm.vue';
 
 export default {
   name: 'CampaignModifier',
@@ -164,6 +170,7 @@ export default {
     ConfirmDialog,
     AddMilestoneForm,
     MilestoneTimeline,
+    ModifyCampaignForm,
   },
   data() {
     return {
@@ -323,6 +330,58 @@ export default {
             color: 'error',
             timeout: 6000,
           });
+        });
+    },
+    /**
+     * Displays a form to the user which allows them to input a new
+     * campaign state and location.
+     */
+    async displayCampaignEditorPrompt() {
+      const { state, current_location: location } = this.selectedCampaign;
+      await this.$refs.modifyCampaign.prompt(state, location);
+    },
+    /**
+     * Send a request to update the currently-selected campaign's state
+     * and location.
+     */
+    async sendCampaignUpdateRequest({ state, location }) {
+      const integerID = parseInt(this.selectedCampaignID, 10);
+
+      const requestURI = `auth/campaign/${integerID}`;
+      const method = 'PUT';
+
+      await this.$http({
+        url: requestURI,
+        data: {
+          state,
+          location,
+        },
+        method,
+      })
+        .then(() => {
+          this.display({
+            message: 'Campaign was successfully updated!',
+            color: 'success',
+            timeout: 6000,
+          });
+        })
+        .catch((err) => {
+          let message = 'Something went wrong. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 6000,
+          });
+        })
+        .finally(async () => {
+          /* Reset the current campaign to the campaign that was just
+          updated rather than back to index 0 of the fetched campaigns. */
+          const resetID = this.selectedCampaignID;
+          await this.fetchPlayerCreatedCampaigns();
+          this.selectedCampaignID = resetID;
         });
     },
     /**

@@ -483,6 +483,35 @@ func (app *application) createCampaign(c echo.Context) error {
 	)
 }
 
+type CampaignUpdateRequest struct {
+	State    string `json:"state"`
+	Location string `json:"location"`
+}
+
+func (app *application) updateCampaign(c echo.Context) error {
+	var req CampaignUpdateRequest
+
+	if err := c.Bind(&req); err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Campaign modification", "Could not process request", nil)
+	}
+
+	campaignIDString := c.Param("id")
+	campaignID, err := strconv.Atoi(campaignIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Campaign modification", "Modification failed", nil)
+	}
+
+	err = app.campaigns.Update(campaignID, req.State, req.Location)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Campaign modification", "Modification failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Campaign modification", "Modification successful", nil)
+}
+
 // Deletes a single campaign given its unique `id.`
 func (app *application) deleteCampaign(c echo.Context) error {
 	// TODO: Check if the requestor actually is the player who created
