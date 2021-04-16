@@ -615,6 +615,30 @@ func (app *application) getAllMilestonesForCampaign(c echo.Context) error {
 		})
 }
 
+// Retrieve some data related to players and characters who are
+// participaring in a campaign.
+func (app *application) getCampaignParticipants(c echo.Context) error {
+	campaignIDString := c.Param("id")
+	campaignID, err := strconv.Atoi(campaignIDString)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Campaign participant retrieval", "Retrieval failed", nil)
+	}
+
+	participants, err := app.campaigns.GetCampaignParticpants(campaignID)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Campaign participant retrieval", "Retrieval failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Milestone retrieval", "Retrieval successful",
+		struct {
+			Participants []models.CampaignParticipants `json:"participants"`
+		}{
+			*participants,
+		})
+}
+
 // Get all global stats.
 func (app *application) retrieveAllStats(c echo.Context) error {
 	stats, err := app.stats.GetAll()
