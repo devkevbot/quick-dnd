@@ -26,6 +26,7 @@ type application struct {
 		Insert(c models.Character) (int, error)
 		Get(id int) (*models.Character, error)
 		GetAllUserCharacters(username string) (*[]models.Character, error)
+		Update(c models.Character) error
 		Delete(id int) error
 	}
 	spells interface {
