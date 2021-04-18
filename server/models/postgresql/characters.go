@@ -88,6 +88,39 @@ func (m *CharacterModel) GetAllUserCharacters(username string) (*[]models.Charac
 	return &storedCharacters, nil
 }
 
+func (m *CharacterModel) Update(c models.Character) error {
+	stmt := `UPDATE Character
+			SET name = $2, weight = $3, height = $4,
+				alignment = $5, sex = $6, background = $7, race = $8, speed = $9,
+				strength = $10, dexterity = $11, intelligence = $12, wisdom = $13,
+				charisma = $14, constitution = $15, hp_max = $16,
+				ability_points = $17, xp_points = $18, class = $19,
+				class_attribute = $20, player_username = $21
+			WHERE id = $1`
+
+	_, err := m.DB.Exec(
+		stmt, c.ID, c.Name, c.Weight, c.Height,
+		c.Alignment, c.Sex, c.Background, c.Race,
+		c.Speed, c.Strength, c.Dexterity, c.Intelligence, c.Wisdom, c.Charisma, c.Constitution,
+		c.HPMax, c.AbilityPoints, c.XPPoints,
+		c.Class, c.ClassAttribute, c.PlayerUsername,
+	)
+
+	if err != nil {
+		var postgresError *pq.Error
+		if errors.As(err, &postgresError) {
+			if postgresError.Code.Name() == "unique_violation" {
+				if strings.Contains(postgresError.Message, "character_name_player_username_key") {
+					return models.ErrDuplicateCharacter
+				}
+			}
+		}
+		return err
+	}
+
+	return nil
+}
+
 // Delete attempts to delete a character identified by `id`.
 func (m *CharacterModel) Delete(id int) error {
 	stmt := "DELETE FROM Character WHERE id = $1"

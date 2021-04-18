@@ -223,6 +223,33 @@ func (app *application) retrieveUserCharacters(c echo.Context) error {
 		})
 }
 
+// updateCharacter updates a character with a given ID
+func (app *application) updateCharacter(c echo.Context) error {
+	var req models.Character
+	requestCharIDStr := c.Param("id")
+
+	err := c.Bind(&req)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Character update", "Could not process request", nil)
+	}
+
+	numericCharID, err := strconv.Atoi(requestCharIDStr)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusUnprocessableEntity, "Character update", "Could not process request", nil)
+	}
+
+	req.ID = numericCharID
+	err = app.characters.Update(req)
+	if err != nil {
+		log.Error(err)
+		return sendJSONResponse(c, http.StatusInternalServerError, "Character update", "update failed", nil)
+	}
+
+	return sendJSONResponse(c, http.StatusOK, "Character update", "Update successful", nil)
+}
+
 // deleteCharacter attempts to a delete a character given its ID.
 func (app *application) deleteCharacter(c echo.Context) error {
 	requestCharIDStr := c.Param("id")
