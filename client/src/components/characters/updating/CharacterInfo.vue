@@ -42,16 +42,15 @@ characters. Enables other actions such as deleting characters. -->
       <!-- Delete button -->
       <v-card-actions>
         <v-row class="ml-2">
-          <v-btn class="error" @click="displayCharacterDeletionPrompt">
-            Delete character
-            <v-icon>mdi-delete-forever</v-icon>
-          </v-btn>
           <v-btn
-            class="ml-4"
             color="primary"
             @click="requestCharacterUpdate"
           >
-            Update
+            Update Character
+          </v-btn>
+          <v-btn class="error ml-4" @click="displayCharacterDeletionPrompt">
+            Delete character
+            <v-icon>mdi-delete-forever</v-icon>
           </v-btn>
         </v-row>
 
@@ -402,6 +401,17 @@ export default {
             message: 'Character was updated successfully!',
             color: 'success',
             timeout: 6000,
+          });
+        })
+        .catch((err) => {
+          let message = 'Could not update character. Please try again.';
+          if (err.response) {
+            message = `Error: ${err.response.data.message}. Please try again.`;
+          }
+          this.display({
+            message,
+            color: 'error',
+            timeout: 10000,
           });
         });
     },
