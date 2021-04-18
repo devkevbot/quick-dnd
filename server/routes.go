@@ -26,7 +26,7 @@ func (app *application) registerRoutes(e *echo.Echo) {
 	r.POST("/character", app.createCharacter)
 	r.GET("/character/me", app.retrieveUserCharacters)
 	r.GET("/character/:id", app.retrieveCharacter)
-	r.POST("/character/:id", app.updateCharacter)
+	r.PUT("/character/:id", app.updateCharacter)
 	r.DELETE("/character/:id", app.deleteCharacter)
 
 	// Protected spell endpoints

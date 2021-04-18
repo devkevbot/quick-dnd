@@ -41,10 +41,19 @@ characters. Enables other actions such as deleting characters. -->
 
       <!-- Delete button -->
       <v-card-actions>
-        <v-btn class="error" @click="displayCharacterDeletionPrompt">
-          Delete character
-          <v-icon class="ml-2">mdi-delete-forever</v-icon>
-        </v-btn>
+        <v-row class="ml-2">
+          <v-btn class="error" @click="displayCharacterDeletionPrompt">
+            Delete character
+            <v-icon>mdi-delete-forever</v-icon>
+          </v-btn>
+          <v-btn
+            class="ml-4"
+            color="primary"
+            @click="requestCharacterUpdate"
+          >
+            Update
+          </v-btn>
+        </v-row>
 
         <ConfirmDialog ref="confirmDelete" />
       </v-card-actions>
@@ -54,56 +63,56 @@ characters. Enables other actions such as deleting characters. -->
         <p class="headline primary--text">General information</p>
         <v-row>
           <v-col cols="12" lg="2">
-            <v-text-field
-              readonly
+            <v-select
+              :items="sexOptions"
+              v-model="selectedCharacter.sex"
               label="Sex"
-              :value="selectedCharacter.sex"
-            ></v-text-field>
+              required
+            ></v-select>
           </v-col>
 
           <v-col cols="12" lg="2">
-            <v-text-field
-              readonly
+            <v-select
+              :items="raceOptions"
+              v-model="selectedCharacter.race"
               label="Race"
-              :value="selectedCharacter.race"
-            ></v-text-field>
+              required
+            ></v-select>
           </v-col>
 
           <v-col cols="12" lg="2">
             <v-text-field
-              readonly
+              v-model="selectedCharacter.weight"
               label="Weight"
               suffix="kg"
-              :value="selectedCharacter.weight"
             ></v-text-field>
           </v-col>
 
           <v-col cols="12" lg="2">
             <v-text-field
-              readonly
+              v-model="selectedCharacter.height"
               label="Height"
               suffix="cm"
-              :value="selectedCharacter.height"
             ></v-text-field>
           </v-col>
 
           <v-col cols="12" lg="2">
-            <v-text-field
-              readonly
+            <v-select
+              :items="alignmentOptions"
+              v-model="selectedCharacter.alignment"
               label="Alignment"
-              :value="selectedCharacter.alignment"
-            ></v-text-field>
+              required
+            ></v-select>
           </v-col>
         </v-row>
 
         <v-row>
           <v-col cols="12" lg="10">
             <v-textarea
-              readonly
               no-resize
+              v-model="selectedCharacter.background"
               label="Background"
               outlined
-              :value="selectedCharacter.background"
             ></v-textarea>
           </v-col>
         </v-row>
@@ -119,9 +128,8 @@ characters. Enables other actions such as deleting characters. -->
             class="pb-4"
           >
             <v-text-field
-              readonly
+              v-model="selectedCharacter[`${stat.dataName}`]"
               :label="stat.name"
-              :value="selectedCharacter[`${stat.dataName}`]"
             >
             </v-text-field>
           </v-col>
@@ -159,6 +167,12 @@ export default {
     return {
       characters: [],
       selectedCharName: null,
+
+      sexes: ['Male', 'Female', 'Other'],
+      races: ['Dragonborn', 'Dwarf', 'Elf', 'Gnome',
+        'Half-Elf', 'Halfling', 'Half-Orc', 'Human', 'Tiefling'],
+      alignments: ['Lawful Good', 'Neutral Good', 'Chaotic Good', 'Lawful Neutral',
+        'True Neutral', 'Chaotic Neutral', 'Lawful Evil', 'Neutral Evil', 'Chaotic Evil'],
 
       /* These stats are used to dynamically fetch the stat date from a
       given character object. */
@@ -258,6 +272,15 @@ export default {
         },
       ];
     },
+    sexOptions() {
+      return this.sexes;
+    },
+    raceOptions() {
+      return this.races;
+    },
+    alignmentOptions() {
+      return this.alignments;
+    },
   },
   methods: {
     ...mapActions({
@@ -340,6 +363,46 @@ export default {
         })
         .finally(() => {
           this.fetchUserCharacters();
+        });
+    },
+    async requestCharacterUpdate() {
+      const integerID = parseInt(this.selectedCharacter.id, 10);
+      const requestURI = `auth/character/${integerID}`;
+      const method = 'PUT';
+
+      await this.$http({
+        url: requestURI,
+        data: {
+          id: integerID,
+          name: this.selectedCharacter.name,
+          weight: this.selectedCharacter.weight,
+          height: this.selectedCharacter.height,
+          alignment: this.selectedCharacter.alignment,
+          sex: this.selectedCharacter.sex,
+          background: this.selectedCharacter.background,
+          race: this.selectedCharacter.race,
+          speed: this.selectedCharacter.speed,
+          strength: this.selectedCharacter.strength,
+          dexterity: this.selectedCharacter.dexterity,
+          intelligence: this.selectedCharacter.intelligence,
+          wisdom: this.selectedCharacter.wisdom,
+          charisma: this.selectedCharacter.charisma,
+          constitution: this.selectedCharacter.constitution,
+          hp_max: this.selectedCharacter.hp_max,
+          ability_points: this.selectedCharacter.ability_points,
+          xp_points: this.selectedCharacter.xp_points,
+          class: this.selectedCharacter.class,
+          class_attribute: this.selectedCharacter.class_attribute,
+          player_username: this.selectedCharacter.player_username,
+        },
+        method,
+      })
+        .then(() => {
+          this.display({
+            message: 'Character was updated successfully!',
+            color: 'success',
+            timeout: 6000,
+          });
         });
     },
   },
