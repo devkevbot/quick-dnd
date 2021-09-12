@@ -1,6 +1,27 @@
 # Quick DnD
 A planner for tracking Dungeons & Dragons characters, campaigns, spells, items, and more.
 
+## Sample Screenshots
+
+**Note: these screenshots do not cover all available features.**
+
+### Login
+
+![001-login-screen](https://user-images.githubusercontent.com/31908183/133004782-31a77ca6-7b8b-41f2-b680-25c2ef80c6bb.png)
+
+### Dashboard
+
+![002-dashboard](https://user-images.githubusercontent.com/31908183/133004787-3c5ed14e-a6e4-444c-bfe5-0c7fb93f9e29.png)
+
+
+### Campaign Milestones
+
+![003-campaign-milestones](https://user-images.githubusercontent.com/31908183/133004791-bbd24aed-0b39-472b-8e9f-f75bef09e616.png)
+
+### Character Screen
+
+![004-character-screenpng](https://user-images.githubusercontent.com/31908183/133004796-111803b3-1129-4d4a-932f-8ab1513ed434.png)
+
 ## Initialization
 
 ### Database
