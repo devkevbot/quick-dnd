@@ -1,5 +1,3 @@
-# CMPT 354 Project - Simon Fraser University - Spring 2021 - Group 1
-
 A planner for tracking Dungeons & Dragons characters, campaigns, spells, items, and more.
 
 ## Initialization
