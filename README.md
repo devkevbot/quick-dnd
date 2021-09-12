@@ -1,12 +1,7 @@
+# Quick DnD
 A planner for tracking Dungeons & Dragons characters, campaigns, spells, items, and more.
 
 ## Initialization
-
-### Git
-
-* **Prerequisite**: `git` is installed and added to `PATH`.
-
-From this directory, run `git config core.autocrlf false`
 
 ### Database
 
@@ -31,27 +26,14 @@ You can then run the following to verify that the database initialized correctly
 psql -U postgres -h localhost -d <db_name> -c "\d"
 ```
 
-### Go code
+### Server code
 
-* **Prerequisite: Go version 1.15 or later is installed and added to
-  `PATH`.**
+* **Prerequisite: Go version 1.15 or later is installed and added to `PATH`.**
 
-Create a new `config.yml` file inside the `server` directory:
+* Create a new `config.yml` file inside the `server` directory. The required fields can be found in `server/sample_config.yml`
 
-* Refer to `server/sample_config.yml` for the required fields.
-
-* For generating the `jwt_signing_key` field `node` can
-  be used if installed:
-
- ```node
-    > node
-    > crypto.randomBytes(64).toString('hex');
- ```
-
-### Website code
+### Frontend code
 
 * **Prerequisite: `node` and `npm` are installed and added to `PATH`.**
 
-Navigate to the `client/` folder and run `npm install`.
-
-Follow the instructions in `client/README.md`.
+* Follow the instructions in `client/README.md`.
