@@ -1,5 +1,3 @@
-# cmpt-354-frontend
-
 ## Project setup
 
 ```bash
