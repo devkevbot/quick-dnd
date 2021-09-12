@@ -1,22 +1,30 @@
 package main
 
 import (
-	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func (app *application) registerRoutes(e *echo.Echo) {
-	e.POST("/login", app.loginPlayer)
-	e.POST("/register", app.createPlayer)
+func (app *application) registerMiddleware() {
+	app.echoInstance.Use(middleware.Recover())
+	app.echoInstance.Use(middleware.Logger())
+	app.echoInstance.Use(middleware.CORSWithConfig(
+		middleware.CORSConfig{
+			AllowOrigins: []string{"http://localhost:8080"},
+		}))
+}
+
+func (app *application) registerRoutes() {
+	app.echoInstance.POST("/login", app.loginPlayer)
+	app.echoInstance.POST("/register", app.createPlayer)
 
 	// Unprotected character endpoints
-	e.GET("/character/:id", app.retrieveCharacter)
+	app.echoInstance.GET("/character/:id", app.retrieveCharacter)
 
 	// Unprotected stat endpoints
-	e.GET("/stat", app.retrieveAllStats)
+	app.echoInstance.GET("/stat", app.retrieveAllStats)
 
 	// All routes which require JWT-based authentication
-	r := e.Group("/auth")
+	r := app.echoInstance.Group("/auth")
 	r.Use(middleware.JWTWithConfig(app.getJWTConfig()))
 	r.GET("/player/:username", app.retrievePlayer)
 	r.PUT("/player/me/password", app.changePlayerPassword)
